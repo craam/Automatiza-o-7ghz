@@ -99,10 +99,8 @@ function SetTelescopeTracking(IOn)
   }
 }
 
-function MountIsSlewing(TargetRA, TargetDec)
+function MountIsSlewing()
 {
-  var TargetRA = "21";
-  var TargetDec = "20";
   var Out;
 
   sky6RASCOMTele.Connect();
@@ -182,6 +180,7 @@ function Main()
     var started = false;
     var flip = false;
     var turnedOff = false;
+
     /**
      * Turn on process(9:00):
      * Connect
@@ -200,12 +199,14 @@ function Main()
     if (hour == 9 && started === false)
     {
       Find("Sun");
+      // Slew somewhere.
+      SlewTelescopeTo(0, 0);
       started = true;
       RunJavaScriptOutput.writeLine("Started.")
     }
     else if (hour == 13 && flip === false)
     {
-
+      // Flip.
       SlewTelescopeTo(0, 0);
       while (MountIsSlewing())
       {
