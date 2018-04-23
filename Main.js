@@ -182,10 +182,23 @@ function Main()
     var started = false;
     var flip = false;
     var turnedOff = false;
+    /**
+     * Turn on process(9:00):
+     * Connect
+     * Find Sun
+     * Slew
+     * 
+     * Flip process(13:00):
+     * Slew
+     * 
+     * Shutdown process(17:00):
+     * Tracking off
+     * Park
+     * Disconnect.
+     */
 
     if (hour == 9 && started === false)
     {
-      DoSomething();
       Find("Sun");
       started = true;
       RunJavaScriptOutput.writeLine("Started.")
@@ -204,7 +217,6 @@ function Main()
     }
     else if (hour == 18 && turnedOff === false)
     {
-      DoSomeOtherThing()
       SetTelescopeTracking(0);
       ParkTelescope();
       DisconnectTelescope();
