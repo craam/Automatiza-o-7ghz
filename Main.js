@@ -198,14 +198,15 @@ function Main()
 
     if (hour == 9 && started === false)
     {
+      started = true;
       Find("Sun");
       // Slew somewhere.
       SlewTelescopeTo(0, 0);
-      started = true;
       RunJavaScriptOutput.writeLine("Started.")
     }
     else if (hour == 13 && flip === false)
     {
+      flip = true;
       // Flip.
       SlewTelescopeTo(0, 0);
       while (MountIsSlewing())
@@ -213,15 +214,14 @@ function Main()
         RunJavaScriptOutput.writeLine("Slewing...");
       }
 
-      flip = true;
       RunJavaScriptOutput.writeLine("Flipped.")
     }
     else if (hour == 18 && turnedOff === false)
     {
+      turnedOff = true;
       SetTelescopeTracking(0);
       ParkTelescope();
       DisconnectTelescope();
-      turnedOff = true;
       RunJavaScriptOutput.writeLine("Turned off.")
     }
   }
