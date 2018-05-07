@@ -11,7 +11,7 @@ Argumentos: Um inteiro, que representa um certa informação do objeto. Há um tota
 
 A função em si não retorna nada, para pegar o valor desejado é necessário chamar o atributo ObjInfoPropOut;
 
-54: Ra\
+54: Ascensão\
 55: Declinação
 
 ## sky6StarChart
@@ -35,12 +35,46 @@ sky6.StarChart.Find("Sun");
 sky6ObjectInformation.Property(55);
 
 // Printa a declinação.
-Out += sky6ObjectInfomation.ObjInfoPropOut + "\n";
+Out = sky6ObjectInfomation.ObjInfoPropOut + "\n";
 ```
-
-Procura 
 
 ## sky6RASCOMTele
 
+### .Connect()
+
+Argumentos: Nenhum.
+
+Faz a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
+
+### .Disconnect()
+
+Argumentos: Nenhum.
+
+Termina a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
+
+### .SlewToRaDec(float TargetRa, float TargetDec, string "TODO")
+
+Argumentos: A Ascensão, a declinação e o string(TODO) da localização.
+
+Faz o slew para a posição dada.
 
 ### .GetRaDec()
+
+Argumentos: Nenhum.
+
+Pega a declinação e a ascensão, e prepara os valores nos atributos dRa e dDec.
+
+Exemplo:
+```javascript
+sky6RASCOMTele.Connect();
+sky6RASCOMTele.getRaDec();
+Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
+```
+
+### .dRa
+
+A ascensão atual.
+
+### .dDec
+
+A declinação atual.
