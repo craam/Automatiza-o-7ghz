@@ -58,6 +58,12 @@ Termina a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
 
 Faz o slew para a posição dada.
 
+Exemplo:
+```javscript
+sky6RASCOMTele.Connect();
+
+```
+
 ### .GetRaDec()
 
 **Argumentos**: Nenhum.
