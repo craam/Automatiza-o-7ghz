@@ -59,7 +59,9 @@ typings/
 
 # Vim and emacs files.
 *.swp
-*#*
+\#*#
+\.#*
+*~
 
 # Ignore folder with skyx examples
 TheSkyX
