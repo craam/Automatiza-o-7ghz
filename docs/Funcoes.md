@@ -7,7 +7,7 @@ A ideia é relatar o funcionamento das principais funções da biblioteca.
 
 ### .Property(int num)
 
-Argumentos: Um inteiro, que representa um certa informação do objeto. Há um total de 190 informações separadas nessa função. A ideia é documentar cada uma aqui.
+**Argumentos**: Um inteiro, que representa um certa informação do objeto. Há um total de 190 informações separadas nessa função. A ideia é documentar cada uma aqui.
 
 A função em si não retorna nada, para pegar o valor desejado é necessário chamar o atributo ObjInfoPropOut;
 
@@ -18,7 +18,7 @@ A função em si não retorna nada, para pegar o valor desejado é necessário chamar
 
 ### .Find(string nomeDoObjeto)
 
-Argumentos: O nome do objeto a ser procurado.
+**Argumentos**: O nome do objeto a ser procurado.
 
 Procura pelo objeto dado.
 
@@ -42,25 +42,25 @@ Out = sky6ObjectInfomation.ObjInfoPropOut + "\n";
 
 ### .Connect()
 
-Argumentos: Nenhum.
+**Argumentos**: Nenhum.
 
 Faz a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
 
 ### .Disconnect()
 
-Argumentos: Nenhum.
+**Argumentos**: Nenhum.
 
 Termina a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
 
 ### .SlewToRaDec(float TargetRa, float TargetDec, string "TODO")
 
-Argumentos: A Ascensão, a declinação e o string(TODO) da localização.
+**Argumentos**: A Ascensão, a declinação e o string(TODO) da localização.
 
 Faz o slew para a posição dada.
 
 ### .GetRaDec()
 
-Argumentos: Nenhum.
+**Argumentos**: Nenhum.
 
 Pega a declinação e a ascensão, e prepara os valores nos atributos dRa e dDec.
 
@@ -68,6 +68,8 @@ Exemplo:
 ```javascript
 sky6RASCOMTele.Connect();
 sky6RASCOMTele.getRaDec();
+
+// Printa "ascensão | declinação"
 Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
 ```
 
