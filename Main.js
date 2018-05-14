@@ -167,67 +167,64 @@ function DisconnectTelescope()
   sky6RASCOMTheSky.DiconnectTelescope();
 } 
 
-function Main()
+var started = false;
+var flip = false;
+var turnedOff = false;
+sky6RASCOMTele.Connect();
+while (Sky6IsConnected())
 {
-  sky6RASCOMTele.Connect();
-  while (Sky6IsConnected())
+  // Gets the time when the function runs.
+  var time = new Date();
+  var hour = time.getHours();
+  var minutes = time.getMinutes();
+  var seconds = time.getSeconds();
+  print(String(hour) + " | " + String(minutes) + " | " + String(seconds));
+
+  /**
+   * Turn on process(9:00):
+   * Connect
+   * Find Sun
+   * Slew
+   * 
+   * Flip process(13:00):
+   * Slew
+   * 
+   * Shutdown process(17:00):
+   * Tracking off
+   * Park
+   * Disconnect.
+   */
+
+  if (hour == 9 && started === false)
   {
-    // Gets the time when the function runs.
-    var time = new Date();
-    var hour = time.getHours();
-    var minutes = time.getMinutes();
-    var seconds = time.getSeconds();
-    print(String(hour) + " | " + String(minutes) + " | " + String(seconds));
-
-    var started = false;
-    var flip = false;
-    var turnedOff = false;
-
-    /**
-     * Turn on process(9:00):
-     * Connect
-     * Find Sun
-     * Slew
-     * 
-     * Flip process(13:00):
-     * Slew
-     * 
-     * Shutdown process(17:00):
-     * Tracking off
-     * Park
-     * Disconnect.
-     */
-
-    if (hour == 9 && started === false)
+    started = true;
+    Find("Sun");
+    // Slew somewhere.
+    SlewTelescopeTo(0, 0);
+    print("Started.");
+  }
+  else if (hour == 13 && flip === false)
+  {
+    flip = true;
+    // Flip.
+    SlewTelescopeTo(0, 0);
+    while (MountIsSlewing())
     {
-      started = true;
-      Find("Sun");
-      // Slew somewhere.
-      SlewTelescopeTo(0, 0);
-      print("Started.");
+      print("Slewing...");
     }
-    else if (hour == 13 && flip === false)
-    {
-      flip = true;
-      // Flip.
-      SlewTelescopeTo(0, 0);
-      while (MountIsSlewing())
-      {
-        print("Slewing...");
-      }
 
-      print("Flipped.");
-    }
-    else if (hour == 18 && turnedOff === false)
-    {
-      turnedOff = true;
-      SetTelescopeTracking(0);
-      ParkTelescope();
-      DisconnectTelescope();
-      print("Turned off.");
-    }
+    print("Flipped.");
+  }
+  else if (hour == 18 && turnedOff === false)
+  {
+    turnedOff = true;
+    SetTelescopeTracking(0);
+    ParkTelescope();
+    DisconnectTelescope();
+    print("Turned off.");
   }
 }
+
 
 setInterval(function() {
   Main();
