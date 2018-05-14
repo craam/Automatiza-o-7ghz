@@ -52,7 +52,7 @@ function Find(objectName)
       /* Append into s */
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
       // Prints out object info.
-      RunJavaScriptOutput.writeLine(Out);
+      print(Out);
       return true;
     }
   }
@@ -67,7 +67,7 @@ function TheSkyX()
     sky6RASCOMTele.GetRaDec();
     Out = String(sky6RASCOMTele.dRa);
     Out += " " + String(sky6RASCOMTele.dDec);
-    RunJavaScriptOutput.writeLine(Out);
+    print(Out);
 
     return {
       "dRa": sky6RASCOMTele.dRa,
@@ -112,19 +112,19 @@ function MountIsSlewing()
     if (sky6RASCOMTele.IsSlewComplete != 0)
     {
       Out  = "Not Slewing";
-      RunJavaScriptOutput.writeLine(Out);
+      print(Out);
       return false
     }
     else
     {
       Out  = "Slewing";
-      RunJavaScriptOutput.writeLine(Out);
+      print(Out);
       return true;
     }
   }
   else
   {
-    RunJavaScriptOutput.writeLine("Telescope not connected.");
+    print("Telescope not connected.");
     return false;
   }
 }
@@ -140,7 +140,7 @@ function SlewTelescopeTo(dRa, dDec)
     }
     catch
     {
-      RunJavaScriptOutput.writeLine("An error ocurred.");
+      print("An error ocurred.");
       return false;
     }
   }
@@ -164,19 +164,21 @@ function ParkTelescope()
 function DisconnectTelescope()
 {
   sky6RASCOMTele.Diconnect();
-  sky6RASCOMTheSjy.DiconnectTelescope();
+  sky6RASCOMTheSky.DiconnectTelescope();
 } 
 
 function Main()
 {
   sky6RASCOMTele.Connect();
-  if (Sky6IsConnected())
+  while (Sky6IsConnected())
   {
     // Gets the time when the function runs.
     var time = new Date();
     var hour = time.getHours();
     var minutes = time.getMinutes();
     var seconds = time.getSeconds();
+    print(String(hour) + " | " + String(minutes) + " | " + String(seconds));
+
     var started = false;
     var flip = false;
     var turnedOff = false;
@@ -202,7 +204,7 @@ function Main()
       Find("Sun");
       // Slew somewhere.
       SlewTelescopeTo(0, 0);
-      RunJavaScriptOutput.writeLine("Started.")
+      print("Started.");
     }
     else if (hour == 13 && flip === false)
     {
@@ -211,10 +213,10 @@ function Main()
       SlewTelescopeTo(0, 0);
       while (MountIsSlewing())
       {
-        RunJavaScriptOutput.writeLine("Slewing...");
+        print("Slewing...");
       }
 
-      RunJavaScriptOutput.writeLine("Flipped.")
+      print("Flipped.");
     }
     else if (hour == 18 && turnedOff === false)
     {
@@ -222,7 +224,7 @@ function Main()
       SetTelescopeTracking(0);
       ParkTelescope();
       DisconnectTelescope();
-      RunJavaScriptOutput.writeLine("Turned off.")
+      print("Turned off.");
     }
   }
 }
