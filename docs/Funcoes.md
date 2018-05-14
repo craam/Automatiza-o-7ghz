@@ -11,7 +11,7 @@ A ideia é relatar o funcionamento das principais funções da biblioteca.
 
 A função em si não retorna nada, para pegar o valor desejado é necessário chamar o atributo ObjInfoPropOut;
 
-54: Ascensão\
+54: Ascensão direita\
 55: Declinação
 
 ## sky6StarChart
@@ -24,13 +24,13 @@ Procura pelo objeto dado.
 
 Exemplo:
 ```javascript
-sky6.StarChart.Find("Sun");
+sky6StarChart.Find("Sun");
 ```
 Exemplo com o sky6ObjectInformation.Property():
 
 ```javascript
 // Procura pelo sol.
-sky6.StarChart.Find("Sun");
+sky6StarChart.Find("Sun");
 // Prepara a função para retornar a declinação.
 sky6ObjectInformation.Property(55);
 
@@ -54,34 +54,33 @@ Termina a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
 
 ### .SlewToRaDec(float TargetRa, float TargetDec, string "TODO")
 
-**Argumentos**: A Ascensão, a declinação e o string(TODO) da localização.
+**Argumentos**: A Ascensão direita, a declinação e o string(TODO) da localização.
 
-Faz o slew para a posição dada.
+Faz o slew para a coordenada dada.
 
 Exemplo:
 ```javscript
 sky6RASCOMTele.Connect();
-
 ```
 
 ### .GetRaDec()
 
 **Argumentos**: Nenhum.
 
-Pega a declinação e a ascensão, e prepara os valores nos atributos dRa e dDec.
+Pega a declinação e a ascensão direita, e prepara os valores nos atributos dRa e dDec.
 
 Exemplo:
 ```javascript
 sky6RASCOMTele.Connect();
 sky6RASCOMTele.getRaDec();
 
-// Printa "ascensão | declinação"
+// Printa "ascensão direita | declinação"
 Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
 ```
 
 ### .dRa
 
-A ascensão atual.
+A ascensão direita atual.
 
 ### .dDec
 
