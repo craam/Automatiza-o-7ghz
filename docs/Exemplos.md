@@ -40,3 +40,32 @@ function getRADec(object) {
 }
 ```
 Essa função retorna um objeto com a ascensão direita e a declinação.
+
+## Encontrando um objeto e pegando informações sobre ele.
+
+No script principal há uma função já declarada chamada Find, que já faz isso.
+
+```javascript
+function Find(objectName)
+{
+  // Número de propriedades que um objeto tem.
+  var propriedades = 189;
+  var Out = "";
+  // Acha o objeto dado.
+  sky6StarChart.Find(objectName);
+
+  for (var propriedade = 0;propriedade < propriedades;++propriedade)
+  {
+    if (sky6ObjectInformation.PropertyApplies(propriedade) != 0)
+    {
+      sky6ObjectInformation.Property(propriedade);
+
+      Out += sky6ObjectInformation.ObjInfoPropOut + "|";
+      // Prints out object info.
+      print(Out);
+    }
+  }
+}
+```
+
+Essa função acha o objeto dado e pega todas as informações relacionadas a ele. Cada propriedade (informação) é representada por um número, por exemplo o número 54 representa a ascensão direita. Ao chamar o método .Property(), ele prepara o resultado na variável ObjInfoPropOut, e pode ser "printado".

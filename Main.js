@@ -26,6 +26,9 @@
 
 sky6RASCOMTele.Connect();
 
+/**
+ * Confirma se o script tem conexão com o telescópio.
+ */
 function Sky6IsConnected()
 {
   if (sky6RASCOMTele.isConnected == 0)
@@ -37,19 +40,25 @@ function Sky6IsConnected()
   return true;
 }
 
+/**
+ * Faz o Find no objeto dado, e printa todas as propriedades (informações)
+ * daquele objeto.
+ *
+ * @param objectName Nome do objeto a ser encontrado.
+ */
 function Find(objectName)
 {
 	// Número de propriedades que um objeto tem.
-  var PropCnt = 189;
+  var propriedades = 189;
   var Out = "";
   // Acha o objeto dado.
   sky6StarChart.Find(objectName);
 
-  for (var p = 0;p < PropCnt;++p)
+  for (var propriedade = 0;propriedade < propriedades;++propriedade)
   {
-    if (sky6ObjectInformation.PropertyApplies(p) != 0)
+    if (sky6ObjectInformation.PropertyApplies(propriedade) != 0)
     {
-      sky6ObjectInformation.Property(p);
+      sky6ObjectInformation.Property(propriedade);
 
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
       // Prints out object info.
@@ -58,15 +67,23 @@ function Find(objectName)
   }
 }
 
-function SetTelescopeTracking(IOn)
+function SetTelescopeTracking(IOn, IIgnoreRates,
+															dRaRate="undefined", dDecRate="undefined")
 {
   sky6RASCOMTele.Connect();
 
   if (Sky6IsConnected())
   {
-    sky6RASCOMTele.SetTracking(IOn, 1);
-	  var Out = "TheSkyX Build " + Application.build;
-	  Out += "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
+		if (dRaRate == "undefined" || dDecRate == "undefined")
+		{
+			sky6RASCOMTele.SetTracking(IOn, IIgnoreRates);
+		}
+		else
+		{
+			sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
+		}
+		var Out = "TheSkyX Build " + Application.build;
+		Out += "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
     Out += "Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
     print(Out);
   }
@@ -76,7 +93,6 @@ function MountIsSlewing()
 {
   sky6RASCOMTele.Connect();
 
-  // Checks connection.
   if (Sky6IsConnected())
   {
     // IsSlewComplete return zero if the telescope is slewing.
@@ -122,12 +138,23 @@ function ParkTelescope()
   }
 }
 
+/**
+ * Desconecta o SkyX do telescópio.
+ *
+ */
 function DisconnectTelescope()
 {
   sky6RASCOMTele.Disconnect();
   sky6RASCOMTheSky.DisconnectTelescope();
 } 
 
+/**
+ * Encontra o objeto dado e retorna um objeto com a ascensão direita e
+ * a declinação.
+ *
+ * @param object Nome do objeto a ser encontrado.
+ * @return
+ */
 function getRADec(object) {
   sky6StarChart.Find(object);
 
@@ -148,40 +175,46 @@ var start_time = 9;
 var flip_time = 12;
 var turn_off_time = 17;
 
-while (sky6IsConnected())
-{
-  
-  var time = new Date();
-  var hour = time.getHours();
-  var minutes = time.getMinutes();
-  var seconds = time.getSeconds();
-
-  print(String(hour) + ":" + String(minutes) + ":" + String(seconds) );
-
-  if (minutes == start_time && started == false)
+while (true) {
+	if (sky6IsConnected())
+	{
+	  
+	  var time = new Date();
+	  var hour = time.getHours();
+	  var minutes = time.getMinutes();
+	  var seconds = time.getSeconds();
+	
+	  print(String(hour) + ":" + String(minutes) + ":" + String(seconds) );
+	
+	  if (minutes == start_time && started == false)
+	  {
+			print(started);
+	    started = true;
+	    // Slew somewhere.
+	    var prop = getRADec("Sun");
+	    SlewTelescopeTo(prop.ra, prop.dec, "Sun");
+	    print("Started.");
+	  }
+	  else if (minutes == flip_time && flipped == false)
+	  {
+	    print(flipped);
+	    flipped = true;
+	    // Flip.
+	    var prop = getRADec("Sun");
+	    SlewTelescopeTo(prop.ra, prop.dec, "Sun");
+	    print("Flipped.");
+	  }
+	  else if (minutes == turn_off_time && turnedOff == false)
+	  {
+	    turnedOff = true;
+	    //SetTelescopeTracking(0);
+	    ParkTelescope();
+	    DisconnectTelescope();
+	    print("Turned off.");
+	  }
+	}
+	else if (minutes == start_time)
   {
-  	print(started);
-    started = true;
-    // Slew somewhere.
-    var prop = getRADec("Sun");
-    SlewTelescopeTo(prop.ra, prop.dec, "Sun");
-    print("Started.");
-  }
-  else if (minutes == flip_time && flipped == false)
-  {
-    print(flipped);
-    flipped = true;
-    // Flip.
-    var prop = getRADec("Sun");
-    SlewTelescopeTo(prop.ra, prop.dec, "Sun");
-    print("Flipped.");
-  }
-  else if (minutes == turn_off_time && turnedOff == false)
-  {
-    turnedOff = true;
-    //SetTelescopeTracking(0);
-    ParkTelescope();
-    DisconnectTelescope();
-    print("Turned off.");
+		sky6RASCOMTele.Connect();
   }
 }
