@@ -162,7 +162,6 @@ function ParkTelescope()
 
 /**
  * Desconecta o SkyX do telescópio.
- *
  */
 function DisconnectTelescope()
 {
@@ -175,7 +174,7 @@ function DisconnectTelescope()
  * a declinação.
  *
  * @param object Nome do objeto a ser encontrado.
- * @return
+ * @return Um objeto com a ascensão (ra) e a declinação (dec).
  */
 function getRADec(object) {
   sky6StarChart.Find(object);
@@ -198,17 +197,16 @@ var flip_time = 12;
 var turn_off_time = 17;
 
 while (true) {
+  var time = new Date();
+  var hour = time.getHours();
+  var minutes = time.getMinutes();
+  var seconds = time.getSeconds();
+
   if (sky6IsConnected())
   {
-    
-    var time = new Date();
-    var hour = time.getHours();
-    var minutes = time.getMinutes();
-    var seconds = time.getSeconds();
-  
     print(String(hour) + ":" + String(minutes) + ":" + String(seconds) );
   
-    if (minutes == start_time && started == false)
+    if (hour == start_time && started == false)
     {
       print(started);
       started = true;
@@ -217,7 +215,7 @@ while (true) {
       SlewTelescopeTo(prop.ra, prop.dec, "Sun");
       print("Started.");
     }
-    else if (minutes == flip_time && flipped == false)
+    else if (hour == flip_time && flipped == false)
     {
       print(flipped);
       flipped = true;
@@ -226,7 +224,7 @@ while (true) {
       SlewTelescopeTo(prop.ra, prop.dec, "Sun");
       print("Flipped.");
     }
-    else if (minutes == turn_off_time && turnedOff == false)
+    else if (hour == turn_off_time && turnedOff == false)
     {
       turnedOff = true;
       SetTelescopeTracking(0, 1);
@@ -235,7 +233,7 @@ while (true) {
       print("Turned off.");
     }
   }
-  else if (minutes == start_time)
+  else if (hour == start_time)
   {
     sky6RASCOMTele.Connect();
   }

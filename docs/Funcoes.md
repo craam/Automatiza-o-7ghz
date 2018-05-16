@@ -14,6 +14,13 @@ A função em si não retorna nada, para pegar o valor desejado é necessário chamar
 54: Ascensão direita\
 55: Declinação
 
+Exemplo:
+```javascript
+// Printa a declinação.
+sky6ObjectInformation.Property(55);
+print(sky6ObjectInformation.ObjInfoPropOut);
+```
+
 ## sky6StarChart
 
 ### .Find(string nomeDoObjeto)
