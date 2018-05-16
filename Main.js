@@ -30,7 +30,6 @@ function Sky6IsConnected()
 {
   if (sky6RASCOMTele.isConnected == 0)
   {
-    out = "Not connected";
     print("Not connected");
     sky6RASCOMTele.Abort();
     return false;
@@ -40,46 +39,22 @@ function Sky6IsConnected()
 
 function Find(objectName)
 {
+	// Número de propriedades que um objeto tem.
   var PropCnt = 189;
   var Out = "";
-  // Find the given object.
+  // Acha o objeto dado.
   sky6StarChart.Find(objectName);
 
   for (var p = 0;p < PropCnt;++p)
   {
     if (sky6ObjectInformation.PropertyApplies(p) != 0)
     {
-      /* Latch the property into ObjInfoPropOut */
       sky6ObjectInformation.Property(p);
 
-      /* Append into s */
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
       // Prints out object info.
       print(Out);
-      return true;
     }
-  }
-}
-
-function TheSkyX()
-{
-  var Out;
-  sky6RASCOMTele.Connect()
-  if (Sky6IsConnected())
-  {
-    sky6RASCOMTele.GetRaDec();
-    Out = String(sky6RASCOMTele.dRa);
-    Out += " " + String(sky6RASCOMTele.dDec);
-    print(Out);
-
-    return {
-      "dRa": sky6RASCOMTele.dRa,
-      "dDec": sky6RASCOMTele.dDec
-    }
-  }
-  else
-  {
-    return false;
   }
 }
 
@@ -90,21 +65,15 @@ function SetTelescopeTracking(IOn)
   if (Sky6IsConnected())
   {
     sky6RASCOMTele.SetTracking(IOn, 1);
-	  Out = "TheSkyX Build " + Application.build + cr;
-	  Out += "RA Rate = " + sky6RASCOMTele.dRaTrackingRate + cr;
-    Out += "Dec Rate = " + sky6RASCOMTele.dDecTrackingRate + cr; 
-    return Out;
-  }
-  else
-  {
-    return false;
+	  var Out = "TheSkyX Build " + Application.build;
+	  Out += "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
+    Out += "Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
+    print(Out);
   }
 }
 
 function MountIsSlewing()
 {
-  var Out;
-
   sky6RASCOMTele.Connect();
 
   // Checks connection.
@@ -113,19 +82,16 @@ function MountIsSlewing()
     // IsSlewComplete return zero if the telescope is slewing.
     if (sky6RASCOMTele.IsSlewComplete != 0)
     {
-      Out  = "Not Slewing";
-      print(Out);
+      print("Not Slewing");
     }
     else
     {
-      Out  = "Slewing";
-      print(Out);
+      print("Slewing");
     }
   }
   else
   {
     print("Telescope not connected.");
-    return false;
   }
 }
 
@@ -136,6 +102,10 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
      sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
      return true;
   }
+	else
+	{
+    print("Telescope not connected.");
+	}
 }
 
 function ParkTelescope()
@@ -146,12 +116,9 @@ function ParkTelescope()
   {
     if (sky6RASCOMTele.isParked != 0) {
       sky6RASCOMTele.Park();
+			print(parked);
       return true;
     }
-  }
-  else
-  {
-    return false;
   }
 }
 
@@ -168,42 +135,48 @@ function getRADec(object) {
   var targetRA = sky6ObjectInformation.ObjInfoPropOut;
   sky6ObjectInformation.Property(55);
   var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+
   return {"ra": targetRA, "dec": targetDec};
 }
 
-function main() {
-while (sky6RASCOMTele.isConnected != 0)
+// Variáveis usadas para checar se os processos já começaram.
+var started = false;
+var flipped = false;
+var turnedOff = false;
+
+var start_time = 9;
+var flip_time = 12;
+var turn_off_time = 17;
+
+while (sky6IsConnected())
 {
-  // Gets the time when the function runs.
+  
   var time = new Date();
   var hour = time.getHours();
   var minutes = time.getMinutes();
   var seconds = time.getSeconds();
-  print(String(hour) + ":" + String(minutes) + ":" + String(seconds));
 
-  var started = false;
-  var flip = false;
-  var turnedOff = false;
+  print(String(hour) + ":" + String(minutes) + ":" + String(seconds) );
 
-  print("Hour: " + hour);
-
-  if (hour == 9 && started === false)
+  if (minutes == start_time && started == false)
   {
+  	print(started);
     started = true;
     // Slew somewhere.
     var prop = getRADec("Sun");
     SlewTelescopeTo(prop.ra, prop.dec, "Sun");
     print("Started.");
   }
-  else if (hour == 13 && flip === false)
+  else if (minutes == flip_time && flipped == false)
   {
-    flip = true;
+    print(flipped);
+    flipped = true;
     // Flip.
     var prop = getRADec("Sun");
     SlewTelescopeTo(prop.ra, prop.dec, "Sun");
     print("Flipped.");
   }
-  else if (hour == 18 && turnedOff === false)
+  else if (minutes == turn_off_time && turnedOff == false)
   {
     turnedOff = true;
     //SetTelescopeTracking(0);
@@ -212,57 +185,3 @@ while (sky6RASCOMTele.isConnected != 0)
     print("Turned off.");
   }
 }
-}
-
-var started = false;
-var flipped = false;
-var turnedOff = false;
-
-var start_time = 35;
-var flip_time = start_time + 1;
-var turn_off_time = flip_time + 1;
-
-while (sky6RASCOMTele.isConnected != 0)
-{
-  
-  var time = new Date();
-  var hour = time.getHours();
-  var minutes = time.getMinutes();
-  var seconds = time.getSeconds();
-  print(String(hour) + ":" + String(minutes) + ":" + String(seconds) );
-
-  if (minutes == start_time)
-  {
-    if (started == false)
-    {
-      print(started);
-      started = "true";
-      // Slew somewhere.
-      var prop = getRADec("Sun");
-      SlewTelescopeTo(prop.ra, prop.dec, "Sun");
-      print("Started.");
-    }
-  }
-  else if (minutes == flip_time)
-  {
-    if (flipped == false) 
-    {
-      print(flipped);
-      var flipped = "banana";
-      // Flip.
-      var prop = getRADec("Sun");
-      SlewTelescopeTo(prop.ra, prop.dec, "Sun");
-      print("Flipped.");
-    }
-  }
-  else if (minutes == turn_off_time && turnedOff == false)
-  {
-    var turnedOff = "banana";
-    //SetTelescopeTracking(0);
-    ParkTelescope();
-    DisconnectTelescope();
-    print("Turned off.");
-  }
-}
-
-print(sky6RASCOMTele.isConnected);
