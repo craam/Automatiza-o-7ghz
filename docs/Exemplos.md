@@ -69,3 +69,35 @@ function Find(objectName)
 ```
 
 Essa função acha o objeto dado e pega todas as informações relacionadas a ele. Cada propriedade (informação) é representada por um número, por exemplo o número 54 representa a ascensão direita. Ao chamar o método .Property(), ele prepara o resultado na variável ObjInfoPropOut, e pode ser "printado".
+
+## Vendo se o slew está sendo realizado.
+
+Mesmo você podendo ver no próprio SkyX se o slew está ocorrendo, é bom termos uma função para checarmos isso.
+
+```javascript
+function MountIsSlewing()
+{
+  sky6RASCOMTele.Connect();
+
+  if (Sky6IsConnected())
+  {
+    // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
+    if (sky6RASCOMTele.IsSlewComplete != 0)
+    {
+      print("Not Slewing");
+      return false;
+    }
+    else
+    {
+      print("Slewing");
+      return true;
+    }
+  }
+  else
+  {
+    print("Telescope not connected.");
+  }
+}
+```
+
+Essa função confirma se está ocorrendo o slew ou não usando o atributo do sky6RASCOMTele.

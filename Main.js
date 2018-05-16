@@ -89,20 +89,28 @@ function SetTelescopeTracking(IOn, IIgnoreRates,
   }
 }
 
+/**
+ * Confirma se o slew está ocorrendo ou não.
+ *
+ * @return boolean true se estiver fazendo o slew, e false se não estiver
+ * 				 fazendo o slew.
+ */
 function MountIsSlewing()
 {
   sky6RASCOMTele.Connect();
 
   if (Sky6IsConnected())
   {
-    // IsSlewComplete return zero if the telescope is slewing.
+    // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0)
     {
       print("Not Slewing");
+			return false;
     }
     else
     {
       print("Slewing");
+			return true;
     }
   }
   else
@@ -111,6 +119,15 @@ function MountIsSlewing()
   }
 }
 
+/**
+ * Faz o slew para um determinado objeto dados sua ascensão direita e declinação.
+ *
+ * @params dRa ascensão direita.
+ *		     dDec declinação.
+ *				 targetObjecto Objeto para fazer o slew.
+ *
+ * @return boolean true se tudo tiver ocorrido normalmente.
+ */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
   if (Sky6IsConnected())
@@ -124,6 +141,11 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 	}
 }
 
+/**
+ * Leva o telescópio para a posição de parking.
+ *
+ * @return boolean true se tudo tiver ocorrido normalmente.
+ */
 function ParkTelescope()
 {
   sky6RASCOMTele.Connect();
@@ -207,7 +229,7 @@ while (true) {
 	  else if (minutes == turn_off_time && turnedOff == false)
 	  {
 	    turnedOff = true;
-	    //SetTelescopeTracking(0);
+	    SetTelescopeTracking(0, 1);
 	    ParkTelescope();
 	    DisconnectTelescope();
 	    print("Turned off.");
