@@ -28,6 +28,9 @@ sky6RASCOMTele.Connect();
 
 /**
  * Confirma se o script tem conexão com o telescópio.
+ *
+ * @returns boolean false se não estiver conectado.
+ *                  true se estiver conectado.
  */
 function Sky6IsConnected()
 {
@@ -67,6 +70,24 @@ function Find(objectName)
   }
 }
 
+/**
+ * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
+ *
+ * @params IOn binário(0 ou 1) O número que desliga ou liga o tracking.
+ *             0 - desliga
+ *             1 - liga
+ *
+ *         IIgnoreRates binário(0 ou 1) O número que especifíca se é para o 
+ *                                      telescópio usar a taxa de tracking atual.
+ *             0 - Ignora os valores de dRaRate e dDecRate
+ *             1 - Usa os valores de dRaRate e dDecRate
+ *
+ *         dRaRate double Especifíca a ascensão direita a ser usada. Só é utilizada se 
+ *                 IIgnoreRates for igual á 1.
+ *
+ *         dDecRate double Especifíca a declinação a ser usada. Só é utilizada se 
+ *                 IIgnoreRates for igual á 1.
+ */
 function SetTelescopeTracking(IOn, IIgnoreRates,
                               dRaRate="undefined", dDecRate="undefined")
 {
@@ -74,7 +95,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates,
 
   if (Sky6IsConnected())
   {
-    if (dRaRate == "undefined" || dDecRate == "undefined")
+    if (IIgnoreRates == 1)
     {
       sky6RASCOMTele.SetTracking(IOn, IIgnoreRates);
     }
@@ -205,25 +226,24 @@ while (true) {
 
   if (sky6IsConnected())
   {
-    print(String(hour) + ":" + String(minutes) + ":" + String(seconds) );
+    var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
+    print(horario);
   
     if (hour == start_time && started == false)
     {
-      print(started);
       started = true;
       // Slew somewhere.
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-      print("Started.");
+      print("Ligou às " + horario);
     }
     else if (hour == flip_time && flipped == false)
     {
-      print(flipped);
       flipped = true;
       // Flip.
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-      print("Flipped.");
+      print("Fez o flip às " + horario);
     }
     else if (hour == turn_off_time && turnedOff == false)
     {
@@ -231,7 +251,7 @@ while (true) {
       SetTelescopeTracking(0, 1);
       ParkTelescope();
       DisconnectTelescope();
-      print("Turned off.");
+      print("Desligado às " + horario);
     }
   }
   else if (hour == start_time)
