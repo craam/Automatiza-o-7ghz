@@ -29,7 +29,8 @@ sky6RASCOMTele.SlewToRaDec(targetRa, TargetDec, targetObject);
 Para pegar a ascensão direta e a declinação já há uma função implementada no script principal, chamada getRADec:
 
 ```javascript
-function getRADec(object) {
+function getRADec(object)
+{
   sky6StarChart.Find(object);
 
   sky6ObjectInformation.Property(54);

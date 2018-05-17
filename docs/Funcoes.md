@@ -59,6 +59,12 @@ Faz a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
 
 Termina a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
 
+### .Abort()
+
+**Argumentos**: Nenhum.
+
+Para qualquer ação do telescópio durante a operação em progresso.
+
 ### .SlewToRaDec(float TargetRa, float TargetDec, string "TODO")
 
 **Argumentos**: A Ascensão direita, a declinação e o string(TODO) da localização.
@@ -81,7 +87,7 @@ Exemplo:
 sky6RASCOMTele.Connect();
 sky6RASCOMTele.getRaDec();
 
-// Printa "ascensão direita | declinação"
+// Printa: "ascensão direita | declinação"
 Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
 ```
 

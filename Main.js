@@ -176,7 +176,8 @@ function DisconnectTelescope()
  * @param object Nome do objeto a ser encontrado.
  * @return Um objeto com a ascensão (ra) e a declinação (dec).
  */
-function getRADec(object) {
+function getRADec(object)
+{
   sky6StarChart.Find(object);
 
   sky6ObjectInformation.Property(54);
@@ -211,8 +212,8 @@ while (true) {
       print(started);
       started = true;
       // Slew somewhere.
-      var prop = getRADec("Sun");
-      SlewTelescopeTo(prop.ra, prop.dec, "Sun");
+      var propriedade = getRADec("Sun");
+      SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Started.");
     }
     else if (hour == flip_time && flipped == false)
@@ -220,8 +221,8 @@ while (true) {
       print(flipped);
       flipped = true;
       // Flip.
-      var prop = getRADec("Sun");
-      SlewTelescopeTo(prop.ra, prop.dec, "Sun");
+      var propriedade = getRADec("Sun");
+      SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Flipped.");
     }
     else if (hour == turn_off_time && turnedOff == false)
