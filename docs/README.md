@@ -1,4 +1,4 @@
-# Documenta��o do processo de automatiza��o do telesc�pio.
+# Documentação do processo de automatização do telescópio.
 
 O programa está escrito em javascript(ECMAScript), usando a biblioteca TheSkyX.
 A biblioteca não é muito bem documentada, e é proprietária, transformando o processo de usá-la um grande problema, por mais que o problema seja simples. Entretanto ela conta com exemplos que podem ser usados para entender seu funcionamento.

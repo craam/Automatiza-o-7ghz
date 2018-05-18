@@ -1,4 +1,4 @@
-# Funcoes da biblioteca.
+# Funçoes da biblioteca.
 
 A ideia é relatar o funcionamento das principais funções da biblioteca.
 
