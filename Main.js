@@ -29,7 +29,7 @@ sky6RASCOMTele.Connect();
 /**
  * Confirma se o script tem conexão com o telescópio.
  *
- * @returns boolean false se não estiver conectado.
+ * @return boolean false se não estiver conectado.
  *                  true se estiver conectado.
  */
 function Sky6IsConnected()
@@ -73,19 +73,19 @@ function Find(objectName)
 /**
  * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
  *
- * @params IOn binário(0 ou 1) O número que desliga ou liga o tracking.
+ * @param IOn binário(0 ou 1) O número que desliga ou liga o tracking.
  *             0 - desliga
  *             1 - liga
  *
- *         IIgnoreRates binário(0 ou 1) O número que especifíca se é para o 
+ * @param IIgnoreRates binário(0 ou 1) O número que especifíca se é para o 
  *                                      telescópio usar a taxa de tracking atual.
  *             0 - Ignora os valores de dRaRate e dDecRate
  *             1 - Usa os valores de dRaRate e dDecRate
  *
- *         dRaRate double Especifíca a ascensão direita a ser usada. Só é utilizada se 
+ * @param dRaRate double Especifíca a ascensão direita a ser usada. Só é utilizada se 
  *                 IIgnoreRates for igual á 1.
  *
- *         dDecRate double Especifíca a declinação a ser usada. Só é utilizada se 
+ * @param dDecRate double Especifíca a declinação a ser usada. Só é utilizada se
  *                 IIgnoreRates for igual á 1.
  */
 function SetTelescopeTracking(IOn, IIgnoreRates,
@@ -143,9 +143,9 @@ function MountIsSlewing()
 /**
  * Faz o slew para um determinado objeto dados sua ascensão direita e declinação.
  *
- * @params dRa ascensão direita.
- *         dDec declinação.
- *         targetObjecto Objeto para fazer o slew.
+ * @param dRa ascensão direita.
+ * @param dDec declinação.
+ * @param targetObjecto Objeto para fazer o slew.
  *
  * @return boolean true se tudo tiver ocorrido normalmente.
  */
