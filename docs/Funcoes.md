@@ -65,22 +65,32 @@ Termina a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
 
 Para qualquer ação do telescópio durante a operação em progresso.
 
-### .SlewToRaDec(float TargetRa, float TargetDec, string "TODO")
+### .SlewToRaDec(float TargetRa, float TargetDec, string targetObject)
 
-**Argumentos**: A Ascensão direita, a declinação e o string(TODO) da localização.
+**Argumentos**: A Ascensão direita, a declinação e o nome do objeto.
 
 Faz o slew para a coordenada dada.
 
 Exemplo:
 ```javscript
 sky6RASCOMTele.Connect();
+
+var targetObject = "Sun";
+sky6StarChart.Find(targetObject);
+
+sky6ObjectInformation.Property(54);
+var targetRA = sky6ObjectInformation.ObjInfoPropOut;
+
+sky6ObjectInformation.Property(55);
+var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+sky6RASCOMTele.SlewToRaDec(targetRa, TargetDec, targetObject);
 ```
 
 ### .GetRaDec()
 
 **Argumentos**: Nenhum.
 
-Pega a declinação e a ascensão direita, e prepara os valores nos atributos dRa e dDec.
+Pega a declinação e a ascensão direita atual, e prepara os valores nas variáveis dRa e dDec.
 
 Exemplo:
 ```javascript
@@ -91,6 +101,25 @@ sky6RASCOMTele.getRaDec();
 Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
 ```
 
+### .Park()
+
+**Argumentos**: Nenhum.
+
+Faz o slew para a posição de parking, e finaliza a conexão com o TheSky6.
+
+### .ParkAndDoNotDisconnect()
+
+**Argumentos**: Nenhum.
+
+Essa função tem quase o mesmo funcionamento que a função de parking. A diferença é que essa função não finaliza a conexão entre o telescópio e o TheSky6. 
+Para fazer outro Slew depois de usar é necessário chamar a função '.Unpark'.
+
+### .Unpark()
+
+**Argumentos**: Nenhum.
+
+Tira o telescópio da posição de parking.
+
 ### .dRa
 
 A ascensão direita atual.
@@ -98,3 +127,7 @@ A ascensão direita atual.
 ### .dDec
 
 A declinação atual.
+
+### .isParked
+
+É zero se o telescópio estiver na posição de parking.

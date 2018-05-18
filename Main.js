@@ -30,7 +30,7 @@ sky6RASCOMTele.Connect();
  * Confirma se o script tem conexão com o telescópio.
  *
  * @return boolean false se não estiver conectado.
- *                  true se estiver conectado.
+ *                 true se estiver conectado.
  */
 function Sky6IsConnected()
 {
@@ -73,19 +73,19 @@ function Find(objectName)
 /**
  * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
  *
- * @param IOn binário(0 ou 1) O número que desliga ou liga o tracking.
+ * @param IOn Binário(0 ou 1), o número que desliga ou liga o tracking.
  *             0 - desliga
  *             1 - liga
  *
- * @param IIgnoreRates binário(0 ou 1) O número que especifíca se é para o 
+ * @param IIgnoreRates Binário(0 ou 1), o número que especifíca se é para o 
  *                                      telescópio usar a taxa de tracking atual.
  *             0 - Ignora os valores de dRaRate e dDecRate
  *             1 - Usa os valores de dRaRate e dDecRate
  *
- * @param dRaRate double Especifíca a ascensão direita a ser usada. Só é utilizada se 
- *                 IIgnoreRates for igual á 1.
+ * @param dRaRate Especifíca a ascensão direita a ser usada. Só é utilizada se 
+ *                IIgnoreRates for igual á 1.
  *
- * @param dDecRate double Especifíca a declinação a ser usada. Só é utilizada se
+ * @param dDecRate Especifíca a declinação a ser usada. Só é utilizada se
  *                 IIgnoreRates for igual á 1.
  */
 function SetTelescopeTracking(IOn, IIgnoreRates,
@@ -113,8 +113,8 @@ function SetTelescopeTracking(IOn, IIgnoreRates,
 /**
  * Confirma se o slew está ocorrendo ou não.
  *
- * @return boolean true se estiver fazendo o slew, e false se não estiver
- *         fazendo o slew.
+ * @return boolean true se estiver fazendo o slew.
+ *                 false se não estiver fazendo o slew.
  */
 function MountIsSlewing()
 {
@@ -159,6 +159,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
   else
   {
     print("Telescope not connected.");
+    return false;
   }
 }
 
@@ -175,7 +176,7 @@ function ParkTelescope()
   {
     if (sky6RASCOMTele.isParked != 0) {
       sky6RASCOMTele.Park();
-      print(parked);
+      print("Parking completo");
       return true;
     }
   }
