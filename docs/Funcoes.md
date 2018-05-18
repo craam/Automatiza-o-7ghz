@@ -1,4 +1,4 @@
-# Funçoes da biblioteca.
+# Funções da biblioteca.
 
 A ideia é relatar o funcionamento das principais funções da biblioteca.
 
@@ -130,3 +130,27 @@ A ascensão direita atual.
 ### .dDec
 
 A declinação atual.
+
+## Não relacionadas com as classes
+
+### String(string string)
+
+**Argumentos**: Uma variável qualquer.
+
+Essa função funciona como o método toString(), do javascript. A diferença é que esta é uma função, logo, não há a necessidade da função ser aplicada em uma string.
+
+Exemplo:
+```javascript
+var integer = 2;
+print(String(integer));
+```
+
+### print()
+
+**Argumentos**: Qualquer coisa.
+
+Essa função escreve nos logs do debugger. Ela escreve enquanto o programa roda, diferentemente da variável Out.
+
+### A variável Out.
+
+Essa variável armazena tudo que será escrito na tela do "Run Java Scrip" no SkyX. Ela só é escrita quando o script acaba de rodar.
