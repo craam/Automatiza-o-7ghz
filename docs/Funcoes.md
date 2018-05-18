@@ -1,4 +1,4 @@
-# Funções da biblioteca.
+# Funções da biblioteca
 
 A ideia é relatar o funcionamento das principais funções da biblioteca.
 
@@ -14,6 +14,7 @@ A função em si não retorna nada, para pegar o valor desejado é necessário c
 55: Declinação
 
 Exemplo:
+
 ```javascript
 // Printa a declinação.
 sky6ObjectInformation.Property(55);
@@ -29,9 +30,11 @@ print(sky6ObjectInformation.ObjInfoPropOut);
 Procura pelo objeto dado.
 
 Exemplo:
+
 ```javascript
 sky6StarChart.Find("Sun");
 ```
+
 Exemplo com o sky6ObjectInformation.Property():
 
 ```javascript
@@ -71,6 +74,7 @@ Para qualquer ação do telescópio durante a operação em progresso.
 Faz o slew para a coordenada dada.
 
 Exemplo:
+
 ```javascript
 sky6RASCOMTele.Connect();
 
@@ -92,6 +96,7 @@ sky6RASCOMTele.SlewToRaDec(targetRa, TargetDec, targetObject);
 Pega a declinação e a ascensão direita atual, e prepara os valores nas variáveis dRa e dDec.
 
 Exemplo:
+
 ```javascript
 sky6RASCOMTele.Connect();
 sky6RASCOMTele.getRaDec();
@@ -110,7 +115,7 @@ Faz o slew para a posição de parking, e finaliza a conexão com o TheSky6.
 
 **Argumentos**: Nenhum.
 
-Essa função tem quase o mesmo funcionamento que a função de parking. A diferença é que essa função não finaliza a conexão entre o telescópio e o TheSky6. 
+Essa função tem quase o mesmo funcionamento que a função de parking. A diferença é que essa função não finaliza a conexão entre o telescópio e o TheSky6.
 Para fazer outro Slew depois de usar é necessário chamar a função '.Unpark'.
 
 ### .Unpark()
@@ -140,6 +145,7 @@ A declinação atual.
 Essa função funciona como o método toString(), do javascript. A diferença é que esta é uma função, logo, não há a necessidade da função ser aplicada em uma string.
 
 Exemplo:
+
 ```javascript
 var integer = 2;
 print(String(integer));
@@ -151,6 +157,6 @@ print(String(integer));
 
 Essa função escreve nos logs do debugger. Ela escreve enquanto o programa roda, diferentemente da variável Out.
 
-### A variável Out.
+### A variável Out
 
 Essa variável armazena tudo que será escrito na tela do "Run Java Scrip" no SkyX. Ela só é escrita quando o script acaba de rodar.
