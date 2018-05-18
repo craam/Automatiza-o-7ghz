@@ -1,22 +1,21 @@
 # Funcoes da biblioteca.
 
-A ideia È relatar o funcionamento das principais funÁıes da biblioteca.
-
+A ideia √© relatar o funcionamento das principais fun√ß√µes da biblioteca.
 
 ## sky6ObjectInformation
 
 ### .Property(int num)
 
-**Argumentos**: Um inteiro, que representa um certa informaÁ„o do objeto. H· um total de 190 informaÁıes separadas nessa funÁ„o. A ideia È documentar cada uma aqui.
+**Argumentos**: Um inteiro, que representa um certa informa√ß√£o do objeto. H√° um total de 190 informa√ß√µes separadas nessa fun√ß√£o. A ideia √© documentar cada uma aqui.
 
-A funÁ„o em si n„o retorna nada, para pegar o valor desejado È necess·rio chamar o atributo ObjInfoPropOut;
+A fun√ß√£o em si n√£o retorna nada, para pegar o valor desejado √© necess√°rio chamar o atributo ObjInfoPropOut;
 
-54: Ascens„o direita\
-55: DeclinaÁ„o
+54: Ascens√£o direita\
+55: Declina√ß√£o
 
 Exemplo:
 ```javascript
-// Printa a declinaÁ„o.
+// Printa a declina√ß√£o.
 sky6ObjectInformation.Property(55);
 print(sky6ObjectInformation.ObjInfoPropOut);
 ```
@@ -38,10 +37,10 @@ Exemplo com o sky6ObjectInformation.Property():
 ```javascript
 // Procura pelo sol.
 sky6StarChart.Find("Sun");
-// Prepara a funÁ„o para retornar a declinaÁ„o.
+// Prepara a fun√ß√£o para retornar a declina√ß√£o.
 sky6ObjectInformation.Property(55);
 
-// Printa a declinaÁ„o.
+// Printa a declina√ß√£o.
 Out = sky6ObjectInfomation.ObjInfoPropOut + "\n";
 ```
 
@@ -51,23 +50,23 @@ Out = sky6ObjectInfomation.ObjInfoPropOut + "\n";
 
 **Argumentos**: Nenhum.
 
-Faz a conex„o entre esse objeto do telescÛpio (RASCOMTele) e o TheSky6.
+Faz a conex√£o entre esse objeto do telesc√≥pio (RASCOMTele) e o TheSky6.
 
 ### .Disconnect()
 
 **Argumentos**: Nenhum.
 
-Termina a conex„o entre esse objeto do telescÛpio (RASCOMTele) e o TheSky6.
+Termina a conex√£o entre esse objeto do telesc√≥pio (RASCOMTele) e o TheSky6.
 
 ### .Abort()
 
 **Argumentos**: Nenhum.
 
-Para qualquer aÁ„o do telescÛpio durante a operaÁ„o em progresso.
+Para qualquer a√ß√£o do telesc√≥pio durante a opera√ß√£o em progresso.
 
 ### .SlewToRaDec(float TargetRa, float TargetDec, string targetObject)
 
-**Argumentos**: A Ascens„o direita, a declinaÁ„o e o nome do objeto.
+**Argumentos**: A ascens√£o direita, a declina√ß√£o e o nome do objeto.
 
 Faz o slew para a coordenada dada.
 
@@ -90,14 +89,14 @@ sky6RASCOMTele.SlewToRaDec(targetRa, TargetDec, targetObject);
 
 **Argumentos**: Nenhum.
 
-Pega a declinaÁ„o e a ascens„o direita atual, e prepara os valores nas vari·veis dRa e dDec.
+Pega a declina√ß√£o e a ascens√£o direita atual, e prepara os valores nas vari√°veis dRa e dDec.
 
 Exemplo:
 ```javascript
 sky6RASCOMTele.Connect();
 sky6RASCOMTele.getRaDec();
 
-// Printa: "ascens„o direita | declinaÁ„o"
+// Printa: "ascens√£o direita | declina√ß√£o"
 Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
 ```
 
@@ -105,29 +104,29 @@ Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
 
 **Argumentos**: Nenhum.
 
-Faz o slew para a posiÁ„o de parking, e finaliza a conex„o com o TheSky6.
+Faz o slew para a posi√ß√£o de parking, e finaliza a conex√£o com o TheSky6.
 
 ### .ParkAndDoNotDisconnect()
 
 **Argumentos**: Nenhum.
 
-Essa funÁ„o tem quase o mesmo funcionamento que a funÁ„o de parking. A diferenÁa È que essa funÁ„o n„o finaliza a conex„o entre o telescÛpio e o TheSky6. 
-Para fazer outro Slew depois de usar È necess·rio chamar a funÁ„o '.Unpark'.
+Essa fun√ß√£o tem quase o mesmo funcionamento que a fun√ß√£o de parking. A diferen√ßa √© que essa fun√ß√£o n√£o finaliza a conex√£o entre o telesc√≥pio e o TheSky6. 
+Para fazer outro Slew depois de usar √© necess√°rio chamar a fun√ß√£o '.Unpark'.
 
 ### .Unpark()
 
 **Argumentos**: Nenhum.
 
-Tira o telescÛpio da posiÁ„o de parking.
+Tira o telesc√≥pio da posi√ß√£o de parking.
 
 ### .isParked()
 
-Retorna zero se o telescÛpio estiver na posiÁ„o de parking.
+Retorna zero se o telesc√≥pio estiver na posi√ß√£o de parking.
 
 ### .dRa
 
-A ascens„o direita atual.
+A ascens√£o direita atual.
 
 ### .dDec
 
-A declinaÁ„o atual.
+A declina√ß√£o atual.

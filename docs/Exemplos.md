@@ -2,10 +2,10 @@
 
 ## Funcionamento da rotina principal.
 
-O cÛdigo est· dentro de um while que confirma se o telescÛpio est· conectado com o TheSkyX. A cada vez que ele È rodado a hora, o minuto e o segundo s„o salvos em trÍs vari·veis para checar o hor·rio.\
-Antes de comeÁar o loop s„o declaradas trÍs vari·veis to tipo booleano com o valor false para a confirmaÁ„o do processo de inicializaÁ„o, de flip e de desligamento. No inÌcio de cada processo o valor da vari·vel em quest„o È mudado para true. Desse modo n„o h· a possibilidade do processo ser inicializado novamente.
+O c√≥digo est√° dentro de um while que confirma se o telesc√≥pio est√° conectado com o TheSkyX. A cada vez que ele √© rodado a hora, o minuto e o segundo s√£o salvos em tr√™s vari√°veis para checar o hor√°rio.\
+Antes de come√ßar o loop s√£o declaradas tr√™s vari√°veis to tipo booleano com o valor false para a confirma√ß√£o do processo de inicializa√ß√£o, de flip e de desligamento. No in√≠cio de cada processo o valor da vari√°vel em quest√£o √© mudado para true. Desse modo n√£o h√° a possibilidade do processo ser inicializado novamente.
 
-## Pegando a ascens„o direita e a declinaÁ„o do objeto para fazer o slew.
+## Pegando a ascens√£o direita e a declina√ß√£o do objeto para fazer o slew.
 
 ```javascript
 // Declara o objeto para ser encontrado e observado.
@@ -14,19 +14,19 @@ var targetObject = "Sun";
 sky6RASCOMTele.Connect();
 sky6StarChart.Find(targetObject);
 
-// A propriedade 54 È a ascens„o direita.
+// A propriedade 54 √© a ascens√£o direita.
 sky6ObjectInformation.Property(54);
 var targetRA = sky6ObjectInformation.ObjInfoPropOut;
 
-// A propriedade 55 È a declinaÁ„o.
+// A propriedade 55 √© a declina√ß√£o.
 sky6ObjectInformation.Property(55);
 var targetDec = sky6ObjectInformation.ObjInfoPropOut;
 
-// Faz o Slew atÈ o objeto.
+// Faz o Slew at√© o objeto.
 sky6RASCOMTele.SlewToRaDec(targetRa, TargetDec, targetObject);
 ```
 
-Para pegar a ascens„o direta e a declinaÁ„o j· h· uma funÁ„o implementada no script principal, chamada getRADec:
+Para pegar a ascens√£o direta e a declina√ß√£o j√° h√° uma fun√ß√£o implementada no script principal, chamada getRADec:
 
 ```javascript
 function getRADec(object)
@@ -40,16 +40,16 @@ function getRADec(object)
   return {"ra": targetRA, "dec": targetDec};
 }
 ```
-Essa funÁ„o retorna um objeto com a ascens„o direita e a declinaÁ„o.
+Essa fun√ß√£o retorna um objeto com a ascens√£o direita e a declina√ß√£o.
 
-## Encontrando um objeto e pegando informaÁıes sobre ele.
+## Encontrando um objeto e pegando informaÔøΩÔøΩes sobre ele.
 
-No script principal h· uma funÁ„o j· declarada chamada Find, que j· faz isso.
+No script principal h√° uma fun√ß√£o j√° declarada chamada Find, que faz isso.
 
 ```javascript
 function Find(objectName)
 {
-  // N˙mero de propriedades que um objeto tem.
+  // N√∫mero de propriedades que um objeto tem.
   var propriedades = 189;
   var Out = "";
   // Acha o objeto dado.
@@ -69,11 +69,11 @@ function Find(objectName)
 }
 ```
 
-Essa funÁ„o acha o objeto dado e pega todas as informaÁıes relacionadas a ele. Cada propriedade (informaÁ„o) È representada por um n˙mero, por exemplo o n˙mero 54 representa a ascens„o direita. Ao chamar o mÈtodo .Property(), ele prepara o resultado na vari·vel ObjInfoPropOut, e pode ser "printado".
+Essa fun√ß√£o acha o objeto dado e pega todas as informa√ß√µes relacionadas a ele. Cada propriedade (informa√ß√£o) √© representada por um n√∫mero, por exemplo o n√∫mero 54 representa a ascens√£o direita. Ao chamar o m√©todo .Property(), ele prepara o resultado na vari√°vel ObjInfoPropOut, e pode ser "printado".
 
-## Vendo se o slew est· sendo realizado.
+## Vendo se o slew est√° sendo realizado.
 
-Mesmo vocÍ podendo ver no prÛprio SkyX se o slew est· ocorrendo, È bom termos uma funÁ„o para checarmos isso.
+Mesmo voc√™ podendo ver no pr√≥prio SkyX se o slew est√° ocorrendo, √© bom termos uma fun√ß√£o para checarmos isso.
 
 ```javascript
 function MountIsSlewing()
@@ -82,7 +82,7 @@ function MountIsSlewing()
 
   if (Sky6IsConnected())
   {
-    // IsSlewComplete retorna zero se o telescÛpio estiver fazendo o slew.
+    // IsSlewComplete retorna zero se o telesc√≥pio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0)
     {
       print("Not Slewing");
@@ -101,4 +101,4 @@ function MountIsSlewing()
 }
 ```
 
-Essa funÁ„o confirma se est· ocorrendo o slew ou n„o usando o atributo do sky6RASCOMTele.
+Essa fun√ß√£o confirma se est√° ocorrendo o slew ou n√£o usando o atributo do sky6RASCOMTele.
