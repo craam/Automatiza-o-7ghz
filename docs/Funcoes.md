@@ -120,6 +120,10 @@ Para fazer outro Slew depois de usar é necessário chamar a função '.Unpark'.
 
 Tira o telescópio da posição de parking.
 
+### .isParked()
+
+Retorna zero se o telescópio estiver na posição de parking.
+
 ### .dRa
 
 A ascensão direita atual.
@@ -127,7 +131,3 @@ A ascensão direita atual.
 ### .dDec
 
 A declinação atual.
-
-### .isParked
-
-É zero se o telescópio estiver na posição de parking.

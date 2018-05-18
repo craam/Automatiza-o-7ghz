@@ -27,9 +27,9 @@
 sky6RASCOMTele.Connect();
 
 /**
- * Confirma se o script tem conex„o com o telescÛpio.
+ * Confirma se o script tem conex√£o com o telesc√≥pio.
  *
- * @return boolean false se n„o estiver conectado.
+ * @return boolean false se n√£o estiver conectado.
  *                 true se estiver conectado.
  */
 function Sky6IsConnected()
@@ -44,14 +44,14 @@ function Sky6IsConnected()
 }
 
 /**
- * Faz o Find no objeto dado, e printa todas as propriedades (informaÁıes)
+ * Faz o Find no objeto dado, e printa todas as propriedades (informa√ß√µes)
  * daquele objeto.
  *
  * @param objectName Nome do objeto a ser encontrado.
  */
 function Find(objectName)
 {
-  // N˙mero de propriedades que um objeto tem.
+  // N√∫mero de propriedades que um objeto tem.
   var propriedades = 189;
   var Out = "";
   // Acha o objeto dado.
@@ -71,22 +71,22 @@ function Find(objectName)
 }
 
 /**
- * 'Liga' o tracking para um lugar especÌfico, ou desliga o tracking.
+ * 'Liga' o tracking para um lugar espec√≠fico, ou desliga o tracking.
  *
- * @param IOn Bin·rio(0 ou 1), o n˙mero que desliga ou liga o tracking.
+ * @param IOn Bin√°rio(0 ou 1), o n√∫mero que desliga ou liga o tracking.
  *             0 - desliga
  *             1 - liga
  *
- * @param IIgnoreRates Bin·rio(0 ou 1), o n˙mero que especifÌca se È para o 
- *                                      telescÛpio usar a taxa de tracking atual.
+ * @param IIgnoreRates Bin√°rio(0 ou 1), o n√∫mero que especifica se √© para o 
+ *                                      telesc√≥pio usar a taxa de tracking atual.
  *             0 - Ignora os valores de dRaRate e dDecRate
  *             1 - Usa os valores de dRaRate e dDecRate
  *
- * @param dRaRate EspecifÌca a ascens„o direita a ser usada. SÛ È utilizada se 
- *                IIgnoreRates for igual · 1.
+ * @param dRaRate Especifica a ascens√£o direita a ser usada. S√≥ √© utilizada se 
+ *                IIgnoreRates for igual √† 1.
  *
- * @param dDecRate EspecifÌca a declinaÁ„o a ser usada. SÛ È utilizada se
- *                 IIgnoreRates for igual · 1.
+ * @param dDecRate Especifica a declina√ß√£o a ser usada. S√≥ √© utilizada se
+ *                 IIgnoreRates for igual √† 1.
  */
 function SetTelescopeTracking(IOn, IIgnoreRates,
                               dRaRate="undefined", dDecRate="undefined")
@@ -111,10 +111,10 @@ function SetTelescopeTracking(IOn, IIgnoreRates,
 }
 
 /**
- * Confirma se o slew est· ocorrendo ou n„o.
+ * Confirma se o slew est√° ocorrendo ou n√£o.
  *
  * @return boolean true se estiver fazendo o slew.
- *                 false se n„o estiver fazendo o slew.
+ *                 false se n√£o estiver fazendo o slew.
  */
 function MountIsSlewing()
 {
@@ -122,7 +122,7 @@ function MountIsSlewing()
 
   if (Sky6IsConnected())
   {
-    // IsSlewComplete retorna zero se o telescÛpio estiver fazendo o slew.
+    // IsSlewComplete retorna zero se o telesc√≥pio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0)
     {
       print("Not Slewing");
@@ -141,10 +141,10 @@ function MountIsSlewing()
 }
 
 /**
- * Faz o slew para um determinado objeto dados sua ascens„o direita e declinaÁ„o.
+ * Faz o slew para um determinado objeto dados sua ascens√£o direita e declina√ß√£o.
  *
- * @param dRa ascens„o direita.
- * @param dDec declinaÁ„o.
+ * @param dRa ascens√£o direita.
+ * @param dDec declina√ß√£o.
  * @param targetObjecto Objeto para fazer o slew.
  *
  * @return boolean true se tudo tiver ocorrido normalmente.
@@ -164,7 +164,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 }
 
 /**
- * Leva o telescÛpio para a posiÁ„o de parking.
+ * Leva o telesc√≥pio para a posi√ß√£o de parking.
  *
  * @return boolean true se tudo tiver ocorrido normalmente.
  */
@@ -174,7 +174,7 @@ function ParkTelescope()
 
   if (Sky6IsConnected())
   {
-    if (sky6RASCOMTele.isParked != 0) {
+    if (sky6RASCOMTele.isParked() != 0) {
       sky6RASCOMTele.Park();
       print("Parking completo");
       return true;
@@ -183,7 +183,7 @@ function ParkTelescope()
 }
 
 /**
- * Desconecta o SkyX do telescÛpio.
+ * Desconecta o SkyX do telesc√≥pio.
  */
 function DisconnectTelescope()
 {
@@ -192,11 +192,11 @@ function DisconnectTelescope()
 } 
 
 /**
- * Encontra o objeto dado e retorna um objeto com a ascens„o direita e
- * a declinaÁ„o.
+ * Encontra o objeto dado e retorna um objeto com a ascens√£o direita e
+ * a declina√ß√£o.
  *
  * @param object Nome do objeto a ser encontrado.
- * @return Um objeto com a ascens„o (ra) e a declinaÁ„o (dec).
+ * @return Um objeto com a ascens√£o (ra) e a declina√ß√£o (dec).
  */
 function getRADec(object)
 {
@@ -210,7 +210,7 @@ function getRADec(object)
   return {"ra": targetRA, "dec": targetDec};
 }
 
-// Vari·veis usadas para checar se os processos j· comeÁaram.
+// Vari√°veis usadas para checar se os processos j√° come√ßaram.
 var started = false;
 var flipped = false;
 var turnedOff = false;
@@ -236,7 +236,7 @@ while (true) {
       // Slew somewhere.
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-      print("Ligou ‡s " + horario);
+      print("Ligou √†s " + horario);
     }
     else if (hour == flip_time && flipped == false)
     {
@@ -244,7 +244,7 @@ while (true) {
       // Flip.
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-      print("Fez o flip ‡s " + horario);
+      print("Fez o flip √†s " + horario);
     }
     else if (hour == turn_off_time && turnedOff == false)
     {
@@ -252,7 +252,7 @@ while (true) {
       SetTelescopeTracking(0, 1);
       ParkTelescope();
       DisconnectTelescope();
-      print("Desligado ‡s " + horario);
+      print("Desligado √†s " + horario);
     }
   }
   else if (hour == start_time)
