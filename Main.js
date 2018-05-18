@@ -88,21 +88,13 @@ function Find(objectName)
  * @param dDecRate Especifica a declinação a ser usada. Só é utilizada se
  *                 IIgnoreRates for igual à 1.
  */
-function SetTelescopeTracking(IOn, IIgnoreRates,
-                              dRaRate="undefined", dDecRate="undefined")
+function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
   sky6RASCOMTele.Connect();
 
   if (Sky6IsConnected())
   {
-    if (IIgnoreRates == 1)
-    {
-      sky6RASCOMTele.SetTracking(IOn, IIgnoreRates);
-    }
-    else
-    {
-      sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
-    }
+    sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
     var Out = "TheSkyX Build " + Application.build;
     Out += "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
     Out += "Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
@@ -249,7 +241,7 @@ while (true) {
     else if (hour == turn_off_time && turnedOff == false)
     {
       turnedOff = true;
-      SetTelescopeTracking(0, 1);
+      SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
       DisconnectTelescope();
       print("Desligado às " + horario);
