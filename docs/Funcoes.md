@@ -72,7 +72,7 @@ Para qualquer ação do telescópio durante a operação em progresso.
 Faz o slew para a coordenada dada.
 
 Exemplo:
-```javscript
+```javascript
 sky6RASCOMTele.Connect();
 
 var targetObject = "Sun";
