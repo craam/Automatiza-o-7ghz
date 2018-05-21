@@ -3,8 +3,8 @@
 ## Funcionamento da rotina principal
 
 O código está dentro de um while que confirma se o telescópio está conectado com o TheSkyX. A cada vez que ele é rodado a hora, o minuto e o segundo são salvos em três variáveis para checar o horário.\
-Antes de começar o loop são declaradas três variáveis to tipo booleano com o valor false para a confirmação do processo de inicialização, de flip e de desligamento. No início de cada processo o valor da variável em questão é mudado para true. Desse modo não há a possibilidade do processo ser inicializado novamente.
-Os comentário feitos dentro do script são feitas usando o padrão <a href="https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html">javadoc</a>.
+Antes de começar o loop são declaradas três variáveis to tipo booleano com o valor false para a confirmação do processo de inicialização, de flip e de desligamento. No início de cada processo o valor da variável em questão é mudado para true. Desse modo não há a possibilidade do processo ser iniciado novamente.
+Os comentário feitos dentro do script são feitas usando o padrão <a target="_blank" href="https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html">javadoc</a>.
 
 ## Pegando a ascensão reta e a declinação do objeto para fazer o slew
 
@@ -42,7 +42,12 @@ function getRADec(object)
 }
 ```
 
-Essa função retorna um objeto com a ascensão reta e a declinação.
+Essa função retorna um objeto com a ascensão reta e a declinação. Para fazer o slew:
+
+```javascript
+var objectValues = getRADec("Sun");
+sky6RASCOMTele.SlewToRaDec(objectValues.ra, objectValues.dec, "Sun");
+```
 
 ## Encontrando um objeto e pegando informações sobre ele
 
@@ -71,7 +76,7 @@ function Find(objectName)
 }
 ```
 
-Essa função acha o objeto dado e pega todas as informações relacionadas a ele. Cada propriedade (informação) é representada por um número, por exemplo o número 54 representa a ascensão reta. Ao chamar o método .Property(), ele prepara o resultado na variável ObjInfoPropOut, e pode ser "printado".
+Essa função acha o objeto dado e pega todas as informações relacionadas a ele. Cada propriedade (informação) é representada por um número, por exemplo o número 54 representa a ascensão reta. Ao chamar o método .Property(), ele prepara o resultado na variável ObjInfoPropOut, e pode ser "printado" ou salvo em outra variável.
 
 ## Vendo se o slew está sendo realizado
 

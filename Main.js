@@ -188,7 +188,7 @@ function DisconnectTelescope()
  * a declinação.
  *
  * @param object Nome do objeto a ser encontrado.
- * @return Um objeto com a ascensão (ra) e a declinação (dec).
+ * @return Um objeto com a ascensão reta (ra) e a declinação (dec).
  */
 function getRADec(object)
 {
