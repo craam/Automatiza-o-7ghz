@@ -10,7 +10,7 @@ A ideia é relatar o funcionamento das principais funções da biblioteca.
 
 A função em si não retorna nada, para pegar o valor desejado é necessário chamar o atributo ObjInfoPropOut;
 
-54: Ascensão direita\
+54: Ascensão reta\
 55: Declinação
 
 Exemplo:
@@ -69,7 +69,7 @@ Para qualquer ação do telescópio durante a operação em progresso.
 
 ### .SlewToRaDec(float TargetRa, float TargetDec, string targetObject)
 
-**Argumentos**: A ascensão direita, a declinação e o nome do objeto.
+**Argumentos**: A ascensão reta, a declinação e o nome do objeto.
 
 Faz o slew para a coordenada dada.
 
@@ -93,7 +93,7 @@ sky6RASCOMTele.SlewToRaDec(targetRa, TargetDec, targetObject);
 
 **Argumentos**: Nenhum.
 
-Pega a declinação e a ascensão direita atual, e prepara os valores nas variáveis dRa e dDec.
+Pega a declinação e a ascensão reta atual, e prepara os valores nas variáveis dRa e dDec.
 
 Exemplo:
 
@@ -101,7 +101,7 @@ Exemplo:
 sky6RASCOMTele.Connect();
 sky6RASCOMTele.getRaDec();
 
-// Printa: "ascensão direita | declinação"
+// Printa: "ascensão reta | declinação"
 Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
 ```
 
@@ -130,7 +130,7 @@ Retorna zero se o telescópio estiver na posição de parking.
 
 ### .dRa
 
-A ascensão direita atual.
+A ascensão reta atual.
 
 ### .dDec
 

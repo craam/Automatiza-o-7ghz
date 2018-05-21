@@ -82,7 +82,7 @@ function Find(objectName)
  *             0 - Ignora os valores de dRaRate e dDecRate
  *             1 - Usa os valores de dRaRate e dDecRate
  *
- * @param dRaRate Especifica a ascensão direita a ser usada. Só é utilizada se 
+ * @param dRaRate Especifica a ascensão reta a ser usada. Só é utilizada se 
  *                IIgnoreRates for igual à 1.
  *
  * @param dDecRate Especifica a declinação a ser usada. Só é utilizada se
@@ -133,9 +133,9 @@ function MountIsSlewing()
 }
 
 /**
- * Faz o slew para um determinado objeto dados sua ascensão direita e declinação.
+ * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
  *
- * @param dRa ascensão direita.
+ * @param dRa ascensão reta.
  * @param dDec declinação.
  * @param targetObjecto Objeto para fazer o slew.
  *
@@ -184,7 +184,7 @@ function DisconnectTelescope()
 } 
 
 /**
- * Encontra o objeto dado e retorna um objeto com a ascensão direita e
+ * Encontra o objeto dado e retorna um objeto com a ascensão reta e
  * a declinação.
  *
  * @param object Nome do objeto a ser encontrado.
