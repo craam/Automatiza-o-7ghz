@@ -92,7 +92,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
     sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
     var Out = "TheSkyX Build " + Application.build;
@@ -112,7 +112,7 @@ function MountIsSlewing()
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0)
@@ -143,7 +143,7 @@ function MountIsSlewing()
  */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
-  if (Sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
      sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
      return true;
@@ -164,7 +164,7 @@ function ParkTelescope()
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
     if (sky6RASCOMTele.isParked() != 0) {
       sky6RASCOMTele.Park();
@@ -192,14 +192,16 @@ function DisconnectTelescope()
  */
 function getRADec(object)
 {
-  sky6StarChart.Find(object);
+  if (Sky6IsConnected() === true) {
+    sky6StarChart.Find(object);
 
-  sky6ObjectInformation.Property(54);
-  var targetRA = sky6ObjectInformation.ObjInfoPropOut;
-  sky6ObjectInformation.Property(55);
-  var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+    sky6ObjectInformation.Property(54);
+    var targetRA = sky6ObjectInformation.ObjInfoPropOut;
+    sky6ObjectInformation.Property(55);
+    var targetDec = sky6ObjectInformation.ObjInfoPropOut;
 
-  return {"ra": targetRA, "dec": targetDec};
+    return {"ra": targetRA, "dec": targetDec};
+  }
 }
 
 // Variáveis usadas para checar se os processos já começaram.
@@ -223,7 +225,7 @@ while (true) {
   // Cria um arquivo txt para guardar os logs.
   var filename = String(year) + "-" + String(month) + "-" + String(day);
 
-  if (sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
     // Cria um arquivo txt para guardar os logs.
     if (TextFile.createNew(filename))
