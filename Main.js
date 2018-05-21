@@ -29,8 +29,8 @@ sky6RASCOMTele.Connect();
 /**
  * Confirma se o script tem conexão com o telescópio.
  *
- * @return boolean false se não estiver conectado.
- *                 true se estiver conectado.
+ * @return false se não estiver conectado.
+ *         true se estiver conectado.
  */
 function Sky6IsConnected()
 {
@@ -105,8 +105,8 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 /**
  * Confirma se o slew está ocorrendo ou não.
  *
- * @return boolean true se estiver fazendo o slew.
- *                 false se não estiver fazendo o slew.
+ * @return true se estiver fazendo o slew.
+ *         false se não estiver fazendo o slew.
  */
 function MountIsSlewing()
 {
@@ -139,7 +139,7 @@ function MountIsSlewing()
  * @param dDec declinação.
  * @param targetObjecto Objeto para fazer o slew.
  *
- * @return boolean true se tudo tiver ocorrido normalmente.
+ * @return true se tudo tiver ocorrido normalmente.
  */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
@@ -158,7 +158,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 /**
  * Leva o telescópio para a posição de parking.
  *
- * @return boolean true se tudo tiver ocorrido normalmente.
+ * @return true se tudo tiver ocorrido normalmente.
  */
 function ParkTelescope()
 {
