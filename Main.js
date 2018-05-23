@@ -215,9 +215,6 @@ var turn_off_time = 17;
 
 while (true) {
   var time = new Date();
-  var year = time.getFullYear();
-  var month = time.getMonth();
-  var day = time.getDay();
   var hour = time.getHours();
   var minutes = time.getMinutes();
   var seconds = time.getSeconds();
