@@ -222,20 +222,9 @@ while (true) {
   var minutes = time.getMinutes();
   var seconds = time.getSeconds();
 
-  // Cria um arquivo txt para guardar os logs.
-  var filename = String(year) + "-" + String(month) + "-" + String(day);
-
   if (Sky6IsConnected() === true)
   {
-    // Cria um arquivo txt para guardar os logs.
-    if (TextFile.createNew(filename))
-    {
-      var fileIsWorking = true;
-    }
     var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
-    if (fileIsWorking) {
-      TextFile.write(horario);
-    }
     print(horario);
   
     if (hour == start_time && started == false)
@@ -243,10 +232,6 @@ while (true) {
       started = true;
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-    
-      if (fileIsWorking) {
-        TextFile.write("Ligou às " + horario);
-      }
       print("Ligou às " + horario);
     }
     else if (hour == flip_time && flipped == false)
@@ -255,10 +240,6 @@ while (true) {
       flipped = true;
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-
-      if (fileIsWorking) {
-        TextFile.write("Fez o flip às " + horario);
-      }
       print("Fez o flip às " + horario);
     }
     else if (hour == turn_off_time && turnedOff == false)
@@ -269,11 +250,6 @@ while (true) {
       DisconnectTelescope();
 
       print("Desligado às " + horario);
-      if (fileIsWorking) {
-        TextFile.write("Desligado às " + horario);
-        TextFile.close();
-        fileIsWorking = false;
-      }
     }
   }
   else if (hour == start_time)
