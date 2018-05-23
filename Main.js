@@ -29,8 +29,8 @@ sky6RASCOMTele.Connect();
 /**
  * Confirma se o script tem conexão com o telescópio.
  *
- * @return boolean false se não estiver conectado.
- *                 true se estiver conectado.
+ * @return false se não estiver conectado.
+ *         true se estiver conectado.
  */
 function Sky6IsConnected()
 {
@@ -82,7 +82,7 @@ function Find(objectName)
  *             0 - Ignora os valores de dRaRate e dDecRate
  *             1 - Usa os valores de dRaRate e dDecRate
  *
- * @param dRaRate Especifica a ascensão direita a ser usada. Só é utilizada se 
+ * @param dRaRate Especifica a ascensão reta a ser usada. Só é utilizada se 
  *                IIgnoreRates for igual à 1.
  *
  * @param dDecRate Especifica a declinação a ser usada. Só é utilizada se
@@ -92,7 +92,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
     sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
     var Out = "TheSkyX Build " + Application.build;
@@ -105,14 +105,14 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 /**
  * Confirma se o slew está ocorrendo ou não.
  *
- * @return boolean true se estiver fazendo o slew.
- *                 false se não estiver fazendo o slew.
+ * @return true se estiver fazendo o slew.
+ *         false se não estiver fazendo o slew.
  */
 function MountIsSlewing()
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0)
@@ -133,17 +133,17 @@ function MountIsSlewing()
 }
 
 /**
- * Faz o slew para um determinado objeto dados sua ascensão direita e declinação.
+ * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
  *
- * @param dRa ascensão direita.
+ * @param dRa ascensão reta.
  * @param dDec declinação.
  * @param targetObjecto Objeto para fazer o slew.
  *
- * @return boolean true se tudo tiver ocorrido normalmente.
+ * @return true se tudo tiver ocorrido normalmente.
  */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
-  if (Sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
      sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
      return true;
@@ -158,13 +158,13 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 /**
  * Leva o telescópio para a posição de parking.
  *
- * @return boolean true se tudo tiver ocorrido normalmente.
+ * @return true se tudo tiver ocorrido normalmente.
  */
 function ParkTelescope()
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected())
+  if (Sky6IsConnected() === true)
   {
     if (sky6RASCOMTele.isParked() != 0) {
       sky6RASCOMTele.Park();
@@ -184,22 +184,24 @@ function DisconnectTelescope()
 } 
 
 /**
- * Encontra o objeto dado e retorna um objeto com a ascensão direita e
+ * Encontra o objeto dado e retorna um objeto com a ascensão reta e
  * a declinação.
  *
  * @param object Nome do objeto a ser encontrado.
- * @return Um objeto com a ascensão (ra) e a declinação (dec).
+ * @return Um objeto com a ascensão reta (ra) e a declinação (dec).
  */
 function getRADec(object)
 {
-  sky6StarChart.Find(object);
+  if (Sky6IsConnected() === true) {
+    sky6StarChart.Find(object);
 
-  sky6ObjectInformation.Property(54);
-  var targetRA = sky6ObjectInformation.ObjInfoPropOut;
-  sky6ObjectInformation.Property(55);
-  var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+    sky6ObjectInformation.Property(54);
+    var targetRA = sky6ObjectInformation.ObjInfoPropOut;
+    sky6ObjectInformation.Property(55);
+    var targetDec = sky6ObjectInformation.ObjInfoPropOut;
 
-  return {"ra": targetRA, "dec": targetDec};
+    return {"ra": targetRA, "dec": targetDec};
+  }
 }
 
 // Variáveis usadas para checar se os processos já começaram.
@@ -213,29 +215,50 @@ var turn_off_time = 17;
 
 while (true) {
   var time = new Date();
+  var year = time.getFullYear();
+  var month = time.getMonth();
+  var day = time.getDay();
   var hour = time.getHours();
   var minutes = time.getMinutes();
   var seconds = time.getSeconds();
 
-  if (sky6IsConnected())
+  // Cria um arquivo txt para guardar os logs.
+  var filename = String(year) + "-" + String(month) + "-" + String(day);
+
+  if (Sky6IsConnected() === true)
   {
+    // Cria um arquivo txt para guardar os logs.
+    if (TextFile.createNew(filename))
+    {
+      var fileIsWorking = true;
+    }
     var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
+    if (fileIsWorking) {
+      TextFile.write(horario);
+    }
     print(horario);
   
     if (hour == start_time && started == false)
     {
       started = true;
-      // Slew somewhere.
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+    
+      if (fileIsWorking) {
+        TextFile.write("Ligou às " + horario);
+      }
       print("Ligou às " + horario);
     }
     else if (hour == flip_time && flipped == false)
     {
-      flipped = true;
       // Flip.
+      flipped = true;
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+
+      if (fileIsWorking) {
+        TextFile.write("Fez o flip às " + horario);
+      }
       print("Fez o flip às " + horario);
     }
     else if (hour == turn_off_time && turnedOff == false)
@@ -244,11 +267,20 @@ while (true) {
       SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
       DisconnectTelescope();
+
       print("Desligado às " + horario);
+      if (fileIsWorking) {
+        TextFile.write("Desligado às " + horario);
+        TextFile.close();
+        fileIsWorking = false;
+      }
     }
   }
   else if (hour == start_time)
   {
     sky6RASCOMTele.Connect();
+    started = false;
+    flipped = false;
+    turnedOff = false;
   }
 }

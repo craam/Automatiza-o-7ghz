@@ -6,11 +6,11 @@ A ideia é relatar o funcionamento das principais funções da biblioteca.
 
 ### .Property(int num)
 
-**Argumentos**: Um inteiro, que representa um certa informação do objeto. Há um total de 190 informações separadas nessa função. A ideia é documentar cada uma aqui.
+**Argumentos**: Um inteiro, que representa um certa informação do objeto. Há um total de 189 informações separadas nessa função. A ideia é documentar apenas o que for necessário para o script.
 
-A função em si não retorna nada, para pegar o valor desejado é necessário chamar o atributo ObjInfoPropOut;
+A função em si não retorna nada, para pegar o valor desejado é necessário usar a variável ObjInfoPropOut, como escrito no exemplo.
 
-54: Ascensão direita\
+54: Ascensão reta\
 55: Declinação
 
 Exemplo:
@@ -45,6 +45,8 @@ sky6ObjectInformation.Property(55);
 
 // Printa a declinação.
 Out = sky6ObjectInfomation.ObjInfoPropOut + "\n";
+// ou
+print(sky6ObjectInfomation.ObjInfoPropOut + "\n")
 ```
 
 ## sky6RASCOMTele
@@ -53,7 +55,7 @@ Out = sky6ObjectInfomation.ObjInfoPropOut + "\n";
 
 **Argumentos**: Nenhum.
 
-Faz a conexão entre esse objeto do telescópio (RASCOMTele) e o TheSky6.
+Faz a comunicação entre esse objeto do telescópio (RASCOMTele) e o TheSky.
 
 ### .Disconnect()
 
@@ -69,7 +71,7 @@ Para qualquer ação do telescópio durante a operação em progresso.
 
 ### .SlewToRaDec(float TargetRa, float TargetDec, string targetObject)
 
-**Argumentos**: A ascensão direita, a declinação e o nome do objeto.
+**Argumentos**: A ascensão reta, a declinação e o nome do objeto.
 
 Faz o slew para a coordenada dada.
 
@@ -93,7 +95,7 @@ sky6RASCOMTele.SlewToRaDec(targetRa, TargetDec, targetObject);
 
 **Argumentos**: Nenhum.
 
-Pega a declinação e a ascensão direita atual, e prepara os valores nas variáveis dRa e dDec.
+Pega a declinação e a ascensão reta atual, e prepara os valores nas variáveis dRa e dDec.
 
 Exemplo:
 
@@ -101,8 +103,10 @@ Exemplo:
 sky6RASCOMTele.Connect();
 sky6RASCOMTele.getRaDec();
 
-// Printa: "ascensão direita | declinação"
+// Printa: "ascensão reta | declinação"
 Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
+// ou
+print(String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec));
 ```
 
 ### .Park()
@@ -130,7 +134,7 @@ Retorna zero se o telescópio estiver na posição de parking.
 
 ### .dRa
 
-A ascensão direita atual.
+A ascensão reta atual.
 
 ### .dDec
 
