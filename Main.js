@@ -24,6 +24,9 @@
  * SOFTWARE.
  */
 
+/**
+ * Inicia a conexão entre o SkyX e o telescópio.
+ */
 sky6RASCOMTele.Connect();
 
 /**
@@ -36,7 +39,7 @@ function Sky6IsConnected()
 {
   if (sky6RASCOMTele.isConnected == 0)
   {
-    print("Not connected");
+    print("Não conectado");
     sky6RASCOMTele.Abort();
     return false;
   }
@@ -64,7 +67,7 @@ function Find(objectName)
       sky6ObjectInformation.Property(propriedade);
 
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
-      // Prints out object info.
+      // Printa as informações do objeto.
       print(Out);
     }
   }
@@ -117,18 +120,18 @@ function MountIsSlewing()
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0)
     {
-      print("Not Slewing");
+      print("Não está fazer o slew.");
       return false;
     }
     else
     {
-      print("Slewing");
+      print("Fazendo o slew.");
       return true;
     }
   }
   else
   {
-    print("Telescope not connected.");
+    print("Telescópio não conectado.");
   }
 }
 
@@ -150,7 +153,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
   }
   else
   {
-    print("Telescope not connected.");
+    print("Telescópio não conectado.");
     return false;
   }
 }
@@ -168,7 +171,7 @@ function ParkTelescope()
   {
     if (sky6RASCOMTele.isParked() != 0) {
       sky6RASCOMTele.Park();
-      print("Parking completo");
+      print("Parking completo.");
       return true;
     }
   }
@@ -179,12 +182,14 @@ function ParkTelescope()
  */
 function DisconnectTelescope()
 {
-  sky6RASCOMTele.Disconnect();
-  sky6RASCOMTheSky.DisconnectTelescope();
+  if (Sky6IsConnected() === true)
+  {
+    sky6RASCOMTele.Disconnect();
+  }
 } 
 
 /**
- * Encontra o objeto dado e retorna um objeto com a ascensão reta e
+ * Encontra o objeto dado e retorna um object com a ascensão reta e
  * a declinação.
  *
  * @param object Nome do objeto a ser encontrado.
@@ -233,7 +238,6 @@ while (true) {
     }
     else if (hour == flip_time && flipped == false)
     {
-      // Flip.
       flipped = true;
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
