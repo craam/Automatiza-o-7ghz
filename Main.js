@@ -221,7 +221,8 @@ var start_time = 9;
 var flip_time = 12;
 var turn_off_time = 17;
 
-while (true) {
+while (true)
+{
   var time = new Date();
   var hour = time.getHours();
   var minutes = time.getMinutes();
