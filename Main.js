@@ -170,7 +170,7 @@ function ParkTelescope()
 
   if (Sky6IsConnected() === true)
   {
-    if (sky6RASCOMTele.isParked() != 0)
+    if (sky6RASCOMTele.isParked != 0)
     {
       sky6RASCOMTele.Park();
       print("Parking completo.");
