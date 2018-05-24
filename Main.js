@@ -47,7 +47,7 @@ function Sky6IsConnected()
 }
 
 /**
- * Faz o Find no objeto dado, e printa todas as propriedades (informações)
+ * Encontra o objeto dado, e printa todas as propriedades (informações)
  * daquele objeto.
  *
  * @param objectName Nome do objeto a ser encontrado.
@@ -67,6 +67,7 @@ function Find(objectName)
       sky6ObjectInformation.Property(propriedade);
 
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
+
       // Printa as informações do objeto.
       print(Out);
     }
@@ -169,7 +170,8 @@ function ParkTelescope()
 
   if (Sky6IsConnected() === true)
   {
-    if (sky6RASCOMTele.isParked() != 0) {
+    if (sky6RASCOMTele.isParked() != 0)
+    {
       sky6RASCOMTele.Park();
       print("Parking completo.");
       return true;
@@ -197,7 +199,8 @@ function DisconnectTelescope()
  */
 function getRADec(object)
 {
-  if (Sky6IsConnected() === true) {
+  if (Sky6IsConnected() === true)
+  {
     sky6StarChart.Find(object);
 
     sky6ObjectInformation.Property(54);
