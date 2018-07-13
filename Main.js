@@ -213,7 +213,7 @@ function getRADec(object)
 // Variáveis usadas para checar se os processos já foram inicializados.
 var started = false;
 var flipped = false;
-var turnedOff = false;
+var turned_off = false;
 
 var start_hour = 12;
 var start_minutes = 00;
@@ -248,15 +248,15 @@ while (true)
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Fez o flip às " + horario);
     }
-    else if (hour == turn_off_hour && minutes == turn_off_minutes && turnedOff == false)
+    else if (hour == turn_off_hour && minutes == turn_off_minutes && turned_off == false)
     {
-      turnedOff = true;
+      turned_off = true;
       SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
       print("Desligado às " + horario);
     }
   }
-  else if (sky6RASCOMTele.IsConnected == 0 && (started == true || flipped == true) && turnedOff == false)
+  else if (sky6RASCOMTele.IsConnected == 0 && (started == true || flipped == true) && turned_off == false)
   {
     sky6RASCOMTele.Connect();
   }
@@ -266,6 +266,6 @@ while (true)
     sky6RASCOMTele.Connect();
     started = false;
     flipped = false;
-    turnedOff = false;
+    turned_off = false;
   }
 }
