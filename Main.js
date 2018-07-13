@@ -37,10 +37,8 @@ sky6RASCOMTele.Connect();
  */
 function Sky6IsConnected()
 {
-  if (sky6RASCOMTele.isConnected == 0)
+  if (sky6RASCOMTele.IsConnected == 0)
   {
-    print("Não conectado");
-    sky6RASCOMTele.Abort();
     return false;
   }
   return true;
@@ -96,7 +94,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected() === true)
+  if (sky6RASCOMTele.IsConnected != 0)
   {
     sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
     var Out = "TheSkyX Build " + Application.build;
@@ -116,7 +114,7 @@ function MountIsSlewing()
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected() === true)
+  if (sky6RASCOMTele.IsConnected != 0)
   {
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0)
@@ -147,7 +145,7 @@ function MountIsSlewing()
  */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
-  if (Sky6IsConnected() === true)
+  if (sky6RASCOMTele.IsConnected != 0)
   {
      sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
      return true;
@@ -168,9 +166,9 @@ function ParkTelescope()
 {
   sky6RASCOMTele.Connect();
 
-  if (Sky6IsConnected() === true)
+  if (sky6RASCOMTele.IsConnected != 0)
   {
-    if (sky6RASCOMTele.isParked != 0)
+    if (sky6RASCOMTele.IsParked != 0)
     {
       sky6RASCOMTele.Park();
       print("Parking completo.");
@@ -184,7 +182,7 @@ function ParkTelescope()
  */
 function DisconnectTelescope()
 {
-  if (Sky6IsConnected() === true)
+  if (sky6RASCOMTele.IsConnected != 0)
   {
     sky6RASCOMTele.Disconnect();
   }
@@ -199,7 +197,7 @@ function DisconnectTelescope()
  */
 function getRADec(object)
 {
-  if (Sky6IsConnected() === true)
+  if (sky6RASCOMTele.IsConnected != 0)
   {
     sky6StarChart.Find(object);
 
@@ -212,14 +210,17 @@ function getRADec(object)
   }
 }
 
-// Variáveis usadas para checar se os processos já começaram.
+// Variáveis usadas para checar se os processos já foram inicializados.
 var started = false;
 var flipped = false;
 var turnedOff = false;
 
-var start_time = 9;
-var flip_time = 12;
-var turn_off_time = 17;
+var start_hour = 12;
+var start_minutes = 00;
+var flip_hour = 16;
+var flip_minutes = 00;
+var turn_off_hour = 20;
+var turn_off_minutes = 00;
 
 while (true)
 {
@@ -227,38 +228,41 @@ while (true)
   var hour = time.getHours();
   var minutes = time.getMinutes();
   var seconds = time.getSeconds();
-
-  if (Sky6IsConnected() === true)
-  {
-    var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
-    print(horario);
   
-    if (hour == start_time && started == false)
+  var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
+  print(horario);
+
+  if (sky6RASCOMTele.IsConnected != 0)
+  {
+    if (hour == start_hour && minutes == start_minutes && started == false)
     {
       started = true;
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Ligou às " + horario);
     }
-    else if (hour == flip_time && flipped == false)
+    else if (hour == flip_hour && minutes == flip_minutes && flipped == false)
     {
       flipped = true;
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Fez o flip às " + horario);
     }
-    else if (hour == turn_off_time && turnedOff == false)
+    else if (hour == turn_off_hour && minutes == turn_off_minutes && turnedOff == false)
     {
       turnedOff = true;
       SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
-      DisconnectTelescope();
-
       print("Desligado às " + horario);
     }
   }
-  else if (hour == start_time)
+  else if (sky6RASCOMTele.IsConnected == 0 && started == true && turnedOff == false)
   {
+    sky6RASCOMTele.Connect();
+  }
+  else if (sky6RASCOMTele.IsConnected == 0 && hour == start_hour && minutes == start_minutes)
+  {
+    print("Conectando às " + horario);
     sky6RASCOMTele.Connect();
     started = false;
     flipped = false;
