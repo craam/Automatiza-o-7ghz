@@ -256,7 +256,7 @@ while (true)
       print("Desligado às " + horario);
     }
   }
-  else if (sky6RASCOMTele.IsConnected == 0 && started == true && turnedOff == false)
+  else if (sky6RASCOMTele.IsConnected == 0 && (started == true || flipped == true) && turnedOff == false)
   {
     sky6RASCOMTele.Connect();
   }
