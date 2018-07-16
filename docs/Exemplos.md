@@ -3,8 +3,12 @@
 ## Funcionamento da rotina principal
 
 O código está dentro de um while que confirma se o telescópio está conectado com o TheSkyX. A cada vez que ele é rodado a hora, o minuto e o segundo são salvos em três variáveis para checar o horário.\
+
+### DDD
+
 Antes de começar o loop são declaradas três variáveis to tipo booleano com o valor false para a confirmação do processo de inicialização, de flip e de desligamento. No início de cada processo o valor da variável em questão é mudado para true. Desse modo não há a possibilidade do processo ser iniciado novamente.
-Os comentário feitos dentro do script são feitas usando o padrão <a target="_blank" href="https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html">javadoc</a>.
+
+Os comentário feitos dentro do script são feitas usando o padrão javadoc <https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html>
 
 ## Pegando a ascensão reta e a declinação do objeto para fazer o slew
 

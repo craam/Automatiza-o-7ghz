@@ -24,12 +24,12 @@
  * SOFTWARE.
  */
 
-/*
+/**
  * Inicia a conexão entre o SkyX e o telescópio.
  */
 sky6RASCOMTele.Connect();
 
-/*
+/**
  * Confirma se o script tem conexão com o telescópio.
  *
  * @return false se não estiver conectado.
@@ -44,7 +44,7 @@ function Sky6IsConnected()
   return true;
 }
 
-/*
+/**
  * Encontra o objeto dado, e printa todas as propriedades (informações)
  * daquele objeto.
  *
@@ -72,7 +72,7 @@ function Find(objectName)
   }
 }
 
-/*
+/**
  * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
  *
  * @param IOn Binário(0 ou 1), o número que desliga ou liga o tracking.
@@ -104,7 +104,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
   }
 }
 
-/*
+/**
  * Confirma se o slew está ocorrendo ou não.
  *
  * @return true se estiver fazendo o slew.
@@ -134,7 +134,7 @@ function MountIsSlewing()
   }
 }
 
-/*
+/**
  * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
  *
  * @param dRa ascensão reta.
@@ -157,7 +157,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
   }
 }
 
-/*
+/**
  * Leva o telescópio para a posição de parking.
  *
  * @return true se tudo tiver ocorrido normalmente.
@@ -177,7 +177,7 @@ function ParkTelescope()
   }
 }
 
-/*
+/**
  * Desconecta o SkyX do telescópio.
  */
 function DisconnectTelescope()
@@ -188,7 +188,7 @@ function DisconnectTelescope()
   }
 } 
 
-/*
+/**
  * Encontra o objeto dado e retorna um object com a ascensão reta e
  * a declinação.
  *
