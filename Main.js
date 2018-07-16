@@ -24,12 +24,12 @@
  * SOFTWARE.
  */
 
-/**
+/*
  * Inicia a conexão entre o SkyX e o telescópio.
  */
 sky6RASCOMTele.Connect();
 
-/**
+/*
  * Confirma se o script tem conexão com o telescópio.
  *
  * @return false se não estiver conectado.
@@ -44,7 +44,7 @@ function Sky6IsConnected()
   return true;
 }
 
-/**
+/*
  * Encontra o objeto dado, e printa todas as propriedades (informações)
  * daquele objeto.
  *
@@ -72,7 +72,7 @@ function Find(objectName)
   }
 }
 
-/**
+/*
  * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
  *
  * @param IOn Binário(0 ou 1), o número que desliga ou liga o tracking.
@@ -104,7 +104,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
   }
 }
 
-/**
+/*
  * Confirma se o slew está ocorrendo ou não.
  *
  * @return true se estiver fazendo o slew.
@@ -134,7 +134,7 @@ function MountIsSlewing()
   }
 }
 
-/**
+/*
  * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
  *
  * @param dRa ascensão reta.
@@ -157,7 +157,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
   }
 }
 
-/**
+/*
  * Leva o telescópio para a posição de parking.
  *
  * @return true se tudo tiver ocorrido normalmente.
@@ -177,7 +177,7 @@ function ParkTelescope()
   }
 }
 
-/**
+/*
  * Desconecta o SkyX do telescópio.
  */
 function DisconnectTelescope()
@@ -188,7 +188,7 @@ function DisconnectTelescope()
   }
 } 
 
-/**
+/*
  * Encontra o objeto dado e retorna um object com a ascensão reta e
  * a declinação.
  *
@@ -210,12 +210,7 @@ function getRADec(object)
   }
 }
 
-// Variáveis usadas para checar se os processos já foram inicializados.
-var started = false;
-var flipped = false;
-var turned_off = false;
-
-var start_hour = 12;
+var start_hour = 11;
 var start_minutes = 00;
 var flip_hour = 16;
 var flip_minutes = 00;
@@ -234,38 +229,39 @@ while (true)
 
   if (sky6RASCOMTele.IsConnected != 0)
   {
-    if (hour == start_hour && minutes == start_minutes && started == false)
+    if (hour >= start_hour && hour < flip_hour && sky6RASCOMTele.IsTracking != 0)
     {
-      started = true;
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Ligou às " + horario);
     }
-    else if (hour == flip_hour && minutes == flip_minutes && flipped == false)
+    else if (hour == flip_hour && minutes == flip_minutes)
     {
-      flipped = true;
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Fez o flip às " + horario);
     }
-    else if (hour == turn_off_hour && minutes == turn_off_minutes && turned_off == false)
+    else if (hour >= turn_off_hour && sky6RASCOMTele.IsTracking == 0)
     {
-      turned_off = true;
       SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
       print("Desligado às " + horario);
     }
   }
-  else if (sky6RASCOMTele.IsConnected == 0 && (started == true || flipped == true) && turned_off == false)
+  else if (sky6RASCOMTele.IsConnected == 0 && hour >= start_hour && hour < turn_off_time)
   {
+    print("Reconectando");
     sky6RASCOMTele.Connect();
+    if (sky6RASCOMTele.IsTracking != 0 && sky6RASCOMTele.IsSlewComplete != 0)
+    {
+      var propriedade = getRADec("Sun");
+      SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+      print("Reconectou às " + horario);
+    }
   }
-  else if (sky6RASCOMTele.IsConnected == 0 && hour == start_hour && minutes == start_minutes)
+  else if (sky6RASCOMTele.IsConnected == 0 && hour == start_hour)
   {
     print("Conectando às " + horario);
     sky6RASCOMTele.Connect();
-    started = false;
-    flipped = false;
-    turned_off = false;
   }
 }
