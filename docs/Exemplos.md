@@ -9,6 +9,8 @@ Para o inicío, é verificada se a hora está entre o horário de inicializaçã
 O flip é realizado exatamente no horário determinado.
 O desligamento ocorre se o tracking estiver sendo realizado e está a hora atual for maior ou igual a hora de desligamento.
 
+Se a conexão for perdida há a possibilidade dela ser recuperada e que o telescópio volte a sua rotina normal. Entretanto, a causa da perda de conexão pode não ser resolvida e seja necessária um reconexão manual.
+
 A documentação feita dentro do script é feita usando o padrão javadoc <https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html>
 
 ## Pegando a ascensão reta e a declinação do objeto para fazer o slew
