@@ -227,21 +227,26 @@ while (true)
   var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
   print(horario);
 
+  // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
   {
-	print(sky6RASCOMTele.IsTracking);
+    // Se a hora do computador estiver entre a hora de começar e a hora do flip
+    // e o tracking não está ocorrendo.
     if (hour >= start_hour && hour < flip_hour && sky6RASCOMTele.IsTracking == 0)
     {
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Ligou às " + horario);
     }
+    // Hora exata do flip.
     else if (hour == flip_hour && minutes == flip_minutes)
     {
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Fez o flip às " + horario);
     }
+    // Verifica se a hora do computador é maior ou igual a hora de desligar e
+    // se o tracking ainda está ocorrendo.
     else if (hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0)
     {
       SetTelescopeTracking(0, 1, 0, 0);
@@ -249,20 +254,24 @@ while (true)
       print("Desligado às " + horario);
     }
   }
+  // Inicia a conexão no início do dia, no horário exato de 12:00 (9:00 local).
+  else if (sky6RASCOMTele.IsConnected == 0 && hour == start_hour && minutes == start_minutes)
+  {
+    print("Conectando às " + horario);
+    sky6RASCOMTele.Connect();
+  }
+  // Prevê um eventual problema de simples desconexão do SkyX.
+  // Verifica se está desconectado e se está no horário de funcionamento.
   else if (sky6RASCOMTele.IsConnected == 0 && hour >= start_hour && hour < turn_off_hour)
   {
     print("Reconectando");
     sky6RASCOMTele.Connect();
-    if (sky6RASCOMTele.IsTracking != 0 && sky6RASCOMTele.IsSlewComplete != 0)
+    // Verifica se o Tracking não está ocorrendo e se há um slew em execução.
+    if (sky6RASCOMTele.IsTracking == 0 && sky6RASCOMTele.IsSlewComplete != 0)
     {
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Reconectou às " + horario);
     }
-  }
-  else if (sky6RASCOMTele.IsConnected == 0 && hour == start_hour)
-  {
-    print("Conectando às " + horario);
-    sky6RASCOMTele.Connect();
   }
 }
