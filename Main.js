@@ -25,11 +25,6 @@
  */
 
 /*
- * Inicia a conexão entre o SkyX e o telescópio.
- */
-// sky6RASCOMTele.Connect();
-
-/*
  * Confirma se o script tem conexão com o telescópio.
  *
  * @return false se não estiver conectado.
