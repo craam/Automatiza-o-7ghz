@@ -128,9 +128,17 @@ Para fazer outro Slew depois de usar é necessário chamar a função '.Unpark'.
 
 Tira o telescópio da posição de parking.
 
-### .isParked
+### .IsConnected
 
-Tem o valor zero se o telescópio estiver na posição de parking.
+Tem o valor zero se o telescópio não estiver conectado.
+
+### .IsParked
+
+Tem o valor zero se o telescópio não estiver na posição de parking.
+
+### .IsTracking
+
+Tem o valor zero se o telescópio não estiver fazendo o tracking.
 
 ### .dRa
 
