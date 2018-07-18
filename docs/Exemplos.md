@@ -2,13 +2,14 @@
 
 ## Funcionamento da rotina principal
 
-O código está dentro de um while que confirma se o telescópio está conectado com o TheSkyX. A cada vez que ele é rodado a hora, o minuto e o segundo são salvos em três variáveis para checar o horário.
+O código está dentro de um while true. A cada vez que ele é rodado a hora, o minuto e o segundo do computador são salvos em três variáveis para verificar o horário.
 
-### DDD
+Antes do início do loop são definidos os horários (UT) para ligar, fazer o flip e desligar.
+Para o inicío, é verificada se a hora está entre o horário do começo e o horário do flip e se o o telescópio está fazendo o tracking.
+O flip é realizado exatamente no horário determinado.
+O desligamento.
 
-Antes de começar o loop são declaradas três variáveis to tipo booleano com o valor false para a confirmação do processo de inicialização, de flip e de desligamento. No início de cada processo o valor da variável em questão é mudado para true. Desse modo não há a possibilidade do processo ser iniciado novamente.
-
-Os comentário feitos dentro do script são feitas usando o padrão javadoc <https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html>
+A documentação feita dentro do script é feita usando o padrão javadoc <https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html>
 
 ## Pegando a ascensão reta e a declinação do objeto para fazer o slew
 
@@ -84,7 +85,7 @@ Essa função acha o objeto dado e pega todas as informações relacionadas a el
 
 ## Vendo se o slew está sendo realizado
 
-Mesmo você podendo ver no próprio SkyX se o slew está ocorrendo, é bom termos uma função para checarmos isso.
+Mesmo você podendo ver no próprio SkyX se o slew está ocorrendo, é bom termos uma função para verificarmos isso.
 
 ```javascript
 function MountIsSlewing()
