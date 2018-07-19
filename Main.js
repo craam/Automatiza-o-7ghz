@@ -259,7 +259,7 @@ while (true)
   // Verifica se está desconectado e se está no horário de funcionamento.
   else if (sky6RASCOMTele.IsConnected == 0 && hour >= start_hour && hour < turn_off_hour)
   {
-    print("Reconectando");
+    print("Reconectando...");
     sky6RASCOMTele.Connect();
     // Verifica se o Tracking não está ocorrendo e se há um slew em execução.
     if (sky6RASCOMTele.IsTracking == 0 && sky6RASCOMTele.IsSlewComplete != 0)
