@@ -24,6 +24,10 @@
  * SOFTWARE.
  */
 
+/**
+ * Version: 1.1.1 07/20/18
+ */
+
 /*
  * Confirma se o script tem conexão com o telescópio.
  *
