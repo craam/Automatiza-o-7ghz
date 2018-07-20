@@ -263,7 +263,7 @@ while (true)
     TextFile.createNew(filename);
     TextFile.write(String(time.getDate()) + "/" + String(time.getMonth()) +
                     "/" + String(time.getFullYear()) + "\n");
-    TextFile.write("Conectando às " + horario);
+    TextFile.write("Conectando às " + horario + "\n");
 
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
