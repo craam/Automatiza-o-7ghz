@@ -221,6 +221,7 @@ while (true)
   
   var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
   print(horario);
+  TextFile.write(horario + "\n");
 
   // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
@@ -232,6 +233,7 @@ while (true)
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Ligou às " + horario);
+      TextFile.write("Ligou às " + horario + "\n");
     }
     // Hora exata do flip.
     else if (hour == flip_hour && minutes == flip_minutes)
@@ -239,6 +241,7 @@ while (true)
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Fez o flip às " + horario);
+      TextFile.write("Fez o flip às " + horario + "\n");
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
@@ -247,6 +250,8 @@ while (true)
       SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
       print("Desligado às " + horario);
+      TextFile.write("Desligado às " + horario + "\n");
+      TextFile.close();
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 12:00 (9:00 local).
@@ -254,6 +259,12 @@ while (true)
   {
     print("Conectando às " + horario);
     sky6RASCOMTele.Connect();
+    var filename = String(time.getDate()) + String(time.getMonth()) + String(time.getFullYear())
+    TextFile.createNew(filename);
+    TextFile.write(String(time.getDate()) + "/" + String(time.getMonth()) +
+                    "/" + String(time.getFullYear()) + "\n");
+    TextFile.write("Conectando às " + horario);
+
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
@@ -267,6 +278,7 @@ while (true)
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Reconectou às " + horario);
+      TextFile.write("Reconectou às " + horario + "\n");
     }
   }
 }
