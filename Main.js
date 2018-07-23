@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.1 07/20/18
+ * Version: 1.1.2 07/20/18
  */
 
 /*
@@ -224,8 +224,6 @@ while (true)
   var seconds = time.getSeconds();
   
   var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
-  print(horario);
-  TextFile.write(horario + "\n");
 
   // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
@@ -234,6 +232,7 @@ while (true)
     // e o tracking não está ocorrendo.
     if (hour >= start_hour && hour < flip_hour && sky6RASCOMTele.IsTracking == 0)
     {
+      sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Ligou às " + horario);
@@ -242,6 +241,7 @@ while (true)
     // Hora exata do flip.
     else if (hour == flip_hour && minutes == flip_minutes)
     {
+      sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Fez o flip às " + horario);
@@ -279,6 +279,7 @@ while (true)
     // Verifica se o Tracking não está ocorrendo e se há um slew em execução.
     if (sky6RASCOMTele.IsTracking == 0 && sky6RASCOMTele.IsSlewComplete != 0)
     {
+      sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Reconectou às " + horario);
