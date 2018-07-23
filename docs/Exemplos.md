@@ -5,7 +5,7 @@
 O código está dentro de um while true. A cada vez que ele é rodado a hora, o minuto e o segundo do computador são salvos em três variáveis para verificar o horário.
 
 Antes do início do loop são definidos os horários (UT) para ligar, fazer o flip e desligar.
-Para o inicío, é verificada se a hora está entre o horário de inicialização e o horário do flip e se o o telescópio está fazendo o tracking.
+Para o inicío, é verificada se a hora está entre o horário de inicialização e o horário do flip e se o o telescópio está fazendo o tracking. Antes de fazer o Slew, é necessário usar a função FindHome.
 O flip é realizado exatamente no horário determinado.
 O desligamento ocorre se o tracking estiver sendo realizado e está a hora atual for maior ou igual a hora de desligamento.
 
