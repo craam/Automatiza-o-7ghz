@@ -235,8 +235,8 @@ while (true)
       sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-      print("Ligou às " + horario);
-      TextFile.write("Ligou às " + horario + "\n");
+      print("Ligou as " + horario);
+      TextFile.write("Ligou as " + horario + "\n");
     }
     // Hora exata do flip.
     else if (hour == flip_hour && minutes == flip_minutes)
@@ -244,8 +244,8 @@ while (true)
       sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-      print("Fez o flip às " + horario);
-      TextFile.write("Fez o flip às " + horario + "\n");
+      print("Fez o flip as " + horario);
+      TextFile.write("Fez o flip as " + horario + "\n");
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
@@ -253,21 +253,21 @@ while (true)
     {
       SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
-      print("Desligado às " + horario);
-      TextFile.write("Desligado às " + horario + "\n");
+      print("Desligado as " + horario);
+      TextFile.write("Desligado as " + horario + "\n");
       TextFile.close();
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 12:00 (9:00 local).
   else if (sky6RASCOMTele.IsConnected == 0 && hour == start_hour && minutes == start_minutes)
   {
-    print("Conectando às " + horario);
+    print("Conectando as " + horario);
     sky6RASCOMTele.Connect();
     var filename = String(time.getDate()) + String(time.getMonth()) + String(time.getFullYear())
     TextFile.createNew(filename);
     TextFile.write(String(time.getDate()) + "/" + String(time.getMonth()) +
                     "/" + String(time.getFullYear()) + "\n");
-    TextFile.write("Conectando às " + horario + "\n");
+    TextFile.write("Conectando as " + horario + "\n");
 
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
@@ -282,8 +282,8 @@ while (true)
       sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-      print("Reconectou às " + horario);
-      TextFile.write("Reconectou às " + horario + "\n");
+      print("Reconectou as " + horario);
+      TextFile.write("Reconectou as " + horario + "\n");
     }
   }
 }
