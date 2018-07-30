@@ -244,7 +244,6 @@ while (true)
     // Hora exata do flip.
     else if (hour == flip_hour && minutes == flip_minutes)
     {
-      sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Fez o flip as " + horario);
@@ -285,7 +284,6 @@ while (true)
     // Verifica se o Tracking não está ocorrendo e se há um slew em execução.
     if (sky6RASCOMTele.IsTracking == 0 && sky6RASCOMTele.IsSlewComplete != 0)
     {
-      sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Reconectou as " + horario);
