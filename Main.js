@@ -25,10 +25,10 @@
  */
 
 /**
- * Version: 1.1.3 07/20/18
+ * Version: 1.1.4 08/01/18
  */
 
-/*
+/**
  * Confirma se o script tem conexão com o telescópio.
  *
  * @return false se não estiver conectado.
@@ -43,11 +43,29 @@ function Sky6IsConnected()
   return true;
 }
 
-/*
+/**
+ * Estabiliza a conexão com o telescópio.
+ * 
+ * @return false case algum erro aconteça.
+ */
+function ConnectTelescope()
+{
+  try {
+    sky6RASCOMTele.Connect();
+  } catch (connerr) {
+    print("Mount não conectado " + connerr.message);
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Encontra o objeto dado, e printa todas as propriedades (informações)
  * daquele objeto.
  *
  * @param objectName Nome do objeto a ser encontrado.
+ * @return Zero se objeto não encontrado.
  */
 function Find(objectName)
 {
@@ -55,7 +73,12 @@ function Find(objectName)
   var propriedades = 189;
   var Out = "";
   // Acha o objeto dado.
-  sky6StarChart.Find(objectName);
+  try {
+    sky6StarChart.Find(objectName);
+  } catch (finderr) {
+    print("Objeto não encontrado");
+    return 0;
+  }
 
   for (var propriedade = 0;propriedade < propriedades;++propriedade)
   {
@@ -71,7 +94,7 @@ function Find(objectName)
   }
 }
 
-/*
+/**
  * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
  *
  * @param IOn Binário(0 ou 1), o número que desliga ou liga o tracking.
@@ -91,8 +114,6 @@ function Find(objectName)
  */
 function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
-  sky6RASCOMTele.Connect();
-
   if (sky6RASCOMTele.IsConnected != 0)
   {
     sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
@@ -103,7 +124,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
   }
 }
 
-/*
+/**
  * Confirma se o slew está ocorrendo ou não.
  *
  * @return true se estiver fazendo o slew.
@@ -111,8 +132,6 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
  */
 function MountIsSlewing()
 {
-  sky6RASCOMTele.Connect();
-
   if (sky6RASCOMTele.IsConnected != 0)
   {
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
@@ -133,7 +152,7 @@ function MountIsSlewing()
   }
 }
 
-/*
+/**
  * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
  *
  * @param dRa ascensão reta.
@@ -146,8 +165,13 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 {
   if (sky6RASCOMTele.IsConnected != 0)
   {
-     sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
-     return true;
+    try {
+      sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
+      return true;
+    } catch (slewerr) {
+      print("Falha durano o slew: " + slewerr.message);
+      return false;
+    }
   }
   else
   {
@@ -156,15 +180,13 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
   }
 }
 
-/*
+/**
  * Leva o telescópio para a posição de parking.
  *
  * @return true se tudo tiver ocorrido normalmente.
  */
 function ParkTelescope()
 {
-  sky6RASCOMTele.Connect();
-
   if (sky6RASCOMTele.IsConnected != 0)
   {
     if (sky6RASCOMTele.IsParked != 0)
@@ -176,7 +198,7 @@ function ParkTelescope()
   }
 }
 
-/*
+/**
  * Desconecta o SkyX do telescópio.
  */
 function DisconnectTelescope()
@@ -187,7 +209,7 @@ function DisconnectTelescope()
   }
 } 
 
-/*
+/**
  * Encontra o objeto dado e retorna um object com a ascensão reta e
  * a declinação.
  *
@@ -198,7 +220,12 @@ function getRADec(object)
 {
   if (sky6RASCOMTele.IsConnected != 0)
   {
-    sky6StarChart.Find(object);
+    try {
+      sky6StarChart.Find(object);
+    } catch (finderr) {
+      print("Erro durante o find: " + finderr.message);
+      return false;
+    }
 
     sky6ObjectInformation.Property(54);
     var targetRA = sky6ObjectInformation.ObjInfoPropOut;
@@ -267,7 +294,7 @@ while (true)
   else if (sky6RASCOMTele.IsConnected == 0 && hour == start_hour && minutes == start_minutes)
   {
     print("Conectando as " + horario);
-    sky6RASCOMTele.Connect();
+    ConnectTelescope();
     TextFile.createNew(filename);
     TextFile.write(String(time.getDate()) + "/" + String(time.getMonth()) +
                     "/" + String(time.getFullYear()) + "\n");
@@ -280,7 +307,7 @@ while (true)
   else if (sky6RASCOMTele.IsConnected == 0 && hour >= start_hour && hour < turn_off_hour)
   {
     print("Reconectando...");
-    sky6RASCOMTele.Connect();
+    ConnectTelescope();
     // Verifica se o Tracking não está ocorrendo e se há um slew em execução.
     if (sky6RASCOMTele.IsTracking == 0 && sky6RASCOMTele.IsSlewComplete != 0)
     {
