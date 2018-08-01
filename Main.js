@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.4 08/01/18
+ * Version: 1.1.4.1 08/01/18
  */
 
 /**
@@ -159,7 +159,7 @@ function MountIsSlewing()
  * @param dDec declinação.
  * @param targetObjecto Objeto para fazer o slew.
  *
- * @return true se tudo tiver ocorrido normalmente.
+ * @return true se tudo tiver ocorrido corretamente.
  */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
@@ -183,7 +183,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 /**
  * Leva o telescópio para a posição de parking.
  *
- * @return true se tudo tiver ocorrido normalmente.
+ * @return true se tudo tiver ocorrido corretamente.
  */
 function ParkTelescope()
 {
