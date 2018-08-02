@@ -236,6 +236,11 @@ function getRADec(object)
   }
 }
 
+/**
+ * Pega a hora o minuto e o segundo do momento que a função é chamada.
+ * 
+ * @return Um objeto com os dados.
+ */
 function getTimeNow()
 {
   var time = new Date();
