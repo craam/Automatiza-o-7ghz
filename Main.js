@@ -236,6 +236,20 @@ function getRADec(object)
   }
 }
 
+function getTimeNow()
+{
+  var time = new Date();
+  var hour = time.getHours();
+  var minutes = time.getMinutes();
+  var seconds = time.getSeconds();
+
+  return {
+      "hour": hour,
+      "minutes": minutes,
+      "seconds": seconds
+  };
+}
+
 var start_hour = 12;
 var start_minutes = 00;
 var flip_hour = 16;
@@ -245,19 +259,16 @@ var turn_off_minutes = 00;
 
 while (true)
 {
-  var time = new Date();
-  var hour = time.getHours();
-  var minutes = time.getMinutes();
-  var seconds = time.getSeconds();
+  var time = getTimeNow();
   
-  var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
+  var horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
 
   // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
   {
     // Se a hora do computador estiver entre a hora de começar e a hora do flip
     // e o tracking não está ocorrendo.
-    if (hour >= start_hour && hour < flip_hour && sky6RASCOMTele.IsTracking == 0)
+    if (time.hour >= start_hour && time.hour < flip_hour && sky6RASCOMTele.IsTracking == 0)
     {
       sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
@@ -265,7 +276,7 @@ while (true)
       print("Ligou as " + horario);
     }
     // Hora exata do flip.
-    else if (hour == flip_hour && minutes == flip_minutes)
+    else if (time.hour == flip_hour && time.minutes == flip_minutes)
     {
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
@@ -273,7 +284,7 @@ while (true)
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
-    else if (hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0)
+    else if (time.hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0)
     {
       SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
@@ -281,14 +292,14 @@ while (true)
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 12:00 (9:00 local).
-  else if (sky6RASCOMTele.IsConnected == 0 && hour == start_hour && minutes == start_minutes)
+  else if (sky6RASCOMTele.IsConnected == 0 && time.hour == start_hour && time.minutes == start_minutes)
   {
-    print("Conectando as " + horario);
+    print("Conectado as " + horario);
     ConnectTelescope();
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
-  else if (sky6RASCOMTele.IsConnected == 0 && hour >= start_hour && hour < turn_off_hour)
+  else if (sky6RASCOMTele.IsConnected == 0 && time.hour >= start_hour && time.hour < turn_off_hour)
   {
     print("Reconectando...");
     ConnectTelescope();
