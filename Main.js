@@ -236,6 +236,11 @@ function getRADec(object)
   }
 }
 
+/**
+ * Pega a data e o horário do momento que a função é chamada.
+ *
+ * @return Um objeto com os dados.
+ */
 function getTimeNow()
 {
   var time = new Date();
@@ -269,7 +274,6 @@ while (true)
   
   var horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
   var filename = String(time.day) + String(time.month) + String(time.year)
-
 
   // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
