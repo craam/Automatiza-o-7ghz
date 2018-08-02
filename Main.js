@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.4.1 08/01/18
+ * Version: 1.1.5 08/02/18
  */
 
 /**
@@ -250,7 +250,7 @@ function getTimeNow()
   };
 }
 
-var start_hour = 12;
+var start_hour = 11;
 var start_minutes = 00;
 var flip_hour = 16;
 var flip_minutes = 00;
