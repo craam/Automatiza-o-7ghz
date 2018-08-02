@@ -251,7 +251,6 @@ while (true)
   var seconds = time.getSeconds();
   
   var horario = String(hour) + ":" + String(minutes) + ":" + String(seconds);
-  var filename = String(time.getDate()) + String(time.getMonth()) + String(time.getFullYear())
 
   // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
@@ -264,9 +263,6 @@ while (true)
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Ligou as " + horario);
-      TextFile.openForAppend(filename);
-      TextFile.write("Ligou as " + horario + "\n");
-      TextFile.close();
     }
     // Hora exata do flip.
     else if (hour == flip_hour && minutes == flip_minutes)
@@ -274,9 +270,6 @@ while (true)
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Fez o flip as " + horario);
-      TextFile.openForAppend(filename);
-      TextFile.write("Fez o flip as " + horario + "\n");
-      TextFile.close();
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
@@ -285,9 +278,6 @@ while (true)
       SetTelescopeTracking(0, 1, 0, 0);
       ParkTelescope();
       print("Desligado as " + horario);
-      TextFile.openForAppend(filename);
-      TextFile.write("Desligado as " + horario + "\n");
-      TextFile.close();
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 12:00 (9:00 local).
@@ -295,12 +285,6 @@ while (true)
   {
     print("Conectando as " + horario);
     ConnectTelescope();
-    TextFile.createNew(filename);
-    TextFile.write(String(time.getDate()) + "/" + String(time.getMonth()) +
-                    "/" + String(time.getFullYear()) + "\n");
-    TextFile.write("Conectando as " + horario + "\n");
-    TextFile.close();
-
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
@@ -314,9 +298,6 @@ while (true)
       var propriedade = getRADec("Sun");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
       print("Reconectou as " + horario);
-      TextFile.openForAppend(filename);
-      TextFile.write("Reconectou as " + horario + "\n");
-      TextFile.close();
     }
   }
 }
