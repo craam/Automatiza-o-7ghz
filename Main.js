@@ -329,6 +329,7 @@ while (true)
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
       print("Parking finalizado as " + horario);
+
       TextFile.write("Parking finalizado as " + horario + "\n");
 
       time = getTimeNow();
@@ -359,7 +360,6 @@ while (true)
     {
       TextFile.openForAppend(filename);
       var propriedade = getRADec("Sun");
-
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
       print("Iniciou o slew as " + horario);
