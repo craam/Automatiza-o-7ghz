@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.5 08/02/18
+ * Version: 1.1.5.1 08/02/18
  */
 
 /**
@@ -237,18 +237,24 @@ function getRADec(object)
 }
 
 /**
- * Pega a hora o minuto e o segundo do momento que a função é chamada.
- * 
+ * Pega a data e o horário do momento que a função é chamada.
+ *
  * @return Um objeto com os dados.
  */
 function getTimeNow()
 {
   var time = new Date();
+  var day = time.getDate();
+  var month = time.getMonth();
+  var year = time.getFullYear();
   var hour = time.getHours();
   var minutes = time.getMinutes();
   var seconds = time.getSeconds();
 
   return {
+      "day": day,
+      "month": month,
+      "year": year,
       "hour": hour,
       "minutes": minutes,
       "seconds": seconds
@@ -267,6 +273,7 @@ while (true)
   var time = getTimeNow();
   
   var horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+  var filename = String(time.day) + String(time.month) + String(time.year)
 
   // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
@@ -274,49 +281,73 @@ while (true)
     // Se a hora do computador for a hora de começar.
     if (time.hour == start_hour && time.minutes == start_minutes)
     {
-      print("Começo do home as " + horario);
+      TextFile.openForAppend(filename);
       sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
+
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
-      print("Comeco do slew as " + horario);
+      print("Iniciou o slew as " + horario);
+      TextFile.write("Iniciou o slew as " + horario + "\n");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
-      print("Inciou o rastreamento as " + horario);
+      print("Iniciou o rastreamento as " + horario);
+      TextFile.write("Iniciou o rastreamento as " + horario + "\n");
+      TextFile.close();
     }
     // Hora exata do flip.
     else if (time.hour == flip_hour && time.minutes == flip_minutes)
     {
+      TextFile.openForAppend(filename);
       var propriedade = getRADec("Sun");
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
-      print("Iniciu o slew as " + horario);
+      print("Iniciou o slew as " + horario);
+      TextFile.write("Iniciou o slew as " + horario + "\n");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
       print("Completou o flip as " + horario);
+      TextFile.write("Completou o flip as " + horario + "\n");
+      TextFile.close();
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
     else if (time.hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0)
     {
+      TextFile.openForAppend(filename);
       SetTelescopeTracking(0, 1, 0, 0);
-      print("Desligou o rastramento as " + horario);
+      time = getTimeNow();
+      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      print("Desligou o rastreamento as " + horario);
+      TextFile.write("Desligou o rastreamento as " + horario + "\n");
+
       ParkTelescope();
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
       print("Parking finalizado as " + horario);
+
+      TextFile.write("Parking finalizado as " + horario + "\n");
+
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
       print("Desconectado as " + horario);
+      TextFile.write("Desconectado as " + horario + "\n");
+      TextFile.close();
     }
   }
-  // Inicia a conexão no início do dia, no horário exato de 12:00 (9:00 local).
+  // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
   else if (sky6RASCOMTele.IsConnected == 0 && time.hour == start_hour && time.minutes == start_minutes)
   {
     print("Conectado as " + horario);
     ConnectTelescope();
+    TextFile.createNew(filename);
+    TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
+    TextFile.write("Conectado as " + horario + "\n");
+    TextFile.close();
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
@@ -327,14 +358,20 @@ while (true)
     // Verifica se o Tracking não está ocorrendo e se há um slew em execução.
     if (sky6RASCOMTele.IsTracking == 0 && sky6RASCOMTele.IsSlewComplete != 0)
     {
+      TextFile.openForAppend(filename);
       var propriedade = getRADec("Sun");
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
       print("Iniciou o slew as " + horario);
+      TextFile.write("Iniciou o slew as " + horario + "\n");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+
       time = getTimeNow();
       horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
       print("Reiniciou o rastreamento as " + horario);
+      TextFile.write("Reiniciou o rastreamento as " + horario + "\n");
+
+      TextFile.close();
     }
   }
 }
