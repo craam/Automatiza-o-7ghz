@@ -271,9 +271,8 @@ while (true)
   // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
   {
-    // Se a hora do computador estiver entre a hora de começar e a hora do flip
-    // e o tracking não está ocorrendo.
-    if (time.hour >= start_hour && time.hour < flip_hour && sky6RASCOMTele.IsTracking == 0)
+    // Se a hora do computador for a hora de começar.
+    if (time.hour == start_hour && time.minutes == start_minutes)
     {
       print("Começo do home as " + horario);
       sky6RASCOMTele.FindHome();
