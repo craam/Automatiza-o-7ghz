@@ -1,6 +1,6 @@
 /**
  * Author: Edison Neto (ednetoali@gmail.com)
- *
+
  * MIT License
 
  * Copyright (c) 2018 Edison Aguiar de Souza Neto
