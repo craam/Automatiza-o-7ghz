@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.5.1 08/02/18
+ * Version: 1.1.6 08/06/18
  */
 
 /**
@@ -261,6 +261,36 @@ function getTimeNow()
   };
 }
 
+function SetFileName()
+{
+  var time = getTimeNow();
+
+  if (time.day < 10) {
+    var day = "0" + String(time.day);
+  } else {
+    var day = String(time.day);
+  }
+
+  if (time.month < 10) {
+    var month = "0" + String(time.month);
+  } else {
+    var month = String(time.month);
+  }
+
+  var year = String(time.year);
+
+  var filename = year + month + dia;
+
+  return filename;
+}
+
+function getHorario()
+{
+  var time = getTimeNow();
+  horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+  return horario
+}
+
 var start_hour = 11;
 var start_minutes = 00;
 var flip_hour = 16;
@@ -271,9 +301,8 @@ var turn_off_minutes = 00;
 while (true)
 {
   var time = getTimeNow();
-  
-  var horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
-  var filename = String(time.day) + String(time.month) + String(time.year)
+  var horario = getHorario();
+  var filename = SetFileName();
 
   // Verifica se o telescópio está conectado.
   if (sky6RASCOMTele.IsConnected != 0)
@@ -285,14 +314,12 @@ while (true)
       sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
 
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      horario = getHorario();
       print("Iniciou o slew as " + horario);
       TextFile.write("Iniciou o slew as " + horario + "\n");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      horario = getHorario();
       print("Iniciou o rastreamento as " + horario);
       TextFile.write("Iniciou o rastreamento as " + horario + "\n");
       TextFile.close();
@@ -302,14 +329,12 @@ while (true)
     {
       TextFile.openForAppend(filename);
       var propriedade = getRADec("Sun");
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      horario = getHorario();
       print("Iniciou o slew as " + horario);
       TextFile.write("Iniciou o slew as " + horario + "\n");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      horario = getHorario();
       print("Completou o flip as " + horario);
       TextFile.write("Completou o flip as " + horario + "\n");
       TextFile.close();
@@ -320,20 +345,17 @@ while (true)
     {
       TextFile.openForAppend(filename);
       SetTelescopeTracking(0, 1, 0, 0);
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      horario = getHorario();
       print("Desligou o rastreamento as " + horario);
       TextFile.write("Desligou o rastreamento as " + horario + "\n");
 
       ParkTelescope();
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      horario = getHorario();
       print("Parking finalizado as " + horario);
 
       TextFile.write("Parking finalizado as " + horario + "\n");
 
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      horario = getHorario();
       print("Desconectado as " + horario);
       TextFile.write("Desconectado as " + horario + "\n");
       TextFile.close();
@@ -360,14 +382,13 @@ while (true)
     {
       TextFile.openForAppend(filename);
       var propriedade = getRADec("Sun");
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+
+      horario = getHorario();
       print("Iniciou o slew as " + horario);
       TextFile.write("Iniciou o slew as " + horario + "\n");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      time = getTimeNow();
-      horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+      horario = getHorario();
       print("Reiniciou o rastreamento as " + horario);
       TextFile.write("Reiniciou o rastreamento as " + horario + "\n");
 
