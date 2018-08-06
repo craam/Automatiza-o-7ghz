@@ -2,14 +2,14 @@
 
 ## Funcionamento da rotina principal
 
-O código está dentro de um while true. A cada vez que ele é rodado a hora, o minuto e o segundo do computador são salvos em três variáveis para verificar o horário.
+O código está dentro de um while true. A cada vez que ele é rodado o horario do computador é salvo em uma variável para verificar o horário.
 
 Antes do início do loop são definidos os horários (UT) para ligar, fazer o flip e desligar.
-Para o inicío, é verificada se a hora está entre o horário de inicialização e o horário do flip e se o o telescópio está fazendo o tracking. Antes de fazer o Slew, é necessário usar a função FindHome.
-O flip é realizado exatamente no horário determinado.
+Para o inicío, é verificada se a hora é exatamente a do horário de inicialização. Antes de fazer o Slew, é necessário usar a função FindHome. Como não há uma forma de saber se o telescópio já fez o home ou não, a função FindHome deve ser executada sempre na inicialização.
+O flip, como a inicialização, é realizado precisamente no horário determinado.
 O desligamento ocorre se o tracking estiver sendo realizado e está a hora atual for maior ou igual a hora de desligamento.
 
-Se a conexão for perdida há a possibilidade dela ser recuperada e que o telescópio volte a sua rotina normal. Entretanto, a causa da perda de conexão pode não ser resolvida e seja necessária um reconexão manual.
+Se a conexão for perdida há a possibilidade dela ser recuperada e que o telescópio volte a sua rotina normal. Entretanto, o problema causado pela perda de conexão pode não ser resolvido, e há a possibilidade de que seja necessária um reconexão manual.
 
 A documentação feita dentro do script é feita usando o padrão javadoc <https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javadoc.html>
 
