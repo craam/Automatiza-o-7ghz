@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.6 08/06/18
+ * Version: 1.1.6.1 08/06/18
  */
 
 /**
@@ -279,7 +279,7 @@ function SetFileName()
 
   var year = String(time.year);
 
-  var filename = year + month + dia;
+  var filename = year + month + day;
 
   return filename;
 }
