@@ -261,6 +261,11 @@ function getTimeNow()
   };
 }
 
+/**
+ * Cria o nome do arquivo para o dia atual.
+ * 
+ * @return O nome do arquivo do dia atual.
+ */
 function SetFileName()
 {
   var time = getTimeNow();
@@ -284,6 +289,11 @@ function SetFileName()
   return filename;
 }
 
+/**
+ * Pega o horário atual do computador.
+ * 
+ * @return O horário.
+ */
 function getHorario()
 {
   var time = getTimeNow();
