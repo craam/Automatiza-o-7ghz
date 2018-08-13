@@ -53,7 +53,7 @@ function ConnectTelescope()
   try {
     sky6RASCOMTele.Connect();
   } catch (connerr) {
-    print("Mount não conectado " + connerr.message);
+    writeFileAndPrint("Mount não conectado " + connerr.message);
     return false;
   }
 
@@ -168,7 +168,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
       sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
       return true;
     } catch (slewerr) {
-      print("Falha durano o slew: " + slewerr.message);
+      writeFileAndPrint("Falha durante o slew: " + slewerr.message);
       return false;
     }
   }
@@ -222,7 +222,7 @@ function getRADec(object)
     try {
       sky6StarChart.Find(object);
     } catch (finderr) {
-      print("Erro durante o find: " + finderr.message);
+      writeFileAndPrint("Erro durante o find: " + finderr.message);
       return false;
     }
 
@@ -378,7 +378,6 @@ while (true)
     // Verifica se o Tracking não está ocorrendo e se há um slew em execução.
     if (sky6RASCOMTele.IsTracking == 0 && sky6RASCOMTele.IsSlewComplete != 0)
     {
-      TextFile.openForAppend(filename);
       var propriedade = getRADec("Sun");
 
       writeFileAndPrint(filename, "Iniciou o slew as " + horario);
