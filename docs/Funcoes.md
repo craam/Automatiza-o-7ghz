@@ -101,8 +101,6 @@ sky6RASCOMTele.Connect();
 sky6RASCOMTele.getRaDec();
 
 // Printa: "ascensão reta | declinação"
-Out = String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec);
-// ou
 print(String(sky6RASCOMTele.dRa) + " | " + String(sky6RASCOMTele.dDec));
 ```
 
