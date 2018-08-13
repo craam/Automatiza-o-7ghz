@@ -117,8 +117,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
   if (sky6RASCOMTele.IsConnected != 0)
   {
     sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
-    var Out = "TheSkyX Build " + Application.build;
-    Out += "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
+    var Out = "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
     Out += "Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
     print(Out);
   }
