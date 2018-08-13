@@ -39,13 +39,22 @@ Para pegar a ascensão reta e a declinação já há uma função implementada n
 ```javascript
 function getRADec(object)
 {
-  sky6StarChart.Find(object);
+  if (sky6RASCOMTele.IsConnected != 0)
+  {
+    try {
+      sky6StarChart.Find(object);
+    } catch (finderr) {
+      print("Erro durante o find: " + finderr.message);
+      return false;
+    }
 
-  sky6ObjectInformation.Property(54);
-  var targetRA = sky6ObjectInformation.ObjInfoPropOut;
-  sky6ObjectInformation.Property(55);
-  var targetDec = sky6ObjectInformation.ObjInfoPropOut;
-  return {"ra": targetRA, "dec": targetDec};
+    sky6ObjectInformation.Property(54);
+    var targetRA = sky6ObjectInformation.ObjInfoPropOut;
+    sky6ObjectInformation.Property(55);
+    var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+
+    return {"ra": targetRA, "dec": targetDec};
+  }
 }
 ```
 
@@ -67,7 +76,12 @@ function Find(objectName)
   var propriedades = 189;
   var Out = "";
   // Acha o objeto dado.
-  sky6StarChart.Find(objectName);
+  try {
+    sky6StarChart.Find(objectName);
+  } catch (finderr) {
+    print("Objeto não encontrado");
+    return 0;
+  }
 
   for (var propriedade = 0;propriedade < propriedades;++propriedade)
   {
@@ -76,7 +90,8 @@ function Find(objectName)
       sky6ObjectInformation.Property(propriedade);
 
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
-      // Prints out object info.
+
+      // Printa as informações do objeto.
       print(Out);
     }
   }
