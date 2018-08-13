@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.6.1 08/06/18
+ * Version: 1.1.6.2 08/13/18
  */
 
 /**
@@ -387,6 +387,7 @@ while (true)
   {
     print("Reconectando...");
     ConnectTelescope();
+    sky6RASCOMTele.FindHome();
     // Verifica se o Tracking não está ocorrendo e se há um slew em execução.
     if (sky6RASCOMTele.IsTracking == 0 && sky6RASCOMTele.IsSlewComplete != 0)
     {
