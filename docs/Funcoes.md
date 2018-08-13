@@ -35,7 +35,7 @@ Exemplo:
 sky6StarChart.Find("Sun");
 ```
 
-Exemplo com o sky6ObjectInformation.Property():
+Exemplo usando o sky6ObjectInformation.Property():
 
 ```javascript
 // Procura pelo sol.
@@ -43,9 +43,6 @@ sky6StarChart.Find("Sun");
 // Prepara a função para retornar a declinação.
 sky6ObjectInformation.Property(55);
 
-// Printa a declinação.
-Out = sky6ObjectInfomation.ObjInfoPropOut + "\n";
-// ou
 print(sky6ObjectInfomation.ObjInfoPropOut + "\n")
 ```
 
