@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.7 08/13/18
+ * Version: 1.1.7.1 08/15/18
  */
 
 /**
@@ -300,12 +300,18 @@ function getHorario()
   return horario
 }
 
+/**
+ * Printa no debugger e escreve no log a mesma mensagem.
+ *
+ * @param filename O nome to arquivo.
+ * @param text A mensagem a ser escrita.
+ */
 function writeFileAndPrint(filename, text)
 {
   TextFile.openForAppend(filename);
   horario = getHorario();
-  print(text);
-  TextFile.write(text + "\n");
+  print(text + " " + horario);
+  TextFile.write(text + " " + horario + "\n");
   TextFile.close();
 }
 
@@ -331,31 +337,31 @@ while (true)
       sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
 
-      writeFileAndPrint(filename, "Iniciou o slew as " + horario)
+      writeFileAndPrint(filename, "Iniciou o slew as")
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      writeFileAndPrint(filename,"Iniciou o rastreamento as " + horario);
+      writeFileAndPrint(filename,"Iniciou o rastreamento as");
     }
     // Hora exata do flip.
     else if (time.hour == flip_hour && time.minutes == flip_minutes)
     {
       var propriedade = getRADec("Sun");
-      writeFileAndPrint(filename, "Iniciou o slew as " + horario);
+      writeFileAndPrint(filename, "Iniciou o slew as");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      writeFileAndPrint(filename, "Completou o flip as " + horario);
+      writeFileAndPrint(filename, "Completou o flip as");
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
     else if (time.hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0)
     {
       SetTelescopeTracking(0, 1, 0, 0);
-      writeFileAndPrint(filename, "Desligou o rastreamento as " + horario);
+      writeFileAndPrint(filename, "Desligou o rastreamento as");
 
       ParkTelescope();
-      writeFileAndPrint(filename, "Parking finalizado as " + horario);
+      writeFileAndPrint(filename, "Parking finalizado as");
 
-      writeFileAndPrint(filename, "Desconectado as " + horario);
+      writeFileAndPrint(filename, "Desconectado as");
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
@@ -380,10 +386,10 @@ while (true)
     {
       var propriedade = getRADec("Sun");
 
-      writeFileAndPrint(filename, "Iniciou o slew as " + horario);
+      writeFileAndPrint(filename, "Iniciou o slew as");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      writeFileAndPrint(filename, "Reiniciou o rastreamento as " + horario);
+      writeFileAndPrint(filename, "Reiniciou o rastreamento as");
     }
   }
 }
