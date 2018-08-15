@@ -309,7 +309,7 @@ function getHorario()
 function writeFileAndPrint(filename, text)
 {
   TextFile.openForAppend(filename);
-  horario = getHorario();
+  var horario = getHorario();
   print(text + " " + horario);
   TextFile.write(text + " " + horario + "\n");
   TextFile.close();
