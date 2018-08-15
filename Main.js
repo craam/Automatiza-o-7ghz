@@ -303,7 +303,7 @@ function getHorario()
 /**
  * Printa no debugger e escreve no log a mesma mensagem.
  *
- * @param filename O nome to arquivo.
+ * @param filename O nome do arquivo.
  * @param text A mensagem a ser escrita.
  */
 function writeFileAndPrint(filename, text)
