@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.7.1 08/15/18
+ * Version: 1.1.7.2 08/16/18
  */
 
 /**
@@ -291,13 +291,13 @@ function SetFileName()
 /**
  * Pega o horário atual do computador.
  * 
- * @return O horário.
+ * @return O horário no formato H%:M%:S%.
  */
 function getHorario()
 {
   var time = getTimeNow();
-  horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
-  return horario
+  var horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+  return horario;
 }
 
 /**
@@ -306,13 +306,18 @@ function getHorario()
  * @param filename O nome do arquivo.
  * @param text A mensagem a ser escrita.
  */
-function writeFileAndPrint(filename, text)
+function writeFileAndPrint(text)
 {
-  TextFile.openForAppend(filename);
-  var horario = getHorario();
-  print(text + " " + horario);
-  TextFile.write(text + " " + horario + "\n");
-  TextFile.close();
+  var filename = SetFileName();
+  try {
+    TextFile.openForAppend(filename);
+    var horario = getHorario();
+    TextFile.write(text + " " + horario + "\n");
+    print(text + " " + horario);
+    TextFile.close();
+  } catch (texterr) {
+    print("Erro ao editar o log");
+  }
 }
 
 var start_hour = 11;
@@ -337,31 +342,31 @@ while (true)
       sky6RASCOMTele.FindHome();
       var propriedade = getRADec("Sun");
 
-      writeFileAndPrint(filename, "Iniciou o slew as")
+      writeFileAndPrint("Iniciou o slew as")
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      writeFileAndPrint(filename,"Iniciou o rastreamento as");
+      writeFileAndPrint("Iniciou o rastreamento as");
     }
     // Hora exata do flip.
     else if (time.hour == flip_hour && time.minutes == flip_minutes)
     {
       var propriedade = getRADec("Sun");
-      writeFileAndPrint(filename, "Iniciou o slew as");
+      writeFileAndPrint("Iniciou o slew as");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      writeFileAndPrint(filename, "Completou o flip as");
+      writeFileAndPrint("Completou o flip as");
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
     else if (time.hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0)
     {
       SetTelescopeTracking(0, 1, 0, 0);
-      writeFileAndPrint(filename, "Desligou o rastreamento as");
+      writeFileAndPrint("Desligou o rastreamento as");
 
       ParkTelescope();
-      writeFileAndPrint(filename, "Parking finalizado as");
+      writeFileAndPrint("Parking finalizado as");
 
-      writeFileAndPrint(filename, "Desconectado as");
+      writeFileAndPrint("Desconectado as");
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
@@ -386,10 +391,10 @@ while (true)
     {
       var propriedade = getRADec("Sun");
 
-      writeFileAndPrint(filename, "Iniciou o slew as");
+      writeFileAndPrint("Iniciou o slew as");
       SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-      writeFileAndPrint(filename, "Reiniciou o rastreamento as");
+      writeFileAndPrint("Reiniciou o rastreamento as");
     }
   }
 }
