@@ -39,12 +39,11 @@ Para pegar a ascensão reta e a declinação já há uma função implementada n
 ```javascript
 function getRADec(object)
 {
-  if (sky6RASCOMTele.IsConnected != 0)
-  {
+  if (sky6RASCOMTele.IsConnected != 0) {
     try {
       sky6StarChart.Find(object);
     } catch (finderr) {
-      print("Erro durante o find: " + finderr.message);
+      writeFileAndPrint("Erro durante o find: " + finderr.message);
       return false;
     }
 
@@ -79,15 +78,13 @@ function Find(objectName)
   try {
     sky6StarChart.Find(objectName);
   } catch (finderr) {
-    print("Objeto não encontrado");
+    print("Objeto nao encontrado");
     return 0;
   }
 
-  for (var propriedade = 0;propriedade < propriedades;++propriedade)
-  {
-    if (sky6ObjectInformation.PropertyApplies(propriedade) != 0)
-    {
-      sky6ObjectInformation.Property(propriedade);
+  for (var prop = 0;prop < propriedades;++prop) {
+    if (sky6ObjectInformation.PropertyApplies(prop) != 0) {
+      sky6ObjectInformation.Property(prop);
 
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
 
@@ -107,25 +104,17 @@ Mesmo você podendo ver no próprio SkyX se o slew está ocorrendo, é bom termo
 ```javascript
 function MountIsSlewing()
 {
-  sky6RASCOMTele.Connect();
-
-  if (Sky6IsConnected())
-  {
+  if (sky6RASCOMTele.IsConnected != 0) {
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
-    if (sky6RASCOMTele.IsSlewComplete != 0)
-    {
-      print("Not Slewing");
+    if (sky6RASCOMTele.IsSlewComplete != 0) {
+      print("Não está fazer o slew.");
       return false;
-    }
-    else
-    {
-      print("Slewing");
+    } else {
+      print("Fazendo o slew.");
       return true;
     }
-  }
-  else
-  {
-    print("Telescope not connected.");
+  } else {
+    print("Telescópio não conectado.");
   }
 }
 ```

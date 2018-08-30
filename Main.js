@@ -75,13 +75,13 @@ function Find(objectName)
   try {
     sky6StarChart.Find(objectName);
   } catch (finderr) {
-    print("Objeto não encontrado");
+    print("Objeto nao encontrado");
     return 0;
   }
 
-  for (var propriedade = 0;propriedade < propriedades;++propriedade) {
-    if (sky6ObjectInformation.PropertyApplies(propriedade) != 0) {
-      sky6ObjectInformation.Property(propriedade);
+  for (var prop  = 0;prop < propriedades;++prop) {
+    if (sky6ObjectInformation.PropertyApplies(prop) != 0) {
+      sky6ObjectInformation.Property(prop);
 
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
 
