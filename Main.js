@@ -291,7 +291,7 @@ function getHorario()
  */
 function WriteFileAndPrint(text)
 {
-  var filename = SetFileName();
+  var filename = setFileName();
   try {
     TextFile.openForAppend(filename);
     var horario = getHorario();
