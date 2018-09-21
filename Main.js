@@ -111,7 +111,7 @@ function Find(objectName)
  */
 function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
-  if (sky6RASCOMTele.IsConnected != 0) {
+  if (Sky6IsConnected()) {
     sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
     var Out = "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
     Out += "Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
@@ -127,7 +127,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
  */
 function MountIsSlewing()
 {
-  if (sky6RASCOMTele.IsConnected != 0) {
+  if (Sky6IsConnected()) {
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0) {
       print("Não está fazer o slew.");
@@ -152,7 +152,7 @@ function MountIsSlewing()
  */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
-  if (sky6RASCOMTele.IsConnected != 0) {
+  if (Sky6IsConnected()) {
     try {
       sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
       return true;
@@ -173,7 +173,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
  */
 function ParkTelescope()
 {
-  if (sky6RASCOMTele.IsConnected != 0) {
+  if (Sky6IsConnected()) {
     if (sky6RASCOMTele.IsParked != 0) {
       sky6RASCOMTele.Park();
       print("Parking completo.");
@@ -187,7 +187,7 @@ function ParkTelescope()
  */
 function DisconnectTelescope()
 {
-  if (sky6RASCOMTele.IsConnected != 0) {
+  if (Sky6IsConnected()) {
     sky6RASCOMTele.Disconnect();
   }
 } 
@@ -201,7 +201,7 @@ function DisconnectTelescope()
  */
 function GetRADec(object)
 {
-  if (sky6RASCOMTele.IsConnected != 0) {
+  if (Sky6IsConnected()) {
     try {
       sky6StarChart.Find(object);
     } catch (finderr) {
