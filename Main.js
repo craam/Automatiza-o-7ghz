@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.7.4 09/05/18
+ * Version: 1.1.8 09/21/18
  */
 
 /**
@@ -299,7 +299,7 @@ function WriteFileAndPrint(text)
     print(text + " " + horario);
     TextFile.close();
   } catch (texterr) {
-    print("Erro ao editar o log");
+    print("Erro ao editar o log. \n" + texterr.message);
   }
 }
 
@@ -314,10 +314,9 @@ while (true)
 {
   var time = getTimeNow();
   var horario = getHorario();
-  var filename = setFileName();
 
   // Verifica se o telescópio está conectado.
-  if (sky6RASCOMTele.IsConnected != 0)
+  if (Sky6IsConnected())
   {
     // Se a hora do computador for a hora de começar.
     if (time.hour == start_hour && time.minutes == start_minutes)
@@ -353,10 +352,11 @@ while (true)
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
-  else if (sky6RASCOMTele.IsConnected == 0 && time.hour == start_hour && time.minutes == start_minutes)
+  else if (!Sky6IsConnected() && time.hour == start_hour && time.minutes == start_minutes)
   {
     print("Conectado as " + horario);
     ConnectTelescope();
+    var filename = setFileName();
     TextFile.createNew(filename);
     TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
     TextFile.write("Conectado as " + horario + "\n");
@@ -364,9 +364,9 @@ while (true)
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
-  else if (sky6RASCOMTele.IsConnected == 0 && time.hour >= start_hour && time.hour < turn_off_hour)
+  else if (!Sky6IsConnected() && time.hour >= start_hour && time.hour < turn_off_hour)
   {
-    print("Reconectando...");
+    WriteFileAndPrint("(Re)conectando as");
     ConnectTelescope();
     sky6RASCOMTele.FindHome();
     // Verifica se o Tracking não está ocorrendo.
@@ -380,7 +380,7 @@ while (true)
       WriteFileAndPrint("Reiniciou o rastreamento as");
     }
   }
-  else if (sky6RASCOMTele.IsConnected != 0 && time.hour >= start_hour && time.hour < turn_off_hour && sky6RASCOMTele.IsTracking == 0)
+  else if (Sky6IsConnected() && time.hour >= start_hour && time.hour < turn_off_hour && sky6RASCOMTele.IsTracking == 0)
   {
     var propriedade = GetRADec("Sun");
 
