@@ -52,7 +52,7 @@ function ConnectTelescope()
   try {
     sky6RASCOMTele.Connect();
   } catch (connerr) {
-    WriteFileAndPrint("Mount não conectado " + connerr.message);
+    WriteFileAndPrint("Mount nao conectado " + connerr.message);
     return false;
   }
 
@@ -60,7 +60,7 @@ function ConnectTelescope()
 }
 
 /**
- * Encontra o objeto dado, e printa todas as propriedades (informações)
+ * Encontra o objeto dado, e escreve todas as propriedades (informações)
  * daquele objeto.
  *
  * @param objectName Nome do objeto a ser encontrado.
@@ -85,8 +85,9 @@ function Find(objectName)
 
       Out += sky6ObjectInformation.ObjInfoPropOut + "|";
 
-      // Printa as informações do objeto.
+      // Escreve as informações do objeto.
       print(Out);
+      RunJavaScriptOutput.writeLine(Out);
     }
   }
 }
@@ -116,6 +117,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
     var Out = "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
     Out += "Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
     print(Out);
+    RunJavaScriptOutput.writeLine(Out);
   }
 }
 
@@ -130,14 +132,14 @@ function MountIsSlewing()
   if (Sky6IsConnected()) {
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0) {
-      print("Não está fazer o slew.");
+      print("Nao esta fazendo o slew.");
       return false;
     } else {
       print("Fazendo o slew.");
       return true;
     }
   } else {
-    print("Telescópio não conectado.");
+    print("Telescopio nao conectado.");
   }
 }
 
@@ -161,7 +163,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
       return false;
     }
   } else {
-    print("Telescópio não conectado.");
+    print("Telescopio nao conectado.");
     return false;
   }
 }
@@ -284,7 +286,8 @@ function getHorario()
 }
 
 /**
- * Printa no debugger e escreve no log a mesma mensagem.
+ * Escreve no debugger e escreve no log a mesma mensagem, junto com
+ * o horário do momento.
  *
  * @param filename O nome do arquivo.
  * @param text A mensagem a ser escrita.
