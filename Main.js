@@ -76,6 +76,7 @@ function Find(objectName)
     sky6StarChart.Find(objectName);
   } catch (finderr) {
     print("Objeto nao encontrado");
+    RunJavaScriptOutput.writeLine("Objeto nao encontrado");
     return 0;
   }
 
@@ -304,6 +305,37 @@ function WriteFileAndPrint(text)
   } catch (texterr) {
     print("Erro ao editar o log. \n" + texterr.message);
   }
+}
+
+function Initialize()
+{
+  sky6RASCOMTele.FindHome();
+  var propriedade = GetRADec("Sun");
+
+  WriteFileAndPrint("Iniciou o slew as")
+  SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+
+  WriteFileAndPrint("Iniciou o rastreamento as");
+}
+
+function Flip()
+{
+  var propriedade = GetRADec("Sun");
+  WriteFileAndPrint("Iniciou o slew as");
+  SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+
+  WriteFileAndPrint("Completou o flip as");
+}
+
+function TurnOff()
+{
+  SetTelescopeTracking(0, 1, 0, 0);
+  WriteFileAndPrint("Desligou o rastreamento as");
+
+  ParkTelescope();
+  WriteFileAndPrint("Parking finalizado as");
+
+  WriteFileAndPrint("Desconectado as");
 }
 
 var start_hour = 11;
