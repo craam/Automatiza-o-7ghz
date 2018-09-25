@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.9 09/25/18
+ * Version: 1.1.9.1 09/25/18
  */
 
 /**
@@ -376,12 +376,14 @@ function RestartTracking_s()
   WriteFileAndPrint("Reiniciou o rastreamento as");
 }
 
-var start_hour = 11;
-var start_minutes = 00;
-var flip_hour = 16;
-var flip_minutes = 00;
-var turn_off_hour = 20;
-var turn_off_minutes = 00;
+var work_time = {
+  "start_hour": 11,
+  "start_minutes": 00,
+  "flip_hour": 16,
+  "flip_minutes": 00,
+  "turn_off_hour": 20,
+  "turn_off_minutes": 00,
+}
 
 while (true)
 {
@@ -391,29 +393,29 @@ while (true)
   // Verifica se o telescópio está conectado.
   if (Sky6IsConnected()) {
     // Se a hora do computador for a hora de começar.
-    if (time.hour == start_hour && time.minutes == start_minutes) {
+    if (time.hour == work_time.start_hour && time.minutes == work_time.start_minutes) {
       Initialize_s();
     }
     // Hora exata do flip.
-    else if (time.hour == flip_hour && time.minutes == flip_minutes) {
+    else if (time.hour == work_time.flip_hour && time.minutes == work_time.flip_minutes) {
       Flip_s();
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
-    else if (time.hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0) {
+    else if (time.hour >= work_time.turn_off_hour && sky6RASCOMTele.IsTracking != 0) {
       TurnOff_s();
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
-  else if (!Sky6IsConnected() && time.hour == start_hour && time.minutes == start_minutes) {
+  else if (!Sky6IsConnected() && time.hour == work_time.start_hour && time.minutes == work_time.start_minutes) {
     Connect_s(time, horario)
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
-  else if (!Sky6IsConnected() && time.hour >= start_hour && time.hour < turn_off_hour) {
+  else if (!Sky6IsConnected() && time.hour >= work_time.start_hour && time.hour < work_time.turn_off_hour) {
     Reconnect_s();
   }
-  else if (Sky6IsConnected() && time.hour >= start_hour && time.hour < turn_off_hour && sky6RASCOMTele.IsTracking == 0) {
+  else if (Sky6IsConnected() && time.hour >= work_time.start_hour && time.hour < work_time.turn_off_hour && sky6RASCOMTele.IsTracking == 0) {
     RestartTracking_s();
   }
 }
