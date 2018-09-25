@@ -44,7 +44,7 @@ function Sky6IsConnected()
 
 /**
  * Estabiliza a conexão com o telescópio.
- * 
+ *
  * @return false case algum erro aconteça.
  */
 function ConnectTelescope()
@@ -193,7 +193,7 @@ function DisconnectTelescope()
   if (Sky6IsConnected()) {
     sky6RASCOMTele.Disconnect();
   }
-} 
+}
 
 /**
  * Encontra o objeto dado e retorna um object com a ascensão reta e
@@ -248,7 +248,7 @@ function getTimeNow()
 
 /**
  * Cria o nome do arquivo para o dia atual.
- * 
+ *
  * @return O nome do arquivo do dia atual.
  */
 function setFileName()
@@ -276,7 +276,7 @@ function setFileName()
 
 /**
  * Pega o horário atual do computador.
- * 
+ *
  * @return O horário no formato H%:M%:S%.
  */
 function getHorario()
