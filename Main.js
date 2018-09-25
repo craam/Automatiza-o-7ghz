@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Edison Neto (ednetoali@gmail.com)
 
  * MIT License
@@ -24,7 +24,7 @@
  * SOFTWARE.
  */
 
-/**
+/*
  * Version: 1.1.9.1 09/25/18
  */
 
