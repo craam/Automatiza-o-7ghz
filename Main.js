@@ -25,7 +25,7 @@
  */
 
 /**
- * Version: 1.1.8 09/21/18
+ * Version: 1.1.9 09/25/18
  */
 
 /**
@@ -307,7 +307,7 @@ function WriteFileAndPrint(text)
   }
 }
 
-function Initialize()
+function Initialize_s()
 {
   sky6RASCOMTele.FindHome();
   var propriedade = GetRADec("Sun");
@@ -318,7 +318,7 @@ function Initialize()
   WriteFileAndPrint("Iniciou o rastreamento as");
 }
 
-function Flip()
+function Flip_s()
 {
   var propriedade = GetRADec("Sun");
   WriteFileAndPrint("Iniciou o slew as");
@@ -327,7 +327,7 @@ function Flip()
   WriteFileAndPrint("Completou o flip as");
 }
 
-function TurnOff()
+function TurnOff_s()
 {
   SetTelescopeTracking(0, 1, 0, 0);
   WriteFileAndPrint("Desligou o rastreamento as");
@@ -336,6 +336,44 @@ function TurnOff()
   WriteFileAndPrint("Parking finalizado as");
 
   WriteFileAndPrint("Desconectado as");
+}
+
+function Connect_s(time, horario)
+{
+  print("Conectado as " + horario);
+  ConnectTelescope();
+  var filename = setFileName();
+  TextFile.createNew(filename);
+  TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
+  TextFile.write("Conectado as " + horario + "\n");
+  TextFile.close();
+}
+
+function Reconnect_s()
+{
+  WriteFileAndPrint("(Re)conectando as");
+  ConnectTelescope();
+  sky6RASCOMTele.FindHome();
+  // Verifica se o Tracking não está ocorrendo.
+  if (sky6RASCOMTele.IsTracking == 0)
+  {
+    var propriedade = GetRADec("Sun");
+
+    WriteFileAndPrint("Iniciou o slew as");
+    SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+
+    WriteFileAndPrint("Reiniciou o rastreamento as");
+  }
+}
+
+function RestartTracking_s()
+{
+  var propriedade = GetRADec("Sun");
+
+  WriteFileAndPrint("Iniciou o slew as");
+  SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+
+  WriteFileAndPrint("Reiniciou o rastreamento as");
 }
 
 var start_hour = 11;
@@ -351,77 +389,31 @@ while (true)
   var horario = getHorario();
 
   // Verifica se o telescópio está conectado.
-  if (Sky6IsConnected())
-  {
+  if (Sky6IsConnected()) {
     // Se a hora do computador for a hora de começar.
-    if (time.hour == start_hour && time.minutes == start_minutes)
-    {
-      sky6RASCOMTele.FindHome();
-      var propriedade = GetRADec("Sun");
-
-      WriteFileAndPrint("Iniciou o slew as")
-      SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-
-      WriteFileAndPrint("Iniciou o rastreamento as");
+    if (time.hour == start_hour && time.minutes == start_minutes) {
+      Initialize_s();
     }
     // Hora exata do flip.
-    else if (time.hour == flip_hour && time.minutes == flip_minutes)
-    {
-      var propriedade = GetRADec("Sun");
-      WriteFileAndPrint("Iniciou o slew as");
-      SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-
-      WriteFileAndPrint("Completou o flip as");
+    else if (time.hour == flip_hour && time.minutes == flip_minutes) {
+      Flip_s();
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
-    else if (time.hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0)
-    {
-      SetTelescopeTracking(0, 1, 0, 0);
-      WriteFileAndPrint("Desligou o rastreamento as");
-
-      ParkTelescope();
-      WriteFileAndPrint("Parking finalizado as");
-
-      WriteFileAndPrint("Desconectado as");
+    else if (time.hour >= turn_off_hour && sky6RASCOMTele.IsTracking != 0) {
+      TurnOff_s();
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
-  else if (!Sky6IsConnected() && time.hour == start_hour && time.minutes == start_minutes)
-  {
-    print("Conectado as " + horario);
-    ConnectTelescope();
-    var filename = setFileName();
-    TextFile.createNew(filename);
-    TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
-    TextFile.write("Conectado as " + horario + "\n");
-    TextFile.close();
+  else if (!Sky6IsConnected() && time.hour == start_hour && time.minutes == start_minutes) {
+    Connect_s(time, horario)
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
-  else if (!Sky6IsConnected() && time.hour >= start_hour && time.hour < turn_off_hour)
-  {
-    WriteFileAndPrint("(Re)conectando as");
-    ConnectTelescope();
-    sky6RASCOMTele.FindHome();
-    // Verifica se o Tracking não está ocorrendo.
-    if (sky6RASCOMTele.IsTracking == 0)
-    {
-      var propriedade = GetRADec("Sun");
-
-      WriteFileAndPrint("Iniciou o slew as");
-      SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-
-      WriteFileAndPrint("Reiniciou o rastreamento as");
-    }
+  else if (!Sky6IsConnected() && time.hour >= start_hour && time.hour < turn_off_hour) {
+    Reconnect_s();
   }
-  else if (Sky6IsConnected() && time.hour >= start_hour && time.hour < turn_off_hour && sky6RASCOMTele.IsTracking == 0)
-  {
-    var propriedade = GetRADec("Sun");
-
-    WriteFileAndPrint("Iniciou o slew as");
-    SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-
-    WriteFileAndPrint("Reiniciou o rastreamento as");
+  else if (Sky6IsConnected() && time.hour >= start_hour && time.hour < turn_off_hour && sky6RASCOMTele.IsTracking == 0) {
+    RestartTracking_s();
   }
 }
