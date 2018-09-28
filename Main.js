@@ -296,7 +296,7 @@ function WriteFileAndPrint(text)
     print(text + " " + horario);
     TextFile.close();
   } catch (texterr) {
-    print("Erro ao editar o log. \n" + texterr.message);
+    PrintAndOut("Erro ao editar o log. \n" + texterr.message);
   }
 }
 
