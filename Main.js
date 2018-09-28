@@ -25,13 +25,13 @@
  */
 
 /*
- * Version: 1.1.9.2 09/28/18
+ * Version: 1.1.9.3 09/28/18
  */
 
 /**
  * Confirma se o script tem conexão com o telescópio.
  *
- * @return false se não estiver conectado.
+ * @returns false se não estiver conectado.
  *         true se estiver conectado.
  */
 function Sky6IsConnected()
@@ -45,7 +45,7 @@ function Sky6IsConnected()
 /**
  * Estabiliza a conexão com o telescópio.
  *
- * @return false case algum erro aconteça.
+ * @returns false case algum erro aconteça.
  */
 function ConnectTelescope()
 {
@@ -63,8 +63,8 @@ function ConnectTelescope()
  * Encontra o objeto dado, e escreve todas as propriedades (informações)
  * daquele objeto.
  *
- * @param objectName Nome do objeto a ser encontrado.
- * @return false se objeto não encontrado.
+ * @param {string} objectName - Nome do objeto a ser encontrado.
+ * @returns false se objeto não encontrado.
  */
 function Find(objectName)
 {
@@ -74,7 +74,7 @@ function Find(objectName)
   try {
     sky6StarChart.Find(objectName);
   } catch (finderr) {
-    PrintAndOut("Objeto nao encontrado");
+    PrintAndOut("Objeto nao encontrado.\n" + finderr.message);
     return false;
   }
 
@@ -90,20 +90,20 @@ function Find(objectName)
 /**
  * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
  *
- * @param IOn Binário(0 ou 1), o número que desliga ou liga o tracking.
- *             0 - desliga
- *             1 - liga
+ * @param {number} IOn -  Binário(0 ou 1), o número que desliga ou liga o tracking.
+ *                     0 - desliga
+ *                     1 - liga
  *
- * @param IIgnoreRates Binário(0 ou 1), o número que especifica se é para o 
+ * @param {number} IIgnoreRates - Binário(0 ou 1), o número que especifica se é para o 
  *                                      telescópio usar a taxa de tracking atual.
- *             0 - Ignora os valores de dRaRate e dDecRate
- *             1 - Usa os valores de dRaRate e dDecRate
+ *                              0 - Ignora os valores de dRaRate e dDecRate
+ *                              1 - Usa os valores de dRaRate e dDecRate
  *
- * @param dRaRate Especifica a ascensão reta a ser usada. Só é utilizada se 
- *                IIgnoreRates for igual à 1.
+ * @param {number} dRaRate - Especifica a ascensão reta a ser usada. Só é utilizada se 
+ *                          IIgnoreRates for igual à 1.
  *
- * @param dDecRate Especifica a declinação a ser usada. Só é utilizada se
- *                 IIgnoreRates for igual à 1.
+ * @param {number} dDecRate - Especifica a declinação a ser usada. Só é utilizada se
+ *                          IIgnoreRates for igual à 1.
  */
 function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
@@ -118,7 +118,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 /**
  * Confirma se o slew está ocorrendo ou não.
  *
- * @return true se estiver fazendo o slew.
+ * @returns true se estiver fazendo o slew.
  *         false se não estiver fazendo o slew.
  */
 function MountIsSlewing()
@@ -140,11 +140,11 @@ function MountIsSlewing()
 /**
  * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
  *
- * @param dRa ascensão reta.
- * @param dDec declinação.
- * @param targetObjecto Objeto para fazer o slew.
+ * @param {number} dRa - ascensão reta.
+ * @param {number} dDec - declinação.
+ * @param {string} targetObject - Objeto para fazer o slew.
  *
- * @return true se tudo tiver ocorrido corretamente.
+ * @returns true se tudo tiver ocorrido corretamente.
  */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
@@ -165,7 +165,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 /**
  * Leva o telescópio para a posição de parking.
  *
- * @return true se tudo tiver ocorrido corretamente.
+ * @returns true se tudo tiver ocorrido corretamente.
  */
 function ParkTelescope()
 {
@@ -192,8 +192,8 @@ function DisconnectTelescope()
  * Encontra o objeto dado e retorna um object com a ascensão reta e
  * a declinação.
  *
- * @param object Nome do objeto a ser encontrado.
- * @return Um objeto com a ascensão reta (ra) e a declinação (dec).
+ * @param {string} object - Nome do objeto a ser encontrado.
+ * @returns Um objeto com a ascensão reta (ra) e a declinação (dec).
  */
 function GetRADec(object)
 {
@@ -217,7 +217,7 @@ function GetRADec(object)
 /**
  * Pega a data e o horário do momento que a função é chamada.
  *
- * @return Um objeto com os dados.
+ * @returns Um objeto com os dados.
  */
 function getTimeNow()
 {
@@ -242,7 +242,7 @@ function getTimeNow()
 /**
  * Cria o nome do arquivo para o dia atual.
  *
- * @return O nome do arquivo do dia atual.
+ * @returns O nome do arquivo do dia atual.
  */
 function setFileName()
 {
@@ -270,7 +270,7 @@ function setFileName()
 /**
  * Pega o horário atual do computador.
  *
- * @return O horário no formato H%:M%:S%.
+ * @returns O horário no formato H%:M%:S%.
  */
 function getHorario()
 {
@@ -283,8 +283,8 @@ function getHorario()
  * Escreve no debugger e escreve no arquivo de log a mesma mensagem,
  * junto com o horário do momento.
  *
- * @param filename O nome do arquivo.
- * @param text A mensagem a ser escrita.
+ * @param {string} filename - O nome do arquivo.
+ * @param {string} text -  A mensagem a ser escrita.
  */
 function WriteFileAndPrint(text)
 {
@@ -311,6 +311,9 @@ function PrintAndOut(text)
   RunJavaScriptOutput.writeLine(text);
 }
 
+/**
+ * Processo de inicialização.
+ */
 function Initialize_s()
 {
   sky6RASCOMTele.FindHome();
@@ -322,6 +325,9 @@ function Initialize_s()
   WriteFileAndPrint("Iniciou o rastreamento as");
 }
 
+/**
+ * Processo do Flip.
+ */
 function Flip_s()
 {
   var propriedade = GetRADec("Sun");
@@ -331,6 +337,9 @@ function Flip_s()
   WriteFileAndPrint("Completou o flip as");
 }
 
+/**
+ * Processo de desligamento.
+ */
 function TurnOff_s()
 {
   SetTelescopeTracking(0, 1, 0, 0);
@@ -342,6 +351,12 @@ function TurnOff_s()
   WriteFileAndPrint("Desconectado as");
 }
 
+/**
+ * Conexão no início do dia.
+ * 
+ * @param {*} time 
+ * @param {*} horario 
+ */
 function Connect_s(time, horario)
 {
   print("Conectado as " + horario);
@@ -353,6 +368,9 @@ function Connect_s(time, horario)
   TextFile.close();
 }
 
+/**
+ * Reconecão.
+ */
 function Reconnect_s()
 {
   WriteFileAndPrint("(Re)conectando as");
@@ -370,6 +388,9 @@ function Reconnect_s()
   }
 }
 
+/**
+ * Reinicia o rastreamento.
+ */
 function RestartTracking_s()
 {
   var propriedade = GetRADec("Sun");
