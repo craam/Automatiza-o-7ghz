@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.1.9.1 09/25/18
+ * Version: 1.1.9.2 09/28/18
  */
 
 /**
@@ -64,31 +64,25 @@ function ConnectTelescope()
  * daquele objeto.
  *
  * @param objectName Nome do objeto a ser encontrado.
- * @return Zero se objeto não encontrado.
+ * @return false se objeto não encontrado.
  */
 function Find(objectName)
 {
   // Número de propriedades que um objeto tem.
-  var propriedades = 189;
-  var Out = "";
+  var props = 189;
   // Acha o objeto dado.
   try {
     sky6StarChart.Find(objectName);
   } catch (finderr) {
-    print("Objeto nao encontrado");
-    RunJavaScriptOutput.writeLine("Objeto nao encontrado");
-    return 0;
+    PrintAndOut("Objeto nao encontrado");
+    return false;
   }
 
-  for (var prop  = 0;prop < propriedades;++prop) {
+  for (var prop = 0;prop < props;++prop) {
     if (sky6ObjectInformation.PropertyApplies(prop) != 0) {
       sky6ObjectInformation.Property(prop);
 
-      Out += sky6ObjectInformation.ObjInfoPropOut + "|";
-
-      // Escreve as informações do objeto.
-      print(Out);
-      RunJavaScriptOutput.writeLine(Out);
+      PrintAndOut(sky6ObjectInformation.ObjInfoPropOut + "|");
     }
   }
 }
@@ -116,9 +110,8 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
   if (Sky6IsConnected()) {
     sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
     var Out = "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
-    Out += "Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
-    print(Out);
-    RunJavaScriptOutput.writeLine(Out);
+    Out += " | Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
+    PrintAndOut(Out);
   }
 }
 
@@ -133,14 +126,14 @@ function MountIsSlewing()
   if (Sky6IsConnected()) {
     // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
     if (sky6RASCOMTele.IsSlewComplete != 0) {
-      print("Nao esta fazendo o slew.");
+      PrintAndOut("Nao esta fazendo o slew.");
       return false;
     } else {
-      print("Fazendo o slew.");
+      PrintAndOut("Fazendo o slew.");
       return true;
     }
   } else {
-    print("Telescopio nao conectado.");
+    PrintAndOut("Telescopio nao conectado.");
   }
 }
 
@@ -164,7 +157,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
       return false;
     }
   } else {
-    print("Telescopio nao conectado.");
+    PrintAndOut("Telescopio nao conectado.");
     return false;
   }
 }
@@ -179,7 +172,7 @@ function ParkTelescope()
   if (Sky6IsConnected()) {
     if (sky6RASCOMTele.IsParked != 0) {
       sky6RASCOMTele.Park();
-      print("Parking completo.");
+      PrintAndOut("Parking completo.");
       return true;
     }
   }
@@ -287,8 +280,8 @@ function getHorario()
 }
 
 /**
- * Escreve no debugger e escreve no log a mesma mensagem, junto com
- * o horário do momento.
+ * Escreve no debugger e escreve no arquivo de log a mesma mensagem,
+ * junto com o horário do momento.
  *
  * @param filename O nome do arquivo.
  * @param text A mensagem a ser escrita.
@@ -305,6 +298,17 @@ function WriteFileAndPrint(text)
   } catch (texterr) {
     print("Erro ao editar o log. \n" + texterr.message);
   }
+}
+
+/**
+ * Escreve no debugger e na Run Java Script.
+ * 
+ * @param text A mensagem.
+ */
+function PrintAndOut(text)
+{
+  print(text);
+  RunJavaScriptOutput.writeLine(text);
 }
 
 function Initialize_s()
