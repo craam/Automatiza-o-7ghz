@@ -25,14 +25,14 @@
  */
 
 /*
- * Version: 1.1.9.3 09/28/18
+ * Version: 1.2 10/01/18
  */
 
 /**
  * Confirma se o script tem conexão com o telescópio.
  *
  * @returns false se não estiver conectado.
- *         true se estiver conectado.
+ *          true se estiver conectado.
  */
 function Sky6IsConnected()
 {
@@ -283,7 +283,6 @@ function getHorario()
  * Escreve no debugger e escreve no arquivo de log a mesma mensagem,
  * junto com o horário do momento.
  *
- * @param {string} filename - O nome do arquivo.
  * @param {string} text -  A mensagem a ser escrita.
  */
 function WriteFileAndPrint(text)
@@ -303,7 +302,7 @@ function WriteFileAndPrint(text)
 /**
  * Escreve no debugger e na Run Java Script.
  * 
- * @param text A mensagem.
+ * @param {string} text - A mensagem.
  */
 function PrintAndOut(text)
 {
@@ -352,7 +351,7 @@ function TurnOff_s()
 }
 
 /**
- * Conexão no início do dia.
+ * Conecta no início do dia e cria o arquivo de log diário.
  * 
  * @param {string} time - Objeto de horário criado com a função getTimeNow.
  */
@@ -369,7 +368,7 @@ function Connect_s(time)
 }
 
 /**
- * Reconexão.
+ * Reconecta e reinicia o tracking.
  */
 function Reconnect_s()
 {
@@ -377,14 +376,8 @@ function Reconnect_s()
   ConnectTelescope();
   sky6RASCOMTele.FindHome();
   // Verifica se o Tracking não está ocorrendo.
-  if (sky6RASCOMTele.IsTracking == 0)
-  {
-    var propriedade = GetRADec("Sun");
-
-    WriteFileAndPrint("Iniciou o slew as");
-    SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
-
-    WriteFileAndPrint("Reiniciou o rastreamento as");
+  if (sky6RASCOMTele.IsTracking == 0) {
+    RestartTracking_s();
   }
 }
 
