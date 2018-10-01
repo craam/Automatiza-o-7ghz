@@ -354,11 +354,11 @@ function TurnOff_s()
 /**
  * Conexão no início do dia.
  * 
- * @param {string} time 
- * @param {string} horario 
+ * @param {string} time - Objeto de horário criado com a função getTimeNow.
  */
-function Connect_s(time, horario)
+function Connect_s(time)
 {
+  var horario = getHorario();
   print("Conectado as " + horario);
   ConnectTelescope();
   var filename = setFileName();
@@ -369,7 +369,7 @@ function Connect_s(time, horario)
 }
 
 /**
-     * Reconexão.
+ * Reconexão.
  */
 function Reconnect_s()
 {
@@ -413,7 +413,6 @@ var work_time = {
 while (true)
 {
   var time = getTimeNow();
-  var horario = getHorario();
 
   // Verifica se o telescópio está conectado.
   if (Sky6IsConnected()) {
@@ -433,7 +432,7 @@ while (true)
   }
   // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
   else if (!Sky6IsConnected() && time.hour == work_time.start_hour && time.minutes == work_time.start_minutes) {
-    Connect_s(time, horario)
+    Connect_s(time)
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
