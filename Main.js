@@ -123,17 +123,18 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
  */
 function MountIsSlewing()
 {
-  if (Sky6IsConnected()) {
-    // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
-    if (sky6RASCOMTele.IsSlewComplete != 0) {
-      PrintAndOut("Nao esta fazendo o slew.");
-      return false;
-    } else {
-      PrintAndOut("Fazendo o slew.");
-      return true;
-    }
-  } else {
+  if (!Sky6IsConnected()) {
     PrintAndOut("Telescopio nao conectado.");
+    return false;
+  }
+
+    // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
+  if (sky6RASCOMTele.IsSlewComplete != 0) {
+    PrintAndOut("Nao esta fazendo o slew.");
+    return false;
+  } else {
+    PrintAndOut("Fazendo o slew.");
+    return true;
   }
 }
 
@@ -179,7 +180,7 @@ function ParkTelescope()
 }
 
 /**
- * Desconecta o SkyX do telescópio.
+ * Finaliza a conexão entre o SkyX e a montagem.
  */
 function DisconnectTelescope()
 {
@@ -197,21 +198,24 @@ function DisconnectTelescope()
  */
 function GetRADec(object)
 {
-  if (Sky6IsConnected()) {
-    try {
-      sky6StarChart.Find(object);
-    } catch (finderr) {
-      WriteFileAndPrint("Erro durante o find: " + finderr.message);
-      return false;
-    }
-
-    sky6ObjectInformation.Property(54);
-    var targetRA = sky6ObjectInformation.ObjInfoPropOut;
-    sky6ObjectInformation.Property(55);
-    var targetDec = sky6ObjectInformation.ObjInfoPropOut;
-
-    return {"ra": targetRA, "dec": targetDec};
+  if (!Sky6IsConnected()) {
+    WriteFileAndPrint("Erro de conexao tentando executar a funcao GetRADec ");
+    return false;
   }
+
+  try {
+    sky6StarChart.Find(object);
+  } catch (finderr) {
+    WriteFileAndPrint("Erro durante o find: " + finderr.message + " ");
+    return false;
+  }
+
+  sky6ObjectInformation.Property(54);
+  var targetRA = sky6ObjectInformation.ObjInfoPropOut;
+  sky6ObjectInformation.Property(55);
+  var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+
+  return {"ra": targetRA, "dec": targetDec};
 }
 
 /**
