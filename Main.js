@@ -91,8 +91,8 @@ function Find(objectName)
  * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
  *
  * @param {number} IOn -  Binário(0 ou 1), o número que desliga ou liga o tracking.
- *                     0 - desliga
- *                     1 - liga
+ *                              0 - desliga
+ *                              0 - liga
  *
  * @param {number} IIgnoreRates - Binário(0 ou 1), o número que especifica se é para o 
  *                                      telescópio usar a taxa de tracking atual.
@@ -119,7 +119,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
  * Confirma se o slew está ocorrendo ou não.
  *
  * @returns true se estiver fazendo o slew.
- *         false se não estiver fazendo o slew.
+ *          false se não estiver fazendo o slew.
  */
 function MountIsSlewing()
 {
@@ -354,8 +354,8 @@ function TurnOff_s()
 /**
  * Conexão no início do dia.
  * 
- * @param {*} time 
- * @param {*} horario 
+ * @param {string} time 
+ * @param {string} horario 
  */
 function Connect_s(time, horario)
 {
@@ -369,7 +369,7 @@ function Connect_s(time, horario)
 }
 
 /**
- * Reconecão.
+     * Reconexão.
  */
 function Reconnect_s()
 {
