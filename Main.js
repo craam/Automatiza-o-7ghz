@@ -25,14 +25,14 @@
  */
 
 /*
- * Version: 1.2 10/01/18
+ * Version: 1.2.1 10/02/18
  */
 
 /**
  * Confirma se o script tem conexão com o telescópio.
  *
- * @returns false se não estiver conectado.
- *          true se estiver conectado.
+ * @returns {boolean} false se não estiver conectado.
+ *                    true se estiver conectado.
  */
 function Sky6IsConnected()
 {
@@ -45,14 +45,14 @@ function Sky6IsConnected()
 /**
  * Estabiliza a conexão com o telescópio.
  *
- * @returns false case algum erro aconteça.
+ * @returns {boolean} false case algum erro aconteça.
  */
 function ConnectTelescope()
 {
   try {
     sky6RASCOMTele.Connect();
   } catch (connerr) {
-    WriteFileAndPrint("Mount nao conectado " + connerr.message);
+    WriteFileAndPrint("Erro de conexão com a montagem: " + connerr.message + " ");
     return false;
   }
 
@@ -64,13 +64,11 @@ function ConnectTelescope()
  * daquele objeto.
  *
  * @param {string} objectName - Nome do objeto a ser encontrado.
- * @returns false se objeto não encontrado.
+ * @returns {boolean} false se objeto não encontrado.
  */
 function Find(objectName)
 {
-  // Número de propriedades que um objeto tem.
   var props = 189;
-  // Acha o objeto dado.
   try {
     sky6StarChart.Find(objectName);
   } catch (finderr) {
@@ -88,7 +86,7 @@ function Find(objectName)
 }
 
 /**
- * 'Liga' o tracking para um lugar específico, ou desliga o tracking.
+ * Liga o tracking para um lugar específico, ou desliga o tracking.
  *
  * @param {number} IOn -  Binário(0 ou 1), o número que desliga ou liga o tracking.
  *                              0 - desliga
@@ -104,22 +102,27 @@ function Find(objectName)
  *
  * @param {number} dDecRate - Especifica a declinação a ser usada. Só é utilizada se
  *                          IIgnoreRates for igual à 1.
+ *
+ * @returns {boolean} false se a montagem não estiver conectada.
  */
 function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
-  if (Sky6IsConnected()) {
-    sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
-    var Out = "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
-    Out += " | Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
-    PrintAndOut(Out);
+  if (!Sky6IsConnected()) {
+    return false;
   }
+
+  sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
+  var Out = "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
+  Out += " | Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
+  PrintAndOut(Out);
+  return true;
 }
 
 /**
  * Confirma se o slew está ocorrendo ou não.
  *
- * @returns true se estiver fazendo o slew.
- *          false se não estiver fazendo o slew.
+ * @returns {boolean} true se estiver fazendo o slew.
+ *                    false se não estiver fazendo o slew.
  */
 function MountIsSlewing()
 {
@@ -128,7 +131,7 @@ function MountIsSlewing()
     return false;
   }
 
-    // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
+  // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
   if (sky6RASCOMTele.IsSlewComplete != 0) {
     PrintAndOut("Nao esta fazendo o slew.");
     return false;
@@ -145,20 +148,20 @@ function MountIsSlewing()
  * @param {number} dDec - declinação.
  * @param {string} targetObject - Objeto para fazer o slew.
  *
- * @returns true se tudo tiver ocorrido corretamente.
+ * @returns {boolean} true se tudo tiver ocorrido corretamente.
  */
 function SlewTelescopeTo(dRa, dDec, targetObject)
 {
-  if (Sky6IsConnected()) {
-    try {
-      sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
-      return true;
-    } catch (slewerr) {
-      WriteFileAndPrint("Falha durante o slew: " + slewerr.message);
-      return false;
-    }
-  } else {
+  if (!Sky6IsConnected()) {
     PrintAndOut("Telescopio nao conectado.");
+    return false;
+  }
+  
+  try {
+    sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
+    return true;
+  } catch (slewerr) {
+    WriteFileAndPrint("Falha durante o slew: " + slewerr.message);
     return false;
   }
 }
@@ -166,16 +169,18 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 /**
  * Leva o telescópio para a posição de parking.
  *
- * @returns true se tudo tiver ocorrido corretamente.
+ * @returns {boolean} true se tudo tiver ocorrido corretamente.
  */
 function ParkTelescope()
 {
   if (Sky6IsConnected()) {
-    if (sky6RASCOMTele.IsParked != 0) {
-      sky6RASCOMTele.Park();
-      PrintAndOut("Parking completo.");
-      return true;
-    }
+    return false;
+  }
+
+  if (sky6RASCOMTele.IsParked != 0) {
+    sky6RASCOMTele.Park();
+    PrintAndOut("Parking completo.");
+    return true;
   }
 }
 
@@ -194,7 +199,7 @@ function DisconnectTelescope()
  * a declinação.
  *
  * @param {string} object - Nome do objeto a ser encontrado.
- * @returns Um objeto com a ascensão reta (ra) e a declinação (dec).
+ * @returns {object} Um objeto com a ascensão reta (ra) e a declinação (dec).
  */
 function GetRADec(object)
 {
@@ -221,7 +226,7 @@ function GetRADec(object)
 /**
  * Pega a data e o horário do momento que a função é chamada.
  *
- * @returns Um objeto com os dados.
+ * @returns {object} Um objeto com os dados.
  */
 function getTimeNow()
 {
@@ -246,7 +251,7 @@ function getTimeNow()
 /**
  * Cria o nome do arquivo para o dia atual.
  *
- * @returns O nome do arquivo do dia atual.
+ * @returns {string} O nome do arquivo do dia atual.
  */
 function setFileName()
 {
@@ -274,7 +279,7 @@ function setFileName()
 /**
  * Pega o horário atual do computador.
  *
- * @returns O horário no formato H%:M%:S%.
+ * @returns {string} O horário no formato H%:M%:S%.
  */
 function getHorario()
 {
@@ -356,14 +361,15 @@ function TurnOff_s()
 
 /**
  * Conecta no início do dia e cria o arquivo de log diário.
- * 
- * @param {string} time - Objeto de horário criado com a função getTimeNow.
  */
-function Connect_s(time)
+function Connect_s()
 {
+  var time = getTimeNow();
   var horario = getHorario();
+
   print("Conectado as " + horario);
   ConnectTelescope();
+
   var filename = setFileName();
   TextFile.createNew(filename);
   TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
@@ -405,7 +411,7 @@ var work_time = {
   "flip_minutes": 00,
   "turn_off_hour": 20,
   "turn_off_minutes": 00,
-}
+};
 
 while (true)
 {
@@ -429,7 +435,7 @@ while (true)
   }
   // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
   else if (!Sky6IsConnected() && time.hour == work_time.start_hour && time.minutes == work_time.start_minutes) {
-    Connect_s(time)
+    Connect_s();
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
