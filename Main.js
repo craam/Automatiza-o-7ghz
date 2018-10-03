@@ -239,12 +239,12 @@ function getTimeNow()
   var seconds = time.getSeconds();
 
   return {
-      "day": day,
-      "month": month,
-      "year": year,
-      "hour": hour,
-      "minutes": minutes,
-      "seconds": seconds
+    "day": day,
+    "month": month,
+    "year": year,
+    "hour": hour,
+    "minutes": minutes,
+    "seconds": seconds
   };
 }
 
