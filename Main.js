@@ -45,14 +45,14 @@ function Sky6IsConnected()
 /**
  * Estabiliza a conexão com o telescópio.
  *
- * @returns {boolean} false case algum erro aconteça.
+ * @returns {boolean} false caso algum erro aconteça.
  */
 function ConnectTelescope()
 {
   try {
     sky6RASCOMTele.Connect();
   } catch (connerr) {
-    WriteFileAndPrint("Erro de conexão com a montagem: " + connerr.message + " ");
+    WriteFileAndPrint("Erro de conexao com a montagem\n" + connerr.message + " ");
     return false;
   }
 
@@ -211,7 +211,7 @@ function GetRADec(object)
   try {
     sky6StarChart.Find(object);
   } catch (finderr) {
-    WriteFileAndPrint("Erro durante o find: " + finderr.message + " ");
+    WriteFileAndPrint("Erro durante o find.\n" + finderr.message + " ");
     return false;
   }
 
@@ -304,7 +304,7 @@ function WriteFileAndPrint(text)
     print(text + " " + horario);
     TextFile.close();
   } catch (texterr) {
-    PrintAndOut("Erro ao editar o log. \n" + texterr.message);
+    PrintAndOut("Erro ao editar o log.\n" + texterr.message);
   }
 }
 
@@ -322,7 +322,7 @@ function PrintAndOut(text)
 /**
  * Processo de inicialização.
  */
-function Initialize_s()
+function Initialize_c()
 {
   sky6RASCOMTele.FindHome();
   var propriedade = GetRADec("Sun");
@@ -336,7 +336,7 @@ function Initialize_s()
 /**
  * Processo do Flip.
  */
-function Flip_s()
+function Flip_c()
 {
   var propriedade = GetRADec("Sun");
   WriteFileAndPrint("Iniciou o slew as");
@@ -348,7 +348,7 @@ function Flip_s()
 /**
  * Processo de desligamento.
  */
-function TurnOff_s()
+function TurnOff_c()
 {
   SetTelescopeTracking(0, 1, 0, 0);
   WriteFileAndPrint("Desligou o rastreamento as");
@@ -362,7 +362,7 @@ function TurnOff_s()
 /**
  * Conecta no início do dia e cria o arquivo de log diário.
  */
-function Connect_s()
+function Connect_c()
 {
   var time = getTimeNow();
   var horario = getHorario();
@@ -380,21 +380,21 @@ function Connect_s()
 /**
  * Reconecta e reinicia o tracking.
  */
-function Reconnect_s()
+function Reconnect_c()
 {
   WriteFileAndPrint("(Re)conectando as");
   ConnectTelescope();
   sky6RASCOMTele.FindHome();
   // Verifica se o Tracking não está ocorrendo.
   if (sky6RASCOMTele.IsTracking == 0) {
-    RestartTracking_s();
+    RestartTracking_c();
   }
 }
 
 /**
  * Reinicia o rastreamento.
  */
-function RestartTracking_s()
+function RestartTracking_c()
 {
   var propriedade = GetRADec("Sun");
 
@@ -421,28 +421,28 @@ while (true)
   if (Sky6IsConnected()) {
     // Se a hora do computador for a hora de começar.
     if (time.hour == work_time.start_hour && time.minutes == work_time.start_minutes) {
-      Initialize_s();
+      Initialize_c();
     }
     // Hora exata do flip.
     else if (time.hour == work_time.flip_hour && time.minutes == work_time.flip_minutes) {
-      Flip_s();
+      Flip_c();
     }
     // Verifica se a hora do computador é maior ou igual a hora de desligar e
     // se o tracking ainda está ocorrendo.
     else if (time.hour >= work_time.turn_off_hour && sky6RASCOMTele.IsTracking != 0) {
-      TurnOff_s();
+      TurnOff_c();
     }
   }
   // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
   else if (!Sky6IsConnected() && time.hour == work_time.start_hour && time.minutes == work_time.start_minutes) {
-    Connect_s();
+    Connect_c();
   }
   // Prevê um eventual problema de simples desconexão do SkyX.
   // Verifica se está desconectado e se está no horário de funcionamento.
   else if (!Sky6IsConnected() && time.hour >= work_time.start_hour && time.hour < work_time.turn_off_hour) {
-    Reconnect_s();
+    Reconnect_c();
   }
   else if (Sky6IsConnected() && time.hour >= work_time.start_hour && time.hour < work_time.turn_off_hour && sky6RASCOMTele.IsTracking == 0) {
-    RestartTracking_s();
+    RestartTracking_c();
   }
 }
