@@ -80,7 +80,7 @@ function Find(objectName)
     if (sky6ObjectInformation.PropertyApplies(prop) != 0) {
       sky6ObjectInformation.Property(prop);
 
-      PrintAndOut(sky6ObjectInformation.ObjInfoPropOut + "|");
+      PrintAndOut(sky6ObjectInformation.ObjInfoPropOut + "\n");
     }
   }
 }
