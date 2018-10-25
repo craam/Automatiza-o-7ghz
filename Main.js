@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.2.1 10/02/18
+ * Version: 1.2.2 10/25/18
  */
 
 /**
@@ -404,6 +404,9 @@ function RestartTracking_c()
     WriteFileAndPrint("Reiniciou o rastreamento as");
 }
 
+/*
+ * Configura os horário para inicializar, fazer o flip e desligar.
+ */
 var work_time = {
     "start_hour": 11,
     "start_minutes": 00,
@@ -413,39 +416,94 @@ var work_time = {
     "turn_off_minutes": 00,
 };
 
+/**
+ * Verifica se é a hora de inicializar.
+ *
+ * @param {object} time - Horário atual.
+ */
+function timeToInitialize(time)
+{
+    return time.hour == work_time.start_hour && time.minutes == work_time.start_minutes;
+}
+
+/**
+ * Verifica se é a hora do flip.
+ *
+ * @param {object} time - Horário atual.
+ */
+function timeToFlip(time)
+{
+    return time.hour == work_time.flip_hour && time.minutes == work_time.flip_minutes;
+}
+
+/**
+ * Verifica se é a hora de desligar e se o tracking está ocorrendo.
+ *
+ * @param {object} time - Horário atual.
+ */
+function timeToTurnOff(time)
+{
+    return time.hour >= work_time.turn_off_hour && sky6RASCOMTele.IsTracking != 0
+}
+
+/**
+ * Verifica se é a hora de iniciar a conexão.
+ *
+ * @param {object} time - Horário atual.
+ */
+function timeToConnect(time)
+{
+    return !Sky6IsConnected() && time.hour == work_time.start_hour &&
+                time.minutes == work_time.start_minutes;
+}
+
+/**
+ * Verifica se o telescópio está desconectado e se está no horário de funcionamento.
+ * Procurar prever um eventual problema de simples desconexão do SkyX.
+ *
+ * @param {object} time - Horário atual.
+ */
+function connectionProblem(time)
+{
+    return !Sky6IsConnected() && time.hour >= work_time.start_hour &&
+                time.hour < work_time.turn_off_hour;
+}
+
+/**
+ * Verifica se o telescópio está conectado no horário de funcionamento, mas
+ * não está fazendo o tracking.
+ * 
+ * @param {object} time - Horário atual.
+ */
+function checkTracking(time)
+{
+    return Sky6IsConnected() && time.hour >= work_time.start_hour &&
+                time.hour < work_time.turn_off_hour && sky6RASCOMTele.IsTracking == 0
+}
+
 while (true)
 {
     var time = getTimeNow();
 
     // Verifica se o telescópio está conectado.
     if (Sky6IsConnected()) {
-        // Se a hora do computador for a hora de começar.
-        if (time.hour == work_time.start_hour && time.minutes == work_time.start_minutes) {
+        if (timeToInitialize(time)) {
             Initialize_c();
         }
-        // Hora exata do flip.
-        else if (time.hour == work_time.flip_hour && time.minutes == work_time.flip_minutes) {
+        else if (timeToFlip(time)) {
             Flip_c();
         }
-        // Verifica se a hora do computador é maior ou igual a hora de desligar e
-        // se o tracking ainda está ocorrendo.
-        else if (time.hour >= work_time.turn_off_hour && sky6RASCOMTele.IsTracking != 0) {
+        else if (timeToTurnOff(time)) {
             TurnOff_c();
         }
     }
-    // Inicia a conexão no início do dia, no horário exato de 11:00 (08:00 local).
-    else if (!Sky6IsConnected() && time.hour == work_time.start_hour &&
-                time.minutes == work_time.start_minutes) {
+    else if (timeToConnect(time)) {
         Connect_c();
     }
-    // Prevê um eventual problema de simples desconexão do SkyX.
-    // Verifica se está desconectado e se está no horário de funcionamento.
-    else if (!Sky6IsConnected() && time.hour >= work_time.start_hour &&
-                time.hour < work_time.turn_off_hour) {
+    else if (connectionProblem(time)) {
         Reconnect_c();
     }
-    else if (Sky6IsConnected() && time.hour >= work_time.start_hour &&
-                time.hour < work_time.turn_off_hour && sky6RASCOMTele.IsTracking == 0) {
+    else if (checkTracking(time)) {
         RestartTracking_c();
     }
 }
