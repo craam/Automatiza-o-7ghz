@@ -9,4 +9,4 @@ Com o SkyX aberto clique em Tools e em Run Java Script para abrir a janela Run S
 
 ## Documentação
 
-A documentação pode ser encontrada do diretório docs/
+A documentação pode ser encontrada do diretório docs/. A documentação oficial do SkyX pode ser encontrada [aqui](http://www.bisque.com/scriptTheSkyX/).
