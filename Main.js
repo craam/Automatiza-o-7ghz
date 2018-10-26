@@ -485,7 +485,6 @@ while (true)
 {
     var time = getTimeNow();
 
-    // Verifica se o telescópio está conectado.
     if (Sky6IsConnected()) {
         if (timeToInitialize(time)) {
             Initialize_c();
