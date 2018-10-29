@@ -327,7 +327,7 @@ function Initialize_c()
     sky6RASCOMTele.FindHome();
     var propriedade = GetRADec("Sun");
 
-    WriteFileAndPrint("Iniciou o slew as")
+    WriteFileAndPrint("Iniciou o slew as");
     SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
     WriteFileAndPrint("Iniciou o rastreamento as");
