@@ -382,7 +382,7 @@ function Connect_c()
  */
 function Reconnect_c()
 {
-    WriteFileAndPrint("(Re)conectando as");
+    WriteFileAndPrint("(Re)conectado as");
     ConnectTelescope();
     sky6RASCOMTele.FindHome();
     // Verifica se o Tracking não está ocorrendo.
