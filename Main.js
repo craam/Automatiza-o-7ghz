@@ -443,7 +443,7 @@ function timeToFlip(time)
  */
 function timeToTurnOff(time)
 {
-    return time.hour >= work_time.turn_off_hour && sky6RASCOMTele.IsTracking != 0
+    return time.hour >= work_time.turn_off_hour && sky6RASCOMTele.IsTracking != 0;
 }
 
 /**
@@ -478,7 +478,7 @@ function connectionProblem(time)
 function checkTracking(time)
 {
     return Sky6IsConnected() && time.hour >= work_time.start_hour &&
-                time.hour < work_time.turn_off_hour && sky6RASCOMTele.IsTracking == 0
+                time.hour < work_time.turn_off_hour && sky6RASCOMTele.IsTracking == 0;
 }
 
 while (true)
