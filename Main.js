@@ -90,7 +90,7 @@ function Find(objectName)
  *
  * @param {number} IOn -  Binário(0 ou 1), o número que desliga ou liga o tracking.
  *                              0 - desliga
- *                              0 - liga
+ *                              1 - liga
  *
  * @param {number} IIgnoreRates - Binário(0 ou 1), o número que especifica se é para o 
  *                                      telescópio usar a taxa de tracking atual.
@@ -279,7 +279,7 @@ function setFileName()
 /**
  * Pega o horário atual do computador.
  *
- * @returns {string} O horário no formato H%:M%:S%.
+ * @returns {string} O horário no formato %H:%M:%S.
  */
 function getHorario()
 {
@@ -437,7 +437,7 @@ function timeToFlip(time)
 }
 
 /**
- * Verifica se é a hora de desligar e se o tracking está ocorrendo.
+ * Verifica se é(ou já passou) (d)a hora de desligar e se o tracking está ocorrendo.
  *
  * @param {object} time - Horário atual.
  */
