@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.2.3 10/31/18
+ * Version: 1.2.3.1 10/31/18
  */
 
 /**
@@ -124,7 +124,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
  */
 function ParkTelescope()
 {
-    if (Sky6IsConnected()) {
+    if (!Sky6IsConnected()) {
         return false;
     }
 
