@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.2.2 10/25/18
+ * Version: 1.2.3 10/31/18
  */
 
 /**
@@ -60,32 +60,6 @@ function ConnectTelescope()
 }
 
 /**
- * Encontra o objeto dado, e escreve todas as propriedades (informações)
- * daquele objeto.
- *
- * @param {string} objectName - Nome do objeto a ser encontrado.
- * @returns {boolean} false se objeto não encontrado.
- */
-function Find(objectName)
-{
-    var props = 189;
-    try {
-        sky6StarChart.Find(objectName);
-    } catch (finderr) {
-        PrintAndOut("Objeto nao encontrado.\n" + finderr.message);
-        return false;
-    }
-
-    for (var prop = 0;prop < props;++prop) {
-        if (sky6ObjectInformation.PropertyApplies(prop) != 0) {
-        sky6ObjectInformation.Property(prop);
-
-        PrintAndOut(sky6ObjectInformation.ObjInfoPropOut + "\n");
-        }
-    }
-}
-
-/**
  * Liga o tracking para um lugar específico, ou desliga o tracking.
  *
  * @param {number} IOn -  Binário(0 ou 1), o número que desliga ou liga o tracking.
@@ -116,29 +90,6 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
     Out += " | Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
     PrintAndOut(Out);
     return true;
-}
-
-/**
- * Confirma se o slew está ocorrendo ou não.
- *
- * @returns {boolean} true se estiver fazendo o slew.
- *                    false se não estiver fazendo o slew.
- */
-function MountIsSlewing()
-{
-    if (!Sky6IsConnected()) {
-        PrintAndOut("Telescopio nao conectado.");
-        return false;
-    }
-
-    // IsSlewComplete retorna zero se o telescópio estiver fazendo o slew.
-    if (sky6RASCOMTele.IsSlewComplete != 0) {
-        PrintAndOut("Nao esta fazendo o slew.");
-        return false;
-    } else {
-        PrintAndOut("Fazendo o slew.");
-        return true;
-    }
 }
 
 /**
@@ -181,16 +132,6 @@ function ParkTelescope()
         sky6RASCOMTele.Park();
         PrintAndOut("Parking completo.");
         return true;
-    }
-}
-
-/**
- * Finaliza a conexão entre o SkyX e a montagem.
- */
-function DisconnectTelescope()
-{
-    if (Sky6IsConnected()) {
-        sky6RASCOMTele.Disconnect();
     }
 }
 
