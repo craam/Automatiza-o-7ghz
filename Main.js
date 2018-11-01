@@ -414,16 +414,15 @@ function connectionProblem(time)
 }
 
 /**
- * Verifica se o telescópio está conectado no horário de funcionamento, mas
- * não está fazendo o tracking.
+ * Verifica se o telescópio está no horário de funcionamento, mas não está
+ * fazendo o tracking.
  * 
  * @param {object} time - Horário atual.
  */
 function checkTracking(time)
 {
-    return Sky6IsConnected() && time.hour >= work_time.start_hour &&
-                time.hour < work_time.turn_off_hour &&
-                sky6RASCOMTele.IsTracking == 0;
+    return sky6RASCOMTele.IsTracking == 0 && time.hour >= work_time.start_hour &&
+                time.hour < work_time.turn_off_hour;
 }
 
 while (true)
@@ -440,14 +439,14 @@ while (true)
         else if (timeToTurnOff(time)) {
             TurnOff_c();
         }
+        else if (checkTracking(time)) {
+            RestartTracking_c();
+        }
     }
     else if (timeToConnect(time)) {
         Connect_c();
     }
     else if (connectionProblem(time)) {
         Reconnect_c();
-    }
-    else if (checkTracking(time)) {
-        RestartTracking_c();
     }
 }
