@@ -242,7 +242,7 @@ function WriteLog(text)
         TextFile.openForAppend(filename);
         var formattedTime = getFormattedTime();
         TextFile.write(text + " " + formattedTime + "\n");
-        (text + " " + formattedTime);
+        print(text + " " + formattedTime);
         TextFile.close();
     } catch (texterr) {
         PrintAndOut("Erro ao editar o log.\n" + texterr.message);
