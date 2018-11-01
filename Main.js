@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.2.3.1 10/31/18
+ * Version: 1.3 11/01/18
  */
 
 /**
@@ -52,7 +52,7 @@ function ConnectTelescope()
     try {
         sky6RASCOMTele.Connect();
     } catch (connerr) {
-        WriteFileAndPrint("Erro de conexao com a montagem\n" + connerr.message + " ");
+        WriteLog("Erro de conexao com a montagem\n" + connerr.message + " ");
         return false;
     }
 
@@ -62,20 +62,20 @@ function ConnectTelescope()
 /**
  * Liga o tracking para um lugar específico, ou desliga o tracking.
  *
- * @param {number} IOn -  Binário(0 ou 1), o número que desliga ou liga o tracking.
+ * @param {number} IOn - O número que desliga ou liga o tracking.
  *                              0 - desliga
  *                              1 - liga
  *
- * @param {number} IIgnoreRates - Binário(0 ou 1), o número que especifica se é para o 
- *                                      telescópio usar a taxa de tracking atual.
+ * @param {number} IIgnoreRates - O número que especifica se é para o 
+ *                                telescópio usar a taxa de tracking atual.
  *                              0 - Ignora os valores de dRaRate e dDecRate
  *                              1 - Usa os valores de dRaRate e dDecRate
  *
- * @param {number} dRaRate - Especifica a ascensão reta a ser usada. Só é utilizada se 
- *                          IIgnoreRates for igual à 1.
+ * @param {number} dRaRate - Especifica a ascensão reta a ser usada.
+ *                           Só é utilizada se IIgnoreRates for igual à 1.
  *
- * @param {number} dDecRate - Especifica a declinação a ser usada. Só é utilizada se
- *                          IIgnoreRates for igual à 1.
+ * @param {number} dDecRate - Especifica a declinação a ser usada.
+ *                           Só é utilizada se IIgnoreRates for igual à 1.
  *
  * @returns {boolean} false se a montagem não estiver conectada.
  */
@@ -97,7 +97,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
  *
  * @param {number} dRa - ascensão reta.
  * @param {number} dDec - declinação.
- * @param {string} targetObject - Objeto para fazer o slew.
+ * @param {string} targetObject - Objeto em questão.
  *
  * @returns {boolean} true se tudo tiver ocorrido corretamente.
  */
@@ -112,7 +112,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
         sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
         return true;
     } catch (slewerr) {
-        WriteFileAndPrint("Falha durante o slew: " + slewerr.message);
+        WriteLog("Falha durante o slew: " + slewerr.message);
         return false;
     }
 }
@@ -130,29 +130,29 @@ function ParkTelescope()
 
     if (sky6RASCOMTele.IsParked != 0) {
         sky6RASCOMTele.Park();
-        PrintAndOut("Parking completo.");
+        WriteLog("Parking completo.");
         return true;
     }
 }
 
 /**
- * Encontra o objeto dado e retorna um object com a ascensão reta e
- * a declinação.
+ * Prcoura pelo objeto dado e pega a ascensão reta e a declinação dele
+ * no momento.
  *
  * @param {string} object - Nome do objeto a ser encontrado.
- * @returns {object} Um objeto com a ascensão reta (ra) e a declinação (dec).
+ * @returns {object} Um objeto com a ascensão reta e a declinação.
  */
 function GetRADec(object)
 {
     if (!Sky6IsConnected()) {
-        WriteFileAndPrint("Erro de conexao tentando executar a funcao GetRADec ");
+        WriteLog("Erro de conexao tentando executar a funcao GetRADec");
         return false;
     }
 
     try {
         sky6StarChart.Find(object);
     } catch (finderr) {
-        WriteFileAndPrint("Erro durante o find.\n" + finderr.message + " ");
+        WriteLog("Erro durante o find.\n" + finderr.message + " ");
         return false;
     }
 
@@ -222,27 +222,27 @@ function setFileName()
  *
  * @returns {string} O horário no formato %H:%M:%S.
  */
-function getHorario()
+function getFormattedTime()
 {
     var time = getTimeNow();
-    var horario = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
-    return horario;
+    var formattedTime = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+    return formattedTime;
 }
 
 /**
- * Escreve no debugger e escreve no arquivo de log a mesma mensagem,
- * junto com o horário do momento.
+ * Escreve no debugger e no log a mesma mensagem, junto com o horário
+ * do momento.
  *
  * @param {string} text -  A mensagem a ser escrita.
  */
-function WriteFileAndPrint(text)
+function WriteLog(text)
 {
     var filename = setFileName();
     try {
         TextFile.openForAppend(filename);
-        var horario = getHorario();
-        TextFile.write(text + " " + horario + "\n");
-        print(text + " " + horario);
+        var formattedTime = getFormattedTime();
+        TextFile.write(text + " " + formattedTime + "\n");
+        print(text + " " + formattedTime);
         TextFile.close();
     } catch (texterr) {
         PrintAndOut("Erro ao editar o log.\n" + texterr.message);
@@ -250,9 +250,9 @@ function WriteFileAndPrint(text)
 }
 
 /**
- * Escreve no debugger e na Run Java Script.
+ * Escreve no debugger e na janela Run Java Script.
  * 
- * @param {string} text - A mensagem.
+ * @param {string} text - O conteúdo a ser escrito.
  */
 function PrintAndOut(text)
 {
@@ -268,10 +268,10 @@ function Initialize_c()
     sky6RASCOMTele.FindHome();
     var propriedade = GetRADec("Sun");
 
-    WriteFileAndPrint("Iniciou o slew as");
+    WriteLog("Iniciou o slew as");
     SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-    WriteFileAndPrint("Iniciou o rastreamento as");
+    WriteLog("Iniciou o rastreamento as");
 }
 
 /**
@@ -280,10 +280,10 @@ function Initialize_c()
 function Flip_c()
 {
     var propriedade = GetRADec("Sun");
-    WriteFileAndPrint("Iniciou o slew as");
+    WriteLog("Iniciou o slew as");
     SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-    WriteFileAndPrint("Completou o flip as");
+    WriteLog("Completou o flip as");
 }
 
 /**
@@ -292,12 +292,12 @@ function Flip_c()
 function TurnOff_c()
 {
     SetTelescopeTracking(0, 1, 0, 0);
-    WriteFileAndPrint("Desligou o rastreamento as");
+    WriteLog("Desligou o rastreamento as");
 
     ParkTelescope();
-    WriteFileAndPrint("Parking finalizado as");
+    WriteLog("Parking finalizado as");
 
-    WriteFileAndPrint("Desconectado as");
+    WriteLog("Desconectado as");
 }
 
 /**
@@ -306,15 +306,15 @@ function TurnOff_c()
 function Connect_c()
 {
     var time = getTimeNow();
-    var horario = getHorario();
+    var formattedTime = getFormattedTime();
 
-    print("Conectado as " + horario);
+    print("Conectado as " + formattedTime);
     ConnectTelescope();
 
     var filename = setFileName();
     TextFile.createNew(filename);
     TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
-    TextFile.write("Conectado as " + horario + "\n");
+    TextFile.write("Conectado as " + formattedTime + "\n");
     TextFile.close();
 }
 
@@ -323,7 +323,7 @@ function Connect_c()
  */
 function Reconnect_c()
 {
-    WriteFileAndPrint("(Re)conectado as");
+    WriteLog("(Re)conectado as");
     ConnectTelescope();
     sky6RASCOMTele.FindHome();
     // Verifica se o Tracking não está ocorrendo.
@@ -339,10 +339,10 @@ function RestartTracking_c()
 {
     var propriedade = GetRADec("Sun");
 
-    WriteFileAndPrint("Iniciou o slew as");
+    WriteLog("Iniciou o slew as");
     SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
-    WriteFileAndPrint("Reiniciou o rastreamento as");
+    WriteLog("Reiniciou o rastreamento as");
 }
 
 /*
