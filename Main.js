@@ -112,7 +112,7 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
         sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
         return true;
     } catch (slewerr) {
-        WriteLog("Falha durante o slew: " + slewerr.message);
+        WriteLog("Falha durante o slew\n" + slewerr.message);
         return false;
     }
 }
@@ -242,7 +242,7 @@ function WriteLog(text)
         TextFile.openForAppend(filename);
         var formattedTime = getFormattedTime();
         TextFile.write(text + " " + formattedTime + "\n");
-        print(text + " " + formattedTime);
+        (text + " " + formattedTime);
         TextFile.close();
     } catch (texterr) {
         PrintAndOut("Erro ao editar o log.\n" + texterr.message);
@@ -280,14 +280,14 @@ function Initialize_c()
 function Flip_c()
 {
     var propriedade = GetRADec("Sun");
-    WriteLog("Iniciou o slew as");
+    WriteLog("Iniciou o slew(flip) as");
     SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
 
     WriteLog("Completou o flip as");
 }
 
 /**
- * Processo de desligamento.
+ * Desliga o tracking e faz o parking.
  */
 function TurnOff_c()
 {
@@ -301,14 +301,14 @@ function TurnOff_c()
 }
 
 /**
- * Conecta no início do dia e cria o arquivo de log diário.
+ * Conecta o telescópio e cria o arquivo de log diário.
  */
 function Connect_c()
 {
     var time = getTimeNow();
     var formattedTime = getFormattedTime();
 
-    print("Conectado as " + formattedTime);
+    PrintAndOut("Conectado as " + formattedTime);
     ConnectTelescope();
 
     var filename = setFileName();
@@ -319,7 +319,7 @@ function Connect_c()
 }
 
 /**
- * Reconecta e reinicia o tracking.
+ * Reconecta o telescópio e reinicia o tracking.
  */
 function Reconnect_c()
 {
@@ -364,7 +364,8 @@ var work_time = {
  */
 function timeToInitialize(time)
 {
-    return time.hour == work_time.start_hour && time.minutes == work_time.start_minutes;
+    return time.hour == work_time.start_hour &&
+                time.minutes == work_time.start_minutes;
 }
 
 /**
@@ -374,7 +375,8 @@ function timeToInitialize(time)
  */
 function timeToFlip(time)
 {
-    return time.hour == work_time.flip_hour && time.minutes == work_time.flip_minutes;
+    return time.hour == work_time.flip_hour &&
+                time.minutes == work_time.flip_minutes;
 }
 
 /**
@@ -384,7 +386,8 @@ function timeToFlip(time)
  */
 function timeToTurnOff(time)
 {
-    return time.hour >= work_time.turn_off_hour && sky6RASCOMTele.IsTracking != 0;
+    return time.hour >= work_time.turn_off_hour &&
+                sky6RASCOMTele.IsTracking != 0;
 }
 
 /**
@@ -419,7 +422,8 @@ function connectionProblem(time)
 function checkTracking(time)
 {
     return Sky6IsConnected() && time.hour >= work_time.start_hour &&
-                time.hour < work_time.turn_off_hour && sky6RASCOMTele.IsTracking == 0;
+                time.hour < work_time.turn_off_hour &&
+                sky6RASCOMTele.IsTracking == 0;
 }
 
 while (true)
