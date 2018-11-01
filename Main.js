@@ -130,7 +130,7 @@ function ParkTelescope()
 
     if (sky6RASCOMTele.IsParked != 0) {
         sky6RASCOMTele.Park();
-        WriteLog("Parking completo.");
+        WriteLog("Parking finalizado as");
         return true;
     }
 }
@@ -295,8 +295,6 @@ function TurnOff_c()
     WriteLog("Desligou o rastreamento as");
 
     ParkTelescope();
-    WriteLog("Parking finalizado as");
-
     WriteLog("Desconectado as");
 }
 
