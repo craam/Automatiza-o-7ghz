@@ -359,6 +359,7 @@ var work_time = {
  * Verifica se é a hora de inicializar.
  *
  * @param {object} time - Horário atual.
+ * @returns {boolean}
  */
 function timeToInitialize(time)
 {
@@ -370,6 +371,7 @@ function timeToInitialize(time)
  * Verifica se é a hora do flip.
  *
  * @param {object} time - Horário atual.
+ * @returns {boolean}
  */
 function timeToFlip(time)
 {
@@ -381,6 +383,7 @@ function timeToFlip(time)
  * Verifica se é(ou já passou) (d)a hora de desligar e se o tracking está ocorrendo.
  *
  * @param {object} time - Horário atual.
+ * @returns {boolean}
  */
 function timeToTurnOff(time)
 {
@@ -392,6 +395,7 @@ function timeToTurnOff(time)
  * Verifica se é a hora de iniciar a conexão.
  *
  * @param {object} time - Horário atual.
+ * @returns {boolean}
  */
 function timeToConnect(time)
 {
@@ -404,6 +408,7 @@ function timeToConnect(time)
  * Procurar prever um eventual problema de simples desconexão do SkyX.
  *
  * @param {object} time - Horário atual.
+ * @returns {boolean}
  */
 function connectionProblem(time)
 {
@@ -416,6 +421,7 @@ function connectionProblem(time)
  * fazendo o tracking.
  * 
  * @param {object} time - Horário atual.
+ * @returns {boolean}
  */
 function checkTracking(time)
 {
