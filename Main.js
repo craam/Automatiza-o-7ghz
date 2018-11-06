@@ -261,6 +261,24 @@ function PrintAndOut(text)
 }
 
 /**
+ * Conecta o telescópio e cria o arquivo de log diário.
+ */
+function Connect_c()
+{
+    var time = getTimeNow();
+    var formattedTime = getFormattedTime();
+
+    PrintAndOut("Conectado as " + formattedTime);
+    ConnectTelescope();
+
+    var filename = setFileName();
+    TextFile.createNew(filename);
+    TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
+    TextFile.write("Conectado as " + formattedTime + "\n");
+    TextFile.close();
+}
+
+/**
  * Processo de inicialização.
  */
 function Initialize_c()
@@ -296,24 +314,6 @@ function TurnOff_c()
 
     ParkTelescope();
     WriteLog("Desconectado as");
-}
-
-/**
- * Conecta o telescópio e cria o arquivo de log diário.
- */
-function Connect_c()
-{
-    var time = getTimeNow();
-    var formattedTime = getFormattedTime();
-
-    PrintAndOut("Conectado as " + formattedTime);
-    ConnectTelescope();
-
-    var filename = setFileName();
-    TextFile.createNew(filename);
-    TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
-    TextFile.write("Conectado as " + formattedTime + "\n");
-    TextFile.close();
 }
 
 /**
