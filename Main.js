@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.3 11/01/18
+ * Version: 1.3.1 11/30/18
  */
 
 /**
@@ -118,6 +118,31 @@ function SlewTelescopeTo(dRa, dDec, targetObject)
 }
 
 /**
+ * Faz o slew para um determinado objeto dados azimute e altitude.
+ *
+ * @param {number} az - Azimute.
+ * @param {number} alt - Altitude.
+ * @param {string} targetObject - Objeto em questão.
+ *
+ * @returns {boolean} true se tudo tiver ocorrido corretamente.
+ */
+function SlewTelescopeToAzAlt(az, alt, targetObject)
+{
+    if (!Sky6IsConnected()) {
+        PrintAndOut("Telescopio nao conectado.");
+        return false;
+    }
+
+    try {
+        sky6RASCOMTele.SlewToAzAlt(az, alt, targetObject);
+        return true;
+    } catch (slewerr) {
+        WriteLog("Falha durante o slew\n" + slewerr.message);
+        return false;
+    }
+}
+
+/**
  * Leva o telescópio para a posição de parking.
  *
  * @returns {boolean} true se tudo tiver ocorrido corretamente.
@@ -162,6 +187,26 @@ function GetRADec(object)
     var targetDec = sky6ObjectInformation.ObjInfoPropOut;
 
     return {"ra": targetRA, "dec": targetDec};
+}
+
+/**
+ * Pega o azimute e a altitude do objeto sendo observado no momento.
+ *
+ * @param {string} object - Nome do objeto a ser encontrado.
+ * @returns {object} Um objeto com o azimute e a altitude.
+ */
+function GetAzAlt(object)
+{
+    if (!Sky6IsConnected()) {
+        WriteLog("Erro de conexao tentando executar a funcao GetAzAlt");
+        return false;
+    }
+
+    sky6RASCOMTele.GetAzAlt();
+    var az = sky6RASCOMTele.dAz;
+    var alt = sky6RASCOMTele.dAlt;
+
+    return {"az": az, "alt": alt};
 }
 
 /**
