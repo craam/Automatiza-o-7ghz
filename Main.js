@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.3.1 11/30/18
+ * Version: 1.3.2 12/03/18
  */
 
 /**
@@ -101,7 +101,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
  *
  * @returns {boolean} true se tudo tiver ocorrido corretamente.
  */
-function SlewTelescopeTo(dRa, dDec, targetObject)
+function SlewTelescopeToRaDec(dRa, dDec, targetObject)
 {
     if (!Sky6IsConnected()) {
         PrintAndOut("Telescopio nao conectado.");
@@ -192,10 +192,9 @@ function GetRADec(object)
 /**
  * Pega o azimute e a altitude do objeto sendo observado no momento.
  *
- * @param {string} object - Nome do objeto a ser encontrado.
  * @returns {object} Um objeto com o azimute e a altitude.
  */
-function GetAzAlt(object)
+function GetAzAlt()
 {
     if (!Sky6IsConnected()) {
         WriteLog("Erro de conexao tentando executar a funcao GetAzAlt");
@@ -332,7 +331,7 @@ function Initialize_c()
     var propriedade = GetRADec("Sun");
 
     WriteLog("Iniciou o slew as");
-    SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+    SlewTelescopeToRaDec(propriedade.ra, propriedade.dec, "Sun");
 
     WriteLog("Iniciou o rastreamento as");
 }
@@ -344,7 +343,7 @@ function Flip_c()
 {
     var propriedade = GetRADec("Sun");
     WriteLog("Iniciou o slew(flip) as");
-    SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+    SlewTelescopeToRaDec(propriedade.ra, propriedade.dec, "Sun");
 
     WriteLog("Completou o flip as");
 }
@@ -383,7 +382,7 @@ function RestartTracking_c()
     var propriedade = GetRADec("Sun");
 
     WriteLog("Iniciou o slew as");
-    SlewTelescopeTo(propriedade.ra, propriedade.dec, "Sun");
+    SlewTelescopeToRaDec(propriedade.ra, propriedade.dec, "Sun");
 
     WriteLog("Reiniciou o rastreamento as");
 }
