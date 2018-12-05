@@ -314,7 +314,7 @@ function WriteLog(text)
 
 /**
  * Escreve no debugger e na janela Run Java Script.
- * 
+ *
  * @param {string} text - O conteúdo a ser escrito.
  */
 function PrintAndOut(text)
@@ -408,7 +408,7 @@ function RestartTracking_c()
 
 /**
  * Aponta para o céu.
- * 
+ *
  * @param {object} time - Horário atual.
  */
 function CalibrateTelescope_c(time)
@@ -442,7 +442,7 @@ var work_time = {
 
 /**
  * Verifica se é a hora da primeira calibração.
- * 
+ *
  * @param {object} time - Horário atual.
  * @returns {boolean}
  */
@@ -454,7 +454,7 @@ function timeToFirstCalibration(time)
 
 /**
  * Verifica se é a hora da segunda calibração.
- * 
+ *
  * @param {object} time - Horário atual.
  * @returns {boolean}
  */
@@ -528,7 +528,7 @@ function connectionProblem(time)
 /**
  * Verifica se o telescópio está no horário de funcionamento, mas não está
  * fazendo o tracking.
- * 
+ *
  * @param {object} time - Horário atual.
  * @returns {boolean}
  */
