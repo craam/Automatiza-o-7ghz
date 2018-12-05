@@ -328,10 +328,10 @@ function Connect_c()
 function Initialize_c()
 {
     sky6RASCOMTele.FindHome();
-    var propriedade = GetRADec("Sun");
+    var props = GetRADec("Sun");
 
     WriteLog("Iniciou o slew as");
-    SlewTelescopeToRaDec(propriedade.ra, propriedade.dec, "Sun");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
     WriteLog("Iniciou o rastreamento as");
 }
@@ -341,9 +341,9 @@ function Initialize_c()
  */
 function Flip_c()
 {
-    var propriedade = GetRADec("Sun");
+    var props = GetRADec("Sun");
     WriteLog("Iniciou o slew(flip) as");
-    SlewTelescopeToRaDec(propriedade.ra, propriedade.dec, "Sun");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
     WriteLog("Completou o flip as");
 }
@@ -379,12 +379,30 @@ function Reconnect_c()
  */
 function RestartTracking_c()
 {
-    var propriedade = GetRADec("Sun");
+    var props = GetRADec("Sun");
 
     WriteLog("Iniciou o slew as");
-    SlewTelescopeToRaDec(propriedade.ra, propriedade.dec, "Sun");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
     WriteLog("Reiniciou o rastreamento as");
+}
+
+/**
+ * Aponta para o céu por 30 segundos.
+ * 
+ * @param {object} time - Horário atual.
+ */
+function CalibrateTelescope_c(time)
+{
+    if (time.seconds < 30) {
+        var delta = 0;
+        var props = GetAzAlt();
+        var newAlt = props.alt + delta;
+        SlewTelescopeToAzAlt(props.az, newAlt, "");
+    } else {
+        var props = GetRADec("Sun");
+        SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
+    }
 }
 
 /*
@@ -397,7 +415,35 @@ var work_time = {
     "flip_minutes": 00,
     "turn_off_hour": 20,
     "turn_off_minutes": 00,
+    "first_calibration_hour": 15,
+    "first_calibration_minutes": 00,
+    "second_calibration_hour": 17,
+    "second_calibration_minutes": 00,
 };
+
+/**
+ * Verifica se é a hora da primeira calibração.
+ * 
+ * @param {object} time - Horário atual.
+ * @returns {boolean}
+ */
+function timeToFirstCalibration(time)
+{
+    return time.hour == work_time.first_calibration_hour &&
+                time.minutes == work_time.first_calibration_minutes;
+}
+
+/**
+ * Verifica se é a hora da segunda calibração.
+ * 
+ * @param {object} time - Horário atual.
+ * @returns {boolean}
+ */
+function timeToSecondCalibration(time)
+{
+    return time.hour == work_time.second_calibration_hour &&
+                time.minutes == work_time.second_calibration_minutes;
+}
 
 /**
  * Verifica se é a hora de inicializar.
@@ -443,7 +489,7 @@ function timeToTurnOff(time)
  */
 function timeToConnect(time)
 {
-    return !Sky6IsConnected() && time.hour == work_time.start_hour &&
+    return time.hour == work_time.start_hour &&
                 time.minutes == work_time.start_minutes;
 }
 
@@ -456,7 +502,7 @@ function timeToConnect(time)
  */
 function connectionProblem(time)
 {
-    return !Sky6IsConnected() && time.hour >= work_time.start_hour &&
+    return time.hour >= work_time.start_hour &&
                 time.hour < work_time.turn_off_hour;
 }
 
@@ -481,14 +527,17 @@ while (true)
         if (timeToInitialize(time)) {
             Initialize_c();
         }
+        else if (timeToFirstCalibration(time)) {
+            CalibrateTelescope_c(time);
+        }
         else if (timeToFlip(time)) {
             Flip_c();
         }
+        else if (timeToSecondCalibration(time)) {
+            CalibrateTelescope_c(time);
+        }
         else if (timeToTurnOff(time)) {
             TurnOff_c();
-        }
-        else if (checkTracking(time)) {
-            RestartTracking_c();
         }
     }
     else if (timeToConnect(time)) {
@@ -496,5 +545,8 @@ while (true)
     }
     else if (connectionProblem(time)) {
         Reconnect_c();
+    }
+    else if (checkTracking(time)) {
+        RestartTracking_c();
     }
 }
