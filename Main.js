@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.3.2 12/03/18
+ * Version: 1.3.3 12/05/18
  */
 
 /**
@@ -564,8 +564,5 @@ while (true)
     }
     else if (connectionProblem(time)) {
         Reconnect_c();
-    }
-    else if (checkTracking(time)) {
-        RestartTracking_c();
     }
 }
