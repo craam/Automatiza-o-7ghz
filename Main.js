@@ -209,6 +209,25 @@ function GetAzAlt()
 }
 
 /**
+ * Verifica se o telescópio está apontando para o sol.
+ *
+ * @returns {boolean}
+ */
+function IsPointingSun()
+{
+    var sun_props = GetRADec("Sun");
+    var current_props = sky6RASCOMTele.GetRaDec();
+    var current_ra = sky6RASCOMTele.dRa;
+    var current_dec = sky6RASCOMTele.dDec;
+
+    if (sun_props.ra == current_ra && sun_props.dec == current_dec) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
  * Pega a data e o horário do momento que a função é chamada.
  *
  * @returns {object} Um objeto com os dados.
@@ -388,7 +407,7 @@ function RestartTracking_c()
 }
 
 /**
- * Aponta para o céu por 30 segundos.
+ * Aponta para o céu.
  * 
  * @param {object} time - Horário atual.
  */
