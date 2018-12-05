@@ -413,7 +413,7 @@ function RestartTracking_c()
  */
 function CalibrateTelescope_c(time)
 {
-    if (time.seconds < 30) {
+    if (time.seconds < 30 && IsPointingSun()) {
         var delta = 0;
         var props = GetAzAlt();
         var newAlt = props.alt + delta;
