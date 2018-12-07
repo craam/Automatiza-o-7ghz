@@ -387,7 +387,6 @@ function Reconnect_c()
     WriteLog("(Re)conectado as");
     ConnectTelescope();
     sky6RASCOMTele.FindHome();
-    // Verifica se o Tracking não está ocorrendo.
     if (sky6RASCOMTele.IsTracking == 0) {
         RestartTracking_c();
     }
