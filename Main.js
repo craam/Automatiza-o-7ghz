@@ -411,7 +411,7 @@ function RestartTracking_c()
 function CalibrateTelescope_c()
 {
     WriteLog("Calibracao iniciada as")
-    var delta = 0;
+    var delta = 20;
     var props = GetAzAlt();
     var newAlt = props.alt + delta;
     SlewTelescopeToAzAlt(props.az, newAlt, "");
