@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.3.3 12/05/18
+ * Version: 1.4 12/07/18
  */
 
 /**
@@ -408,20 +408,14 @@ function RestartTracking_c()
 
 /**
  * Aponta para o céu.
- *
- * @param {object} time - Horário atual.
  */
-function CalibrateTelescope_c(time)
+function CalibrateTelescope_c()
 {
-    if (time.seconds < 30 && IsPointingSun()) {
-        var delta = 0;
-        var props = GetAzAlt();
-        var newAlt = props.alt + delta;
-        SlewTelescopeToAzAlt(props.az, newAlt, "");
-    } else {
-        var props = GetRADec("Sun");
-        SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
-    }
+    WriteLog("Calibracao iniciada as")
+    var delta = 0;
+    var props = GetAzAlt();
+    var newAlt = props.alt + delta;
+    SlewTelescopeToAzAlt(props.az, newAlt, "");
 }
 
 /*
@@ -436,8 +430,16 @@ var work_time = {
     "turn_off_minutes": 00,
     "first_calibration_hour": 15,
     "first_calibration_minutes": 00,
+    "first_calibration_seconds": 00,
     "second_calibration_hour": 17,
     "second_calibration_minutes": 00,
+    "second_calibration_seconds": 00,
+    "finish_first_calibration_hour": 15,
+    "finish_first_calibration_minutes": 01,
+    "finish_first_calibration_seconds": 00,
+    "finish_second_calibration_hour": 17,
+    "finish_second_calibration_minutes": 01,
+    "finish_second_calibration_seconds": 00,
 };
 
 /**
@@ -449,7 +451,21 @@ var work_time = {
 function timeToFirstCalibration(time)
 {
     return time.hour == work_time.first_calibration_hour &&
-                time.minutes == work_time.first_calibration_minutes;
+                time.minutes == work_time.first_calibration_minutes &&
+                time.seconds == work_time.first_calibration_seconds;
+}
+
+/**
+ * Verifica se é a hora de voltar para o sol.
+ * 
+ * @param {object} time - Horário atual.
+ * @return {boolean}
+ */
+function timeToFinishFirstCalibration(time)
+{
+    return time.hour == work_time.finish_first_calibration_hour &&
+                time.minutes == work_time.finish_first_calibration_minutes &&
+                time.seconds == work_time.finish_first_calibration_seconds;
 }
 
 /**
@@ -461,7 +477,21 @@ function timeToFirstCalibration(time)
 function timeToSecondCalibration(time)
 {
     return time.hour == work_time.second_calibration_hour &&
-                time.minutes == work_time.second_calibration_minutes;
+                time.minutes == work_time.second_calibration_minutes &&
+                time.seconds == work_time.second_calibration_seconds;
+}
+
+/**
+ * Verifica se é a hora de voltar para o sol.
+ * 
+ * @param {object} time - Horário atual.
+ * @return {boolean}
+ */
+function timeToFinishSecondCalibration(time)
+{
+    return time.hour == work_time.finish_second_calibration_hour &&
+                time.minutes == work_time.finish_second_calibration_minutes &&
+                time.seconds == work_time.finish_second_calibration_seconds;
 }
 
 /**
@@ -547,13 +577,19 @@ while (true)
             Initialize_c();
         }
         else if (timeToFirstCalibration(time)) {
-            CalibrateTelescope_c(time);
+            CalibrateTelescope_c();
+        }
+        else if (timeToFinishFirstCalibration(time)) {
+            RestartTracking_c();
         }
         else if (timeToFlip(time)) {
             Flip_c();
         }
         else if (timeToSecondCalibration(time)) {
-            CalibrateTelescope_c(time);
+            CalibrateTelescope_c();
+        }
+        else if (timeToFinishSecondCalibration(time)) {
+            RestartTracking_c();
         }
         else if (timeToTurnOff(time)) {
             TurnOff_c();
