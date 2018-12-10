@@ -406,7 +406,7 @@ function RestartTracking_c()
 }
 
 /**
- * Aponta para o céu.
+ * Aponta para o céu adicionando a altitude da observação atual
  */
 function CalibrateTelescope_c()
 {
@@ -421,24 +421,24 @@ function CalibrateTelescope_c()
  * Configura os horário para inicializar, fazer o flip e desligar.
  */
 var work_time = {
-    "start_hour": 11,
-    "start_minutes": 00,
-    "flip_hour": 16,
-    "flip_minutes": 00,
-    "turn_off_hour": 20,
-    "turn_off_minutes": 00,
-    "first_calibration_hour": 15,
-    "first_calibration_minutes": 00,
-    "first_calibration_seconds": 00,
-    "second_calibration_hour": 17,
-    "second_calibration_minutes": 00,
-    "second_calibration_seconds": 00,
-    "finish_first_calibration_hour": 15,
-    "finish_first_calibration_minutes": 01,
-    "finish_first_calibration_seconds": 00,
-    "finish_second_calibration_hour": 17,
-    "finish_second_calibration_minutes": 01,
-    "finish_second_calibration_seconds": 00,
+    start_hour: 11,
+    start_minutes: 00,
+    flip_hour: 16,
+    flip_minutes: 00,
+    turn_off_hour: 20,
+    turn_off_minutes: 00,
+    first_calibration_hour: 15,
+    first_calibration_minutes: 00,
+    first_calibration_seconds: 00,
+    second_calibration_hour: 17,
+    second_calibration_minutes: 00,
+    second_calibration_seconds: 00,
+    finish_first_calibration_hour: 15,
+    finish_first_calibration_minutes: 01,
+    finish_first_calibration_seconds: 00,
+    finish_second_calibration_hour: 17,
+    finish_second_calibration_minutes: 01,
+    finish_second_calibration_seconds: 00,
 };
 
 /**
