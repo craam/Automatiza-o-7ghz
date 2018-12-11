@@ -386,10 +386,9 @@ function Reconnect_c()
 {
     WriteLog("(Re)conectado as");
     ConnectTelescope();
+    SetTelescopeTracking(0, 1, 0, 0);
     sky6RASCOMTele.FindHome();
-    if (sky6RASCOMTele.IsTracking == 0) {
-        RestartTracking_c();
-    }
+    RestartTracking_c();
 }
 
 /**
