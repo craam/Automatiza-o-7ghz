@@ -216,7 +216,7 @@ function GetAzAlt()
 function IsPointingSun()
 {
     var sun_props = GetRADec("Sun");
-    var current_props = sky6RASCOMTele.GetRaDec();
+    sky6RASCOMTele.GetRaDec();
     var current_ra = sky6RASCOMTele.dRa;
     var current_dec = sky6RASCOMTele.dDec;
 
