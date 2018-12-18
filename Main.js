@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.4 12/07/18
+ * Version: 1.4.1 12/12/18
  */
 
 /**
@@ -216,7 +216,7 @@ function GetAzAlt()
 function IsPointingSun()
 {
     var sun_props = GetRADec("Sun");
-    var current_props = sky6RASCOMTele.GetRaDec();
+    sky6RASCOMTele.GetRaDec();
     var current_ra = sky6RASCOMTele.dRa;
     var current_dec = sky6RASCOMTele.dDec;
 
@@ -412,8 +412,8 @@ function CalibrateTelescope_c()
     WriteLog("Calibracao iniciada as")
     var delta = 20;
     var props = GetAzAlt();
-    var newAlt = props.alt + delta;
-    SlewTelescopeToAzAlt(props.az, newAlt, "");
+    var newAz = props.az + delta;
+    SlewTelescopeToAzAlt(newAz, props.az, "");
 }
 
 /*
