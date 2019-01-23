@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.4.1 12/12/18
+ * Version: 1.4.1.1 23/01/19
  */
 
 /**
@@ -433,11 +433,11 @@ var work_time = {
     second_calibration_minutes: 00,
     second_calibration_seconds: 00,
     finish_first_calibration_hour: 15,
-    finish_first_calibration_minutes: 01,
-    finish_first_calibration_seconds: 00,
+    finish_first_calibration_minutes: 00,
+    finish_first_calibration_seconds: 30,
     finish_second_calibration_hour: 17,
-    finish_second_calibration_minutes: 01,
-    finish_second_calibration_seconds: 00,
+    finish_second_calibration_minutes: 00,
+    finish_second_calibration_seconds: 30,
 };
 
 /**
