@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.4.1.1 23/01/19
+ * Version: 1.4.2 28/01/19
  */
 
 /**
@@ -562,8 +562,9 @@ function connectionProblem(time)
  */
 function checkTracking(time)
 {
-    return sky6RASCOMTele.IsTracking == 0 && time.hour >= work_time.start_hour &&
-                time.hour < work_time.turn_off_hour;
+    return time.hour >= work_time.start_hour &&
+                time.hour < work_time.turn_off_hour &&
+                sky6RASCOMTele.IsTracking == 0;
 }
 
 while (true)
@@ -591,6 +592,9 @@ while (true)
         }
         else if (timeToTurnOff(time)) {
             TurnOff_c();
+        }
+        else if (checkTracking(time)) {
+            RestartTracking_c();
         }
     }
     else if (timeToConnect(time)) {
