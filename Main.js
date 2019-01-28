@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.4.1.1 23/01/19
+ * Version: 1.4.2 28/01/19
  */
 
 /**
@@ -52,7 +52,7 @@ function ConnectTelescope()
     try {
         sky6RASCOMTele.Connect();
     } catch (connerr) {
-        WriteLog("Erro de conexao com a montagem\n" + connerr.message + " ");
+        WriteLog("Erro de conexao com a montagem. " + connerr.message);
         return false;
     }
 
@@ -112,7 +112,7 @@ function SlewTelescopeToRaDec(dRa, dDec, targetObject)
         sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
         return true;
     } catch (slewerr) {
-        WriteLog("Falha durante o slew\n" + slewerr.message);
+        WriteLog("Falha durante o slew. " + slewerr.message);
         return false;
     }
 }
@@ -137,7 +137,7 @@ function SlewTelescopeToAzAlt(az, alt, targetObject)
         sky6RASCOMTele.SlewToAzAlt(az, alt, targetObject);
         return true;
     } catch (slewerr) {
-        WriteLog("Falha durante o slew\n" + slewerr.message);
+        WriteLog("Falha durante o slew. " + slewerr.message);
         return false;
     }
 }
@@ -155,7 +155,7 @@ function ParkTelescope()
 
     if (sky6RASCOMTele.IsParked != 0) {
         sky6RASCOMTele.Park();
-        WriteLog("Parking finalizado as");
+        WriteLog("Parking finalizado");
         return true;
     }
 }
@@ -177,7 +177,7 @@ function GetRADec(object)
     try {
         sky6StarChart.Find(object);
     } catch (finderr) {
-        WriteLog("Erro durante o find.\n" + finderr.message + " ");
+        WriteLog("Erro durante o find. " + finderr.message);
         return false;
     }
 
@@ -304,8 +304,9 @@ function WriteLog(text)
     try {
         TextFile.openForAppend(filename);
         var formattedTime = getFormattedTime();
-        TextFile.write(text + " " + formattedTime + "\n");
-        print(text + " " + formattedTime);
+        TextFile.write("[" + formattedTime + "] ")
+        TextFile.write(text + "\n");
+        print("[" + formattedTime  + "] " + text);
         TextFile.close();
     } catch (texterr) {
         PrintAndOut("Erro ao editar o log.\n" + texterr.message);
@@ -349,10 +350,10 @@ function Initialize_c()
     sky6RASCOMTele.FindHome();
     var props = GetRADec("Sun");
 
-    WriteLog("Iniciou o slew as");
+    WriteLog("Iniciou o slew (Initialize_c)");
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLog("Iniciou o rastreamento as");
+    WriteLog("Iniciou o rastreamento (Initialize_c");
 }
 
 /**
@@ -361,10 +362,10 @@ function Initialize_c()
 function Flip_c()
 {
     var props = GetRADec("Sun");
-    WriteLog("Iniciou o slew(flip) as");
+    WriteLog("Iniciou o slew (Flip_c)");
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLog("Completou o flip as");
+    WriteLog("Completou o flip (Flip_c)");
 }
 
 /**
@@ -373,10 +374,10 @@ function Flip_c()
 function TurnOff_c()
 {
     SetTelescopeTracking(0, 1, 0, 0);
-    WriteLog("Desligou o rastreamento as");
+    WriteLog("Desligou o rastreamento (TurnOff_c)");
 
     ParkTelescope();
-    WriteLog("Desconectado as");
+    WriteLog("Desconectado (TurnOff_c)");
 }
 
 /**
@@ -384,7 +385,7 @@ function TurnOff_c()
  */
 function Reconnect_c()
 {
-    WriteLog("(Re)conectado as");
+    WriteLog("(Re)conectado (Reconnect_c)");
     ConnectTelescope();
     SetTelescopeTracking(0, 1, 0, 0);
     sky6RASCOMTele.FindHome();
@@ -398,10 +399,10 @@ function RestartTracking_c()
 {
     var props = GetRADec("Sun");
 
-    WriteLog("Iniciou o slew as");
+    WriteLog("Iniciou o slew (RestartTracking_c)");
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLog("Reiniciou o rastreamento as");
+    WriteLog("Reiniciou o rastreamento (RestartTracking_c)");
 }
 
 /**
@@ -409,7 +410,7 @@ function RestartTracking_c()
  */
 function CalibrateTelescope_c()
 {
-    WriteLog("Calibracao iniciada as")
+    WriteLog("Calibracao iniciada (CalibrateTelescope_c)")
     var delta = 20;
     var props = GetAzAlt();
     var newAz = props.az + delta;
@@ -562,8 +563,9 @@ function connectionProblem(time)
  */
 function checkTracking(time)
 {
-    return sky6RASCOMTele.IsTracking == 0 && time.hour >= work_time.start_hour &&
-                time.hour < work_time.turn_off_hour;
+    return time.hour >= work_time.start_hour &&
+                time.hour < work_time.turn_off_hour &&
+                sky6RASCOMTele.IsTracking == 0;
 }
 
 while (true)
@@ -591,6 +593,9 @@ while (true)
         }
         else if (timeToTurnOff(time)) {
             TurnOff_c();
+        }
+        else if (checkTracking(time)) {
+            RestartTracking_c();
         }
     }
     else if (timeToConnect(time)) {
