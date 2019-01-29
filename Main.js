@@ -93,8 +93,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 }
 
 /**
- * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
- *
+ * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.*
  * @param {number} dRa - ascensão reta.
  * @param {number} dDec - declinação.
  * @param {string} targetObject - Objeto em questão.
@@ -554,20 +553,6 @@ function connectionProblem(time)
                 time.hour < work_time.turn_off_hour;
 }
 
-/**
- * Verifica se o telescópio está no horário de funcionamento, mas não está
- * fazendo o tracking.
- *
- * @param {object} time - Horário atual.
- * @returns {boolean}
- */
-function checkTracking(time)
-{
-    return time.hour >= work_time.start_hour &&
-                time.hour < work_time.turn_off_hour &&
-                sky6RASCOMTele.IsTracking == 0;
-}
-
 while (true)
 {
     var time = getTimeNow();
@@ -593,9 +578,6 @@ while (true)
         }
         else if (timeToTurnOff(time)) {
             TurnOff_c();
-        }
-        else if (checkTracking(time)) {
-            RestartTracking_c();
         }
     }
     else if (timeToConnect(time)) {
