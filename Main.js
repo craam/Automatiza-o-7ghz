@@ -86,9 +86,6 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
     }
 
     sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
-    var Out = "RA Rate = " + sky6RASCOMTele.dRaTrackingRate;
-    Out += " | Dec Rate = " + sky6RASCOMTele.dDecTrackingRate;
-    PrintAndOut(Out);
     return true;
 }
 
@@ -405,15 +402,17 @@ function RestartTracking_c()
 }
 
 /**
- * Aponta para o céu adicionando a altitude da observação atual
+ * Aponta para o céu.
  */
 function CalibrateTelescope_c()
 {
     WriteLog("Calibracao iniciada (CalibrateTelescope_c)")
     var delta = 20;
     var props = GetAzAlt();
+    WriteLog("Azimute atual: " + props.az + " | Altitude atual: " + props.alt);
     var newAz = props.az + delta;
-    SlewTelescopeToAzAlt(newAz, props.az, "");
+    WriteLog("Azimute futuro: " + newAz + " | Altitude futura: " + props.alt);
+    SlewTelescopeToAzAlt(newAz, props.alt, "");
 }
 
 /*
