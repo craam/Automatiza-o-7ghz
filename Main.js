@@ -349,7 +349,7 @@ function Initialize_c()
     WriteLog("Iniciou o slew (Initialize_c)");
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLog("Iniciou o rastreamento (Initialize_c");
+    WriteLog("Iniciou o rastreamento (Initialize_c)");
 }
 
 /**
