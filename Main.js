@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.4.2 28/01/19
+ * Version: 1.4.3
  */
 
 /**
@@ -343,13 +343,16 @@ function Connect_c()
  */
 function Initialize_c()
 {
+    if (sky6RASCOMTele.IsParked != 0) {
+        sky6RASCOMTele.Unpark();
+    }
     sky6RASCOMTele.FindHome();
     var props = GetRADec("Sun");
 
     WriteLog("Iniciou o slew (Initialize_c)");
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLog("Iniciou o rastreamento (Initialize_c");
+    WriteLog("Iniciou o rastreamento (Initialize_c)");
 }
 
 /**
