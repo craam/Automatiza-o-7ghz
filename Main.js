@@ -25,7 +25,7 @@
  */
 
 /*
- * Version: 1.4.3
+ * Version: 1.5
  */
 
 /**
@@ -52,7 +52,7 @@ function ConnectTelescope()
     try {
         sky6RASCOMTele.Connect();
     } catch (connerr) {
-        WriteLog("Erro de conexao com a montagem. " + connerr.message);
+        WriteLogError("Erro de conexao com a montagem. " + connerr.message + " (ConnectTelescope)");
         return false;
     }
 
@@ -100,7 +100,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 function SlewTelescopeToRaDec(dRa, dDec, targetObject)
 {
     if (!Sky6IsConnected()) {
-        PrintAndOut("Telescopio nao conectado.");
+        PrintAndOut("Telescopio nao conectado (SlewTelescopeToRaDec)");
         return false;
     }
   
@@ -108,7 +108,7 @@ function SlewTelescopeToRaDec(dRa, dDec, targetObject)
         sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
         return true;
     } catch (slewerr) {
-        WriteLog("Falha durante o slew. " + slewerr.message);
+        WriteLogError("Falha durante o slew. " + slewerr.message + " (SlewTelescopeToRaDec)");
         return false;
     }
 }
@@ -125,7 +125,7 @@ function SlewTelescopeToRaDec(dRa, dDec, targetObject)
 function SlewTelescopeToAzAlt(az, alt, targetObject)
 {
     if (!Sky6IsConnected()) {
-        PrintAndOut("Telescopio nao conectado.");
+        PrintAndOut("Telescopio nao conectado. (SlewTelescopeToAzAlt)");
         return false;
     }
 
@@ -133,7 +133,7 @@ function SlewTelescopeToAzAlt(az, alt, targetObject)
         sky6RASCOMTele.SlewToAzAlt(az, alt, targetObject);
         return true;
     } catch (slewerr) {
-        WriteLog("Falha durante o slew. " + slewerr.message);
+        WriteLogError("Falha durante o slew. " + slewerr.message + " (SlewTelescopeToAzAlt)");
         return false;
     }
 }
@@ -151,7 +151,7 @@ function ParkTelescope()
 
     if (sky6RASCOMTele.IsParked != 0) {
         sky6RASCOMTele.Park();
-        WriteLog("Parking finalizado");
+        WriteLogInfo("Parking finalizado (ParkTelescope)");
         return true;
     }
 }
@@ -166,14 +166,14 @@ function ParkTelescope()
 function GetRADec(object)
 {
     if (!Sky6IsConnected()) {
-        WriteLog("Erro de conexao tentando executar a funcao GetRADec");
+        WriteLogError("Erro de conexao (GetRaDec)");
         return false;
     }
 
     try {
         sky6StarChart.Find(object);
     } catch (finderr) {
-        WriteLog("Erro durante o find. " + finderr.message);
+        WriteLogError("Erro durante o find. " + finderr.message + " (GetRaDec)");
         return false;
     }
 
@@ -193,7 +193,7 @@ function GetRADec(object)
 function GetAzAlt()
 {
     if (!Sky6IsConnected()) {
-        WriteLog("Erro de conexao tentando executar a funcao GetAzAlt");
+        WriteLogError("Erro de conexao (GetAzAlt)");
         return false;
     }
 
@@ -290,23 +290,56 @@ function getFormattedTime()
 
 /**
  * Escreve no debugger e no log a mesma mensagem, junto com o horário
- * do momento.
+ * do momento. Também define o tipo(nível) de mensagem(Info, Warning ou Error).
+ * Formato da mensagem:
+ * [LEVEL - 00:00:00] Text
  *
  * @param {string} text -  A mensagem a ser escrita.
+ * @param {string} level - Nível da mensage.
  */
-function WriteLog(text)
+function WriteLog(level, text)
 {
     var filename = setFileName();
     try {
         TextFile.openForAppend(filename);
         var formattedTime = getFormattedTime();
-        TextFile.write("[" + formattedTime + "] ")
-        TextFile.write(text + "\n");
-        print("[" + formattedTime  + "] " + text);
+        var header = "[" + level + " - " + formattedTime  + "] ";
+        TextFile.write(header + text + "\n");
+        print(header + text);
         TextFile.close();
     } catch (texterr) {
-        PrintAndOut("Erro ao editar o log.\n" + texterr.message);
+        PrintAndOut("Erro ao editar o log. " + texterr.message + " (WriteLog)");
     }
+}
+
+/**
+ * Escreve a mensage de warning no log.
+ *
+ * @param {string} text -  A mensagem a ser escrita.
+ */
+function WriteLogWarning(text)
+{
+    WriteLog("WARNING", text);
+}
+
+/**
+ * Escreve a mensagem de erro no log.
+ *
+ * @param {string} text - A mensagem a ser escrita.
+ */
+function WriteLogError(text)
+{
+    WriteLog("ERROR", text);
+}
+
+/**
+ * Escreve a mensagem de informação no log.
+ *
+ * @param {string} text - A mensagem a ser escrita.
+ */
+function WriteLogInfo(text)
+{
+    WriteLog("INFO", text);
 }
 
 /**
@@ -316,8 +349,11 @@ function WriteLog(text)
  */
 function PrintAndOut(text)
 {
-    print(text);
-    RunJavaScriptOutput.writeLine(text);
+    var level = "WARNING";
+    var formattedTime = getFormattedTime();
+    var header = "[" + level + " - " + formattedTime  + "] ";
+    print(header + text);
+    RunJavaScriptOutput.writeLine(header + text);
 }
 
 /**
@@ -328,13 +364,14 @@ function Connect_c()
     var time = getTimeNow();
     var formattedTime = getFormattedTime();
 
-    PrintAndOut("Conectado as " + formattedTime);
     ConnectTelescope();
 
     var filename = setFileName();
     TextFile.createNew(filename);
     TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
-    TextFile.write("Conectado as " + formattedTime + "\n");
+    var header = "[INFO - " + formattedTime + "] ";
+    TextFile.write(header + "Conectado\n");
+    print(header + "Conectado\n");
     TextFile.close();
 }
 
@@ -349,10 +386,10 @@ function Initialize_c()
     sky6RASCOMTele.FindHome();
     var props = GetRADec("Sun");
 
-    WriteLog("Iniciou o slew (Initialize_c)");
+    WriteLogInfo("Iniciou o slew (Initialize_c)");
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLog("Iniciou o rastreamento (Initialize_c)");
+    WriteLogInfo("Iniciou o rastreamento (Initialize_c)");
 }
 
 /**
@@ -361,10 +398,10 @@ function Initialize_c()
 function Flip_c()
 {
     var props = GetRADec("Sun");
-    WriteLog("Iniciou o slew (Flip_c)");
+    WriteLogInfo("Iniciou o slew (Flip_c)");
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLog("Completou o flip (Flip_c)");
+    WriteLogInfo("Completou o flip (Flip_c)");
 }
 
 /**
@@ -373,10 +410,10 @@ function Flip_c()
 function TurnOff_c()
 {
     SetTelescopeTracking(0, 1, 0, 0);
-    WriteLog("Desligou o rastreamento (TurnOff_c)");
+    WriteLogInfo("Desligou o rastreamento (TurnOff_c)");
 
     ParkTelescope();
-    WriteLog("Desconectado (TurnOff_c)");
+    WriteLogInfo("Desconectado (TurnOff_c)");
 }
 
 /**
@@ -384,7 +421,7 @@ function TurnOff_c()
  */
 function Reconnect_c()
 {
-    WriteLog("(Re)conectado (Reconnect_c)");
+    WriteLogInfo("(Re)conectado (Reconnect_c)");
     ConnectTelescope();
     SetTelescopeTracking(0, 1, 0, 0);
     sky6RASCOMTele.FindHome();
@@ -398,10 +435,10 @@ function RestartTracking_c()
 {
     var props = GetRADec("Sun");
 
-    WriteLog("Iniciou o slew (RestartTracking_c)");
+    WriteLogInfo("Iniciou o slew (RestartTracking_c)");
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLog("Reiniciou o rastreamento (RestartTracking_c)");
+    WriteLogInfo("Reiniciou o rastreamento (RestartTracking_c)");
 }
 
 /**
@@ -409,12 +446,12 @@ function RestartTracking_c()
  */
 function CalibrateTelescope_c()
 {
-    WriteLog("Calibracao iniciada (CalibrateTelescope_c)")
+    WriteLogInfo("Calibracao iniciada (CalibrateTelescope_c)")
     var delta = 20;
     var props = GetAzAlt();
-    WriteLog("Azimute atual: " + props.az + " | Altitude atual: " + props.alt);
+    WriteLogInfo("Azimute atual: " + props.az + " | Altitude atual: " + props.alt);
     var newAz = props.az + delta;
-    WriteLog("Azimute futuro: " + newAz + " | Altitude futura: " + props.alt);
+    WriteLogInfo("Azimute futuro: " + newAz + " | Altitude futura: " + props.alt);
     SlewTelescopeToAzAlt(newAz, props.alt, "");
 }
 
