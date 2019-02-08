@@ -29,7 +29,7 @@
  */
 
 /**
- * Confirma se o script tem conexão com o telescópio.
+ * Confirma se o SkyX tem conexão com a montagem.
  *
  * @returns {boolean} false se não estiver conectado.
  *                    true se estiver conectado.
@@ -43,7 +43,7 @@ function Sky6IsConnected()
 }
 
 /**
- * Estabiliza a conexão com o telescópio.
+ * Estabiliza a conexão com a montagem.
  *
  * @returns {boolean} false caso algum erro aconteça.
  */
@@ -60,7 +60,7 @@ function ConnectTelescope()
 }
 
 /**
- * Liga o tracking para um lugar específico, ou desliga o tracking.
+ * Liga/Desliga o tracking.
  *
  * @param {number} IOn - O número que desliga ou liga o tracking.
  *                              0 - desliga
@@ -90,7 +90,8 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 }
 
 /**
- * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.*
+ * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
+ *
  * @param {number} dRa - ascensão reta.
  * @param {number} dDec - declinação.
  * @param {string} targetObject - Objeto em questão.
@@ -100,7 +101,7 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 function SlewTelescopeToRaDec(dRa, dDec, targetObject)
 {
     if (!Sky6IsConnected()) {
-        PrintAndOut("Telescopio nao conectado (SlewTelescopeToRaDec)");
+        WriteLogError("Telescopio nao conectado (SlewTelescopeToRaDec)");
         return false;
     }
   
@@ -125,7 +126,7 @@ function SlewTelescopeToRaDec(dRa, dDec, targetObject)
 function SlewTelescopeToAzAlt(az, alt, targetObject)
 {
     if (!Sky6IsConnected()) {
-        PrintAndOut("Telescopio nao conectado. (SlewTelescopeToAzAlt)");
+        WriteLogError("Telescopio nao conectado. (SlewTelescopeToAzAlt)");
         return false;
     }
 
@@ -157,10 +158,11 @@ function ParkTelescope()
 }
 
 /**
- * Prcoura pelo objeto dado e pega a ascensão reta e a declinação dele
+ * Procura pelo objeto dado e pega a ascensão reta e a declinação dele
  * no momento.
  *
  * @param {string} object - Nome do objeto a ser encontrado.
+ *
  * @returns {object} Um objeto com a ascensão reta e a declinação.
  */
 function GetRADec(object)
@@ -202,25 +204,6 @@ function GetAzAlt()
     var alt = sky6RASCOMTele.dAlt;
 
     return {"az": az, "alt": alt};
-}
-
-/**
- * Verifica se o telescópio está apontando para o sol.
- *
- * @returns {boolean}
- */
-function IsPointingSun()
-{
-    var sun_props = GetRADec("Sun");
-    sky6RASCOMTele.GetRaDec();
-    var current_ra = sky6RASCOMTele.dRa;
-    var current_dec = sky6RASCOMTele.dDec;
-
-    if (sun_props.ra == current_ra && sun_props.dec == current_dec) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 /**
@@ -277,7 +260,7 @@ function setFileName()
 }
 
 /**
- * Pega o horário atual do computador.
+ * Pega o horário atual do computador formatado.
  *
  * @returns {string} O horário no formato %H:%M:%S.
  */
@@ -289,10 +272,9 @@ function getFormattedTime()
 }
 
 /**
- * Escreve no debugger e no log a mesma mensagem, junto com o horário
- * do momento. Também define o tipo(nível) de mensagem(Info, Warning ou Error).
- * Formato da mensagem:
- * [LEVEL - 00:00:00] Text
+ * Escreve no log uma mensagem, junto com o horário do momento.
+ * Também define o tipo(nível) de mensagem(Info, Warning ou Error).
+ * Formato da mensagem: [LEVEL - 00:00:00] Text
  *
  * @param {string} text -  A mensagem a ser escrita.
  * @param {string} level - Nível da mensage.
@@ -344,6 +326,7 @@ function WriteLogInfo(text)
 
 /**
  * Escreve no debugger e na janela Run Java Script.
+ * Deve ser usado somente quando o log estiver inacessível.
  *
  * @param {string} text - O conteúdo a ser escrito.
  */
@@ -357,7 +340,7 @@ function PrintAndOut(text)
 }
 
 /**
- * Conecta o telescópio e cria o arquivo de log diário.
+ * Conecta o telescópio e cria o arquivo de log do dia.
  */
 function Connect_c()
 {
@@ -442,16 +425,18 @@ function RestartTracking_c()
 }
 
 /**
- * Aponta para o céu.
+ * Aponta para o céu baseando-se no azimute.
  */
 function CalibrateTelescope_c()
 {
     WriteLogInfo("Calibracao iniciada (CalibrateTelescope_c)")
+
     var delta = 20;
     var props = GetAzAlt();
     WriteLogInfo("Azimute atual: " + props.az + " | Altitude atual: " + props.alt);
     var newAz = props.az + delta;
     WriteLogInfo("Azimute futuro: " + newAz + " | Altitude futura: " + props.alt);
+
     SlewTelescopeToAzAlt(newAz, props.alt, "");
 }
 
@@ -558,7 +543,8 @@ function timeToFlip(time)
 }
 
 /**
- * Verifica se é(ou já passou) (d)a hora de desligar e se o tracking está ocorrendo.
+ * Verifica se é(ou já passou) (d)a hora de desligar o tracking e se ele
+ * está ocorrendo.
  *
  * @param {object} time - Horário atual.
  * @returns {boolean}
