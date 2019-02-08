@@ -461,6 +461,7 @@ function CalibrateTelescope_c()
 var work_time = {
     start_hour: 11,
     start_minutes: 00,
+    start_seconds: 00,
     flip_hour: 16,
     flip_minutes: 00,
     turn_off_hour: 20,
@@ -540,7 +541,8 @@ function timeToFinishSecondCalibration(time)
 function timeToInitialize(time)
 {
     return time.hour == work_time.start_hour &&
-                time.minutes == work_time.start_minutes;
+                time.minutes == work_time.start_minutes &&
+                time.seconds == work_time.start_seconds;
 }
 
 /**
