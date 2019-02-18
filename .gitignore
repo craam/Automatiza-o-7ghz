@@ -62,7 +62,6 @@ typings/
 \#*#
 \.#*
 *~
-*.tex
 
 # Ignore folder with skyx examples
 TheSkyX
