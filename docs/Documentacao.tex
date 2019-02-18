@@ -1,0 +1,1131 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{titlesec}
+
+\setcounter{tocdepth}{5}
+
+\definecolor{background}{rgb}{1,1,1}
+\definecolor{lightgray}{RGB}{150,150,150}
+\definecolor{darkmagenta}{RGB}{139,0,139}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+
+% Javascript language definition.
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+  keywordstyle=\color{darkmagenta}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this, sky6StarChart, sky6RASCOMTele, sky6ObjectInformation, TextFile},
+  ndkeywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{lightgray}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{
+   language=JavaScript,
+   backgroundcolor=\color{background},
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\footnotesize,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b
+}
+
+\title{Documentação do script de automatização do 7GHz}
+\author{Edison Neto}
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introdução}
+
+O script está escrito em Javascript, só é possível executá-lo usando o interpretador do SkyX.
+
+\section{Funcionamento geral}
+
+A rotina está dentro de um loop infinito que fica pegando o horário atual do computador e comparando com os horários pré-determinados para iniciar algum dos processo.
+
+Antes do início do loop são definidos os horários (UT) para ligar, fazer o flip e desligar. Para o início, é verificada se a hora é exatamente a do horário de inicialização. Antes de fazer o Slew, é necessário usar a função FindHome. Como não há uma forma de saber se o telescópio já fez o home ou não, a função FindHome deve ser executada sempre na inicialização. O flip, como a inicialização, é realizado precisamente no horário determinado. O desligamento ocorre se o tracking estiver sendo realizado e se a hora atual for maior ou igual a hora de desligamento.
+
+Se a conexão for perdida há a possibilidade dela ser recuperada e que o telescópio volte a sua rotina normal. Entretanto, o problema causado pela perda de conexão pode não ser resolvido, e há a possibilidade de que seja necessária um reconexão manual.
+
+A documentação das funções usa o padrão \href{''http://usejsdoc.org/''}{JSDoc}
+
+
+\section{Funções do script}
+
+Algumas funções foram escritas com tratamento de erro, e com finalidade mais relacionada à automatização do 7GHz.
+
+\subsection{Funções de utilidade geral}
+
+\subsubsection{Logging}
+
+Para fazer o logging existem três funções diferentes
+
+\begin{lstlisting}
+function WriteLog(level, text)
+{
+    var filename = setFileName();
+    try {
+        TextFile.openForAppend(filename);
+        var formattedTime = getFormattedTime();
+        var header = "[" + level + " - " + formattedTime  + "] ";
+        TextFile.write(header + text + "\n");
+        print(header + text);
+        TextFile.close();
+    } catch (texterr) {
+        PrintAndOut("Erro ao editar o log. " + texterr.message + " (WriteLog)");
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Escrevendo no debugger e no RunJavaScript}
+
+Para escrever no debugger e na janela RunJavaScript a mesma mensagem em tempo de execução.
+
+\begin{lstlisting}
+function PrintAndOut(text)
+{
+    var level = "WARNING";
+    var formattedTime = getFormattedTime();
+    var header = "[" + level + " - " + formattedTime  + "] ";
+    print(header + text);
+    RunJavaScriptOutput.writeLine(header + text);
+}
+\end{lstlisting}
+
+\subsubsection{Pegando a ascensão reta e a declinação do objeto}
+
+Pega a ascensão reta e a declinação de algum objeto qualquer dentro do limite preestabelecido.
+
+\begin{lstlisting}
+function GetRADec(object)
+{
+    if (!Sky6IsConnected()) {
+        WriteLogError("Erro de conexao (GetRaDec)");
+        return false;
+    }
+
+    try {
+        sky6StarChart.Find(object);
+    } catch (finderr) {
+        WriteLogError("Erro durante o find. " + finderr.message + " (GetRaDec)");
+        return false;
+    }
+
+    sky6ObjectInformation.Property(54);
+    var targetRA = sky6ObjectInformation.ObjInfoPropOut;
+    sky6ObjectInformation.Property(55);
+    var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+
+    return {"ra": targetRA, "dec": targetDec};
+}
+\end{lstlisting}
+
+\subsection{Funções de controle}
+
+\subsubsection{Conexão}
+
+Inicia a conexão entre o SkyX e a montagem e cria o arquivo de log do dia. Essa função deve ser executada quando o SkyX não está conectado e for exatamente 11:00(UT), ou o horário escolhido para o início da execução. Esse processo é muito rápido comparado com outras operações de controle, demorando não mais de 1 segundo.
+
+\begin{lstlisting}
+function Connect_c()
+{
+    var time = getTimeNow();
+    var formattedTime = getFormattedTime();
+
+    ConnectTelescope();
+
+    var filename = setFileName();
+    TextFile.createNew(filename);
+    TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
+    var header = "[INFO - " + formattedTime + "] ";
+    TextFile.write(header + "Conectado\n");
+    print(header + "Conectado\n");
+    TextFile.close();
+}
+\end{lstlisting}
+
+\subsubsection{Inicialização}
+
+Inicia o rastreamento do sol. Essa função dever ser executada quando o SkyX está conectado e for exatamente 11:00(UT). Pelo fato do processo de conexão ser muito rápido, não há necessidade de iniciar 1 ou 2 minuto(s) depois da conexão.
+
+\begin{lstlisting}
+function Initialize_c()
+{
+    if (sky6RASCOMTele.IsParked != 0) {
+        sky6RASCOMTele.Unpark();
+    }
+    sky6RASCOMTele.FindHome();
+    var props = GetRADec("Sun");
+
+    WriteLogInfo("Iniciou o slew (Initialize_c)");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
+
+    WriteLogInfo("Iniciou o rastreamento (Initialize_c)");
+}
+
+\end{lstlisting}
+
+\subsubsection{Flip}
+
+Faz o flip, basicamente reiniciando o rastreamento. A única diferença de código entre a função Initialize\_c, é a inutilidade da função FindHome, visto que sua execução somente é necessária uma única vez por dia (desconsiderando problemas de conexão).
+
+\begin{lstlisting}
+function Flip_c()
+{
+    var props = GetRADec("Sun");
+    WriteLogInfo("Iniciou o slew (Flip_c)");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
+
+    WriteLogInfo("Completou o flip (Flip_c)");
+}
+\end{lstlisting}
+
+\subsubsection{Desligamento}
+
+Desliga o rastreamento primeiro e depois vai para a posição de parking, desconectando logo em seguida. É executada quando o SkyX está conectado e já passou das 20:00(UT).
+
+\begin{lstlisting}
+function TurnOff_c()
+{
+    SetTelescopeTracking(0, 1, 0, 0);
+    WriteLogInfo("Desligou o rastreamento (TurnOff_c)");
+
+    ParkTelescope();
+    WriteLogInfo("Desconectado (TurnOff_c)");
+}
+\end{lstlisting}
+
+\subsubsection{Reconexão}
+
+Reconecta o telescópio e reinicia o rastreamento. Também executa a função FindHome, já que se o script for (re)iniciado depois das 11:00, este processo pode não ter sido realizado. É executada quando o SkyX não está conectado e a hora atual está entre o horário de execução.
+
+\begin{lstlisting}
+function Reconnect_c()
+{
+    WriteLogInfo("(Re)conectado (Reconnect_c)");
+    ConnectTelescope();
+    SetTelescopeTracking(0, 1, 0, 0);
+    sky6RASCOMTele.FindHome();
+    RestartTracking_c();
+}
+\end{lstlisting}
+
+\subsubsection{Reinicialização do tracking}
+
+Reinicia o rastreamento. É executada na função de reconexão e quando o SkyX está conectado, não está fazendo o tracking e a hora atual está entre o horário de execução.
+
+\begin{lstlisting}
+function RestartTracking_c()
+{
+    var props = GetRADec("Sun");
+
+    WriteLogInfo("Iniciou o slew (RestartTracking_c)");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
+
+    WriteLogInfo("Reiniciou o rastreamento (RestartTracking_c)");
+}
+\end{lstlisting}
+
+\subsubsection{Calibração}
+
+Aponta para o céu somando 20 graus na altitude da observação atual. A calibração é feita duas vezes ao dia, uma hora antes do flip e uma hora depois.
+
+\begin{lstlisting}
+function CalibrateTelescope_c()
+{
+    WriteLogInfo("Calibracao iniciada (CalibrateTelescope_c)")
+
+    var delta = 20;
+    var props = GetAzAlt();
+    WriteLogInfo("Azimute atual: " + props.az + " | Altitude atual: " + props.alt);
+    var newAz = props.az + delta;
+    WriteLogInfo("Azimute futuro: " + newAz + " | Altitude futura: " + props.alt);
+
+    SlewTelescopeToAzAlt(newAz, props.alt, "");
+}
+\end{lstlisting}
+
+\section{Guia de estilo do código}
+
+\subsection{Indentação}
+
+O código usa espaços com 4 caracteres de largura.
+
+\subsection{Posicionamento das chaves}
+
+A forma correta é colocar a chave de abertura por último na linha, e colocar a chave de fechamento primeiro.
+
+\begin{lstlisting}
+if (something === true) {
+  print(something);
+}
+\end{lstlisting}
+
+Para funções coloque a chave embaixo da próxima linha.
+
+\begin{lstlisting}
+function myFunction()
+{
+  return 0;
+}
+\end{lstlisting}
+
+\subsection{Nomeando funções}
+
+As funções que usam alguma classe do SkyX são nomeadas usando UpperCamelCase, já as que não usam são nomeadas usando lowerCamelCase. As função principais de controle, são nomeadas usando UpperCamelCase e com o sufixo `\_c'.
+
+\section{Biblioteca do SkyX}
+
+\subsection{Principais classes}
+
+\begin{itemize}
+    \item sky6ObjectInformation - Informações dos objetos
+    \item sky6StarChart - Acesso aos aspectos visuais do SkyX
+    \item sky6RASCOMTele - Controle físico da montagem
+    \item TextFile - Manipulação de arquivos
+\end{itemize}
+
+\subsection{Exemplos}
+
+\subsubsection{sky6ObjectInformation}
+
+Dá o acesso ao banco de dados do SkyX. Podendo pegar diversas informações sobre o objeto sendo observado.
+
+\paragraph{Property()}\mbox{}\\
+
+\textbf{Argumentos}:
+
+\begin{itemize}
+    \item \emph{number} number - Representa um certa informação do objeto.
+\end{itemize}
+
+Há um total de 189 informações separadas nessa função. A função em si não retorna nada, o valor fica armazenado na propriedade \emph{ObjInfoPropOut}, como escrito no exemplo.
+
+\textbf{Exemplo:}
+
+\begin{lstlisting}
+sky6ObjectInformation.Property(55);
+print(sky6ObjectInformation.ObjInfoPropOut);
+\end{lstlisting}
+
+As duas propriedades que são usadas no script, são as seguintes:
+
+\begin{itemize}
+    \item 54: Ascensão reta
+    \item 55: Declinação
+\end{itemize}
+
+\subsubsection{sky6StarChart}
+
+Controle da parte visual do SkyX. Basicamente com essa classe é possível fazer o que se faria clicando no TheSkyX.
+
+\paragraph{Find()}\mbox{}\\
+
+\textbf{Argumentos}:
+
+\begin{itemize}
+    \item \emph{string} objectName - O nome do objeto a ser procurado.
+\end{itemize}
+
+Procura pelo objeto dado.
+
+\textbf{Exemplo}:
+
+\begin{lstlisting}
+sky6StarChart.Find("Sun");
+\end{lstlisting}
+
+Exemplo usando o sky6ObjectInformation.Property():
+
+\begin{lstlisting}
+// Procura pelo sol.
+sky6StarChart.Find("Sun");
+// Prepara no ObjInfoPropOut o valor da declinacao.
+sky6ObjectInformation.Property(55);
+
+print(sky6ObjectInfomation.ObjInfoPropOut + "\n")
+\end{lstlisting}
+
+\subsubsection{sky6RASCOMTele}
+
+Dá o controle físico da montagem. Para coisas como o slew ou parking.
+
+\paragraph{Connect(void)}\mbox{}\\
+
+Inicia a comunicação entre a montagem e o SkyX.
+
+\paragraph{Disconnect(void)}\mbox{}\\
+
+Termina a conexão entre a montagem e o SkyX.
+
+\paragraph{Abort(void)}\mbox{}\\
+
+Aborta a operação que estiver sendo realizada.
+
+\paragraph{SlewToRaDec()}\mbox{}\\
+
+\textbf{Argumentos}:
+
+\begin{itemize}
+    \item \emph{number} TargetRa - A ascensão reta;
+    \item \emph{number} TargetDec - A declinação;
+    \item \emph{string} targetObject - O nome do objeto.
+\end{itemize}
+
+
+Aponta o telescópio para a coordenada dada.
+
+\begin{lstlisting}
+sky6RASCOMTele.Connect();
+
+var targetObject = "Sun";
+sky6StarChart.Find(targetObject);
+
+sky6ObjectInformation.Property(54);
+var targetRA = sky6ObjectInformation.ObjInfoPropOut;
+
+sky6ObjectInformation.Property(55);
+var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+sky6RASCOMTele.SlewToRaDec(targetRa, TargetDec, targetObject);
+\end{lstlisting}
+
+\paragraph{GetRaDec(void)}\mbox{}\\
+
+Pega a declinação e a ascensão reta atual, e prepara os valores nas variáveis dRa e dDec.
+
+Exemplo:
+
+\begin{lstlisting}
+sky6RASCOMTele.Connect();
+sky6RASCOMTele.GetRaDec();
+
+print(String(sky6RASCOMTele.dRa) + " | ");
+print(String(sky6RASCOMTele.dDec));
+\end{lstlisting}
+
+\paragraph{Park(void)}\mbox{}\\
+
+
+Faz o slew para a posição de parking, e finaliza a conexão com o TheSky6.
+
+\paragraph{ParkAndDoNotDisconnect(void)}\mbox{}\\
+
+Tem quase o mesmo funcionamento que a função `Park'. A diferença é que essa função não finaliza a conexão entre o telescópio e o TheSky6.
+Para fazer outro Slew depois de usar esta função é necessário utilizar a função `Unpark' antes.
+
+\paragraph{Unpark(void)}\mbox{}\\
+
+Tira o telescópio do estado de parked.
+
+\paragraph{IsConnected}\mbox{}\\
+
+Tem o valor zero se o telescópio não estiver conectado.
+
+\paragraph{IsParked}\mbox{}\\
+
+Tem o valor zero se o telescópio não estiver na posição de parking.
+
+\paragraph{IsTracking}\mbox{}\\
+
+Tem o valor zero se o telescópio não estiver fazendo o tracking.
+
+\paragraph{dRa}\mbox{}\\
+
+A ascensão reta atual.
+
+\paragraph{dDec}\mbox{}\\
+
+A declinação atual.
+
+\subsubsection{TextFile}
+
+Classe usada para manipulação básica de arquivos.
+
+\paragraph{createNew()}\mbox{}\\
+
+Cria um arquivo txt. Os arquivos são obrigatoriamente na pasta \emph{/Meus Documentos/Software Bisque/TheSkyX Professional Edition/ScriptFiles}, o local dos não pode ser modificado.O nome do arquivo só pode conter letras e números.
+
+\textbf{Argumentos}:
+
+\begin{itemize}
+    \item \emph{string} filename - O nome do arquivo (sem a extensão).
+\end{itemize}
+
+\paragraph{write()}\mbox{}\\
+
+Escreve uma string no arquivo.
+
+\textbf{Argumentos}:
+
+\begin{itemize}
+    \item \emph{string} text - String a ser escrita no arquivo.
+\end{itemize}
+
+\paragraph{openForAppend()}\mbox{}\\
+
+Abre o arquivo de forma a anexar novos conteúdos depois do que já está escrito. Caso o arquivo não tiver sido criado e essa função for usada, o arquivo será criado.
+
+\textbf{Argumentos}:
+
+\begin{itemize}
+    \item \emph{string} filename - O nome do arquivo
+\end{itemize}
+
+\paragraph{close(void)}\mbox{}\\
+
+Fecha o arquivo salvando as modificações feitas.
+
+\subsubsection{Não relacionadas com as classes}
+
+\paragraph{String()}\mbox{}\\
+
+\textbf{Argumentos}:
+
+\begin{itemize}
+    \item \emph{number} int - Uma variável numérica qualquer.
+\end{itemize}
+
+Transforma um número em uma string. Essa função funciona como o método toString() do javascript(que curiosamente não funciona no SkyX).
+
+\textbf{Exemplo}:
+
+\begin{lstlisting}
+var int = 2;
+print(String(int));
+\end{lstlisting}
+
+\paragraph{print()}\mbox{}\\
+
+\textbf{Argumentos}:
+
+\begin{itemize}
+    \item \emph{(string, number)} text - Uma variável qualquer.
+\end{itemize}
+
+Essa função escreve nos logs do debugger. Ela escreve enquanto o programa roda, diferentemente da variável Out.
+
+\paragraph{A variável Out}\mbox{}\\
+
+Essa variável armazena tudo que será escrito na tela do "Run Java Script" no SkyX. Ela só é escrita quando o script acaba de rodar. É possível escrever nessa tela em tempo de execução com a classe RunJavaScriptOutput.
+
+\section{O código}
+
+\subsection{Versão 1.5}
+
+\begin{lstlisting}
+/*
+ * Version: 1.5
+ */
+
+/**
+ * Confirma se o SkyX tem conexao com a montagem.
+ *
+ * @returns {boolean} false se nao estiver conectado.
+ *                    true se estiver conectado.
+ */
+function Sky6IsConnected()
+{
+    if (sky6RASCOMTele.IsConnected == 0) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Estabiliza a conexao com a montagem.
+ *
+ * @returns {boolean} false caso algum erro aconteca.
+ */
+function ConnectTelescope()
+{
+    try {
+        sky6RASCOMTele.Connect();
+    } catch (connerr) {
+        WriteLogError("Erro de conexao com a montagem. " + connerr.message + " (ConnectTelescope)");
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Liga/Desliga o tracking.
+ *
+ * @param {number} IOn - O numero que desliga ou liga o tracking.
+ *                              0 - desliga
+ *                              1 - liga
+ *
+ * @param {number} IIgnoreRates - O numero que especifica se e para o 
+ *                                telescopio usar a taxa de tracking atual.
+ *                              0 - Ignora os valores de dRaRate e dDecRate
+ *                              1 - Usa os valores de dRaRate e dDecRate
+ *
+ * @param {number} dRaRate - Especifica a ascensao reta a ser usada.
+ *                           So e utilizada se IIgnoreRates for igual a 1.
+ *
+ * @param {number} dDecRate - Especifica a declinacao a ser usada.
+ *                           So e utilizada se IIgnoreRates for igual a 1.
+ *
+ * @returns {boolean} false se a montagem nao estiver conectada.
+ */
+function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
+{
+    if (!Sky6IsConnected()) {
+        return false;
+    }
+
+    sky6RASCOMTele.SetTracking(IOn, IIgnoreRates, dRaRate, dDecRate);
+    return true;
+}
+
+/**
+ * Faz o slew para um determinado objeto dados sua ascensao reta e declinacao.
+ *
+ * @param {number} dRa - ascensao reta.
+ * @param {number} dDec - declinacao.
+ * @param {string} targetObject - Objeto em questao.
+ *
+ * @returns {boolean} true se tudo tiver ocorrido corretamente.
+ */
+function SlewTelescopeToRaDec(dRa, dDec, targetObject)
+{
+    if (!Sky6IsConnected()) {
+        WriteLogError("Telescopio nao conectado (SlewTelescopeToRaDec)");
+        return false;
+    }
+  
+    try {
+        sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
+        return true;
+    } catch (slewerr) {
+        WriteLogError("Falha durante o slew. " + slewerr.message + " (SlewTelescopeToRaDec)");
+        return false;
+    }
+}
+
+/**
+ * Faz o slew para um determinado objeto dados azimute e altitude.
+ *
+ * @param {number} az - Azimute.
+ * @param {number} alt - Altitude.
+ * @param {string} targetObject - Objeto em questao.
+ *
+ * @returns {boolean} true se tudo tiver ocorrido corretamente.
+ */
+function SlewTelescopeToAzAlt(az, alt, targetObject)
+{
+    if (!Sky6IsConnected()) {
+        WriteLogError("Telescopio nao conectado. (SlewTelescopeToAzAlt)");
+        return false;
+    }
+
+    try {
+        sky6RASCOMTele.SlewToAzAlt(az, alt, targetObject);
+        return true;
+    } catch (slewerr) {
+        WriteLogError("Falha durante o slew. " + slewerr.message + " (SlewTelescopeToAzAlt)");
+        return false;
+    }
+}
+
+/**
+ * Leva o telescopio para a posicao de parking.
+ *
+ * @returns {boolean} true se tudo tiver ocorrido corretamente.
+ */
+function ParkTelescope()
+{
+    if (!Sky6IsConnected()) {
+        return false;
+    }
+
+    if (sky6RASCOMTele.IsParked != 0) {
+        sky6RASCOMTele.Park();
+        WriteLogInfo("Parking finalizado (ParkTelescope)");
+        return true;
+    }
+}
+
+/**
+ * Procura pelo objeto dado e pega a ascensao reta e a declinacao dele
+ * no momento.
+ *
+ * @param {string} object - Nome do objeto a ser encontrado.
+ *
+ * @returns {object} Um objeto com a ascensao reta e a declinacao.
+ */
+function GetRADec(object)
+{
+    if (!Sky6IsConnected()) {
+        WriteLogError("Erro de conexao (GetRaDec)");
+        return false;
+    }
+
+    try {
+        sky6StarChart.Find(object);
+    } catch (finderr) {
+        WriteLogError("Erro durante o find. " + finderr.message + " (GetRaDec)");
+        return false;
+    }
+
+    sky6ObjectInformation.Property(54);
+    var targetRA = sky6ObjectInformation.ObjInfoPropOut;
+    sky6ObjectInformation.Property(55);
+    var targetDec = sky6ObjectInformation.ObjInfoPropOut;
+
+    return {"ra": targetRA, "dec": targetDec};
+}
+
+/**
+ * Pega o azimute e a altitude do objeto sendo observado no momento.
+ *
+ * @returns {object} Um objeto com o azimute e a altitude.
+ */
+function GetAzAlt()
+{
+    if (!Sky6IsConnected()) {
+        WriteLogError("Erro de conexao (GetAzAlt)");
+        return false;
+    }
+
+    sky6RASCOMTele.GetAzAlt();
+    var az = sky6RASCOMTele.dAz;
+    var alt = sky6RASCOMTele.dAlt;
+
+    return {"az": az, "alt": alt};
+}
+
+/**
+ * Pega a data e o horario do momento que a funcao e chamada.
+ *
+ * @returns {object} Um objeto com os dados.
+ */
+function getTimeNow()
+{
+    var time = new Date();
+    var day = time.getDate();
+    var month = time.getMonth();
+    var year = time.getFullYear();
+    var hour = time.getHours();
+    var minutes = time.getMinutes();
+    var seconds = time.getSeconds();
+
+    return {
+        "day": day,
+        "month": month,
+        "year": year,
+        "hour": hour,
+        "minutes": minutes,
+        "seconds": seconds
+    };
+}
+
+/**
+ * Cria o nome do arquivo para o dia atual.
+ *
+ * @returns {string} O nome do arquivo do dia atual.
+ */
+function setFileName()
+{
+    var time = getTimeNow();
+
+    if (time.day < 10) {
+        var day = "0" + String(time.day);
+    } else {
+        var day = String(time.day);
+    }
+
+    if (time.month < 10) {
+        var month = "0" + String(time.month);
+    } else {
+        var month = String(time.month);
+    }
+
+    var year = String(time.year);
+
+    var filename = year + month + day;
+
+    return filename;
+}
+
+/**
+ * Pega o horario atual do computador formatado.
+ *
+ * @returns {string} O horario no formato %H:%M:%S.
+ */
+function getFormattedTime()
+{
+    var time = getTimeNow();
+    var formattedTime = String(time.hour) + ":" + String(time.minutes) + ":" + String(time.seconds);
+    return formattedTime;
+}
+
+/**
+ * Escreve no log uma mensagem, junto com o horario do momento.
+ * Tambem define o tipo(nivel) de mensagem(Info, Warning ou Error).
+ * Formato da mensagem: [LEVEL - 00:00:00] Text
+ *
+ * @param {string} text -  A mensagem a ser escrita.
+ * @param {string} level - Nivel da mensage.
+ */
+function WriteLog(level, text)
+{
+    var filename = setFileName();
+    try {
+        TextFile.openForAppend(filename);
+        var formattedTime = getFormattedTime();
+        var header = "[" + level + " - " + formattedTime  + "] ";
+        TextFile.write(header + text + "\n");
+        print(header + text);
+        TextFile.close();
+    } catch (texterr) {
+        PrintAndOut("Erro ao editar o log. " + texterr.message + " (WriteLog)");
+    }
+}
+
+/**
+ * Escreve a mensage de warning no log.
+ *
+ * @param {string} text -  A mensagem a ser escrita.
+ */
+function WriteLogWarning(text)
+{
+    WriteLog("WARNING", text);
+}
+
+/**
+ * Escreve a mensagem de erro no log.
+ *
+ * @param {string} text - A mensagem a ser escrita.
+ */
+function WriteLogError(text)
+{
+    WriteLog("ERROR", text);
+}
+
+/**
+ * Escreve a mensagem de informacao no log.
+ *
+ * @param {string} text - A mensagem a ser escrita.
+ */
+function WriteLogInfo(text)
+{
+    WriteLog("INFO", text);
+}
+
+/**
+ * Escreve no debugger e na janela Run Java Script.
+ * Deve ser usado somente quando o log estiver inacessivel.
+ *
+ * @param {string} text - O conteudo a ser escrito.
+ */
+function PrintAndOut(text)
+{
+    var level = "WARNING";
+    var formattedTime = getFormattedTime();
+    var header = "[" + level + " - " + formattedTime  + "] ";
+    print(header + text);
+    RunJavaScriptOutput.writeLine(header + text);
+}
+
+/**
+ * Conecta o telescopio e cria o arquivo de log do dia.
+ */
+function Connect_c()
+{
+    var time = getTimeNow();
+    var formattedTime = getFormattedTime();
+
+    ConnectTelescope();
+
+    var filename = setFileName();
+    TextFile.createNew(filename);
+    TextFile.write(String(time.day) + "/" + String(time.month) + "/" + String(time.year) + "\n");
+    var header = "[INFO - " + formattedTime + "] ";
+    TextFile.write(header + "Conectado\n");
+    print(header + "Conectado\n");
+    TextFile.close();
+}
+
+/**
+ * Processo de inicializacao.
+ */
+function Initialize_c()
+{
+    if (sky6RASCOMTele.IsParked != 0) {
+        sky6RASCOMTele.Unpark();
+    }
+    sky6RASCOMTele.FindHome();
+    var props = GetRADec("Sun");
+
+    WriteLogInfo("Iniciou o slew (Initialize_c)");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
+
+    WriteLogInfo("Iniciou o rastreamento (Initialize_c)");
+}
+
+/**
+ * Processo do Flip.
+ */
+function Flip_c()
+{
+    var props = GetRADec("Sun");
+    WriteLogInfo("Iniciou o slew (Flip_c)");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
+
+    WriteLogInfo("Completou o flip (Flip_c)");
+}
+
+/**
+ * Desliga o tracking e faz o parking.
+ */
+function TurnOff_c()
+{
+    SetTelescopeTracking(0, 1, 0, 0);
+    WriteLogInfo("Desligou o rastreamento (TurnOff_c)");
+
+    ParkTelescope();
+    WriteLogInfo("Desconectado (TurnOff_c)");
+}
+
+/**
+ * Reconecta o telescopio e reinicia o tracking.
+ */
+function Reconnect_c()
+{
+    WriteLogInfo("(Re)conectado (Reconnect_c)");
+    ConnectTelescope();
+    SetTelescopeTracking(0, 1, 0, 0);
+    sky6RASCOMTele.FindHome();
+    RestartTracking_c();
+}
+
+/**
+ * Reinicia o rastreamento.
+ */
+function RestartTracking_c()
+{
+    var props = GetRADec("Sun");
+
+    WriteLogInfo("Iniciou o slew (RestartTracking_c)");
+    SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
+
+    WriteLogInfo("Reiniciou o rastreamento (RestartTracking_c)");
+}
+
+/**
+ * Aponta para o ceu baseando-se no azimute.
+ */
+function CalibrateTelescope_c()
+{
+    WriteLogInfo("Calibracao iniciada (CalibrateTelescope_c)")
+
+    var delta = 20;
+    var props = GetAzAlt();
+    WriteLogInfo("Azimute atual: " + props.az + " | Altitude atual: " + props.alt);
+    var newAz = props.az + delta;
+    WriteLogInfo("Azimute futuro: " + newAz + " | Altitude futura: " + props.alt);
+
+    SlewTelescopeToAzAlt(newAz, props.alt, "");
+}
+
+/*
+ * Configura os horario para inicializar, fazer o flip e desligar.
+ */
+var work_time = {
+    start_hour: 11,
+    start_minutes: 00,
+    start_seconds: 30,
+    flip_hour: 16,
+    flip_minutes: 00,
+    turn_off_hour: 20,
+    turn_off_minutes: 00,
+    first_calibration_hour: 15,
+    first_calibration_minutes: 00,
+    first_calibration_seconds: 00,
+    second_calibration_hour: 17,
+    second_calibration_minutes: 00,
+    second_calibration_seconds: 00,
+    finish_first_calibration_hour: 15,
+    finish_first_calibration_minutes: 00,
+    finish_first_calibration_seconds: 30,
+    finish_second_calibration_hour: 17,
+    finish_second_calibration_minutes: 00,
+    finish_second_calibration_seconds: 30,
+};
+
+/**
+ * Verifica se e a hora da primeira calibracao.
+ *
+ * @param {object} time - Horario atual.
+ * @returns {boolean}
+ */
+function timeToFirstCalibration(time)
+{
+    return time.hour == work_time.first_calibration_hour &&
+                time.minutes == work_time.first_calibration_minutes &&
+                time.seconds == work_time.first_calibration_seconds;
+}
+
+/**
+ * Verifica se e a hora de voltar para o sol.
+ * 
+ * @param {object} time - Horario atual.
+ * @return {boolean}
+ */
+function timeToFinishFirstCalibration(time)
+{
+    return time.hour == work_time.finish_first_calibration_hour &&
+                time.minutes == work_time.finish_first_calibration_minutes &&
+                time.seconds == work_time.finish_first_calibration_seconds;
+}
+
+/**
+ * Verifica se e a hora da segunda calibracao.
+ *
+ * @param {object} time - Horario atual.
+ * @returns {boolean}
+ */
+function timeToSecondCalibration(time)
+{
+    return time.hour == work_time.second_calibration_hour &&
+                time.minutes == work_time.second_calibration_minutes &&
+                time.seconds == work_time.second_calibration_seconds;
+}
+
+/**
+ * Verifica se e a hora de voltar para o sol.
+ * 
+ * @param {object} time - Horario atual.
+ * @return {boolean}
+ */
+function timeToFinishSecondCalibration(time)
+{
+    return time.hour == work_time.finish_second_calibration_hour &&
+                time.minutes == work_time.finish_second_calibration_minutes &&
+                time.seconds == work_time.finish_second_calibration_seconds;
+}
+
+/**
+ * Verifica se e a hora de inicializar.
+ *
+ * @param {object} time - Horario atual.
+ * @returns {boolean}
+ */
+function timeToInitialize(time)
+{
+    return time.hour == work_time.start_hour &&
+                time.minutes == work_time.start_minutes &&
+                time.seconds == work_time.start_seconds;
+}
+
+/**
+ * Verifica se e a hora do flip.
+ *
+ * @param {object} time - Horario atual.
+ * @returns {boolean}
+ */
+function timeToFlip(time)
+{
+    return time.hour == work_time.flip_hour &&
+                time.minutes == work_time.flip_minutes;
+}
+
+/**
+ * Verifica se e(ou ja passou) (d)a hora de desligar o tracking e se ele
+ * esta ocorrendo.
+ *
+ * @param {object} time - Horario atual.
+ * @returns {boolean}
+ */
+function timeToTurnOff(time)
+{
+    return time.hour >= work_time.turn_off_hour &&
+                sky6RASCOMTele.IsTracking != 0;
+}
+
+/**
+ * Verifica se e a hora de iniciar a conexao.
+ *
+ * @param {object} time - Horario atual.
+ * @returns {boolean}
+ */
+function timeToConnect(time)
+{
+    return time.hour == work_time.start_hour &&
+                time.minutes == work_time.start_minutes;
+}
+
+/**
+ * Verifica se o telescopio esta no horario de operacao.
+ * Procura prever um eventual problema de simples desconexao do SkyX.
+ *
+ * @param {object} time - Horario atual.
+ * @returns {boolean}
+ */
+function inOperatingTime(time)
+{
+    return time.hour >= work_time.start_hour &&
+                time.hour < work_time.turn_off_hour;
+}
+
+while (true)
+{
+    var time = getTimeNow();
+
+    if (Sky6IsConnected()) {
+        if (timeToInitialize(time)) {
+            Initialize_c();
+        }
+        else if (timeToFirstCalibration(time)) {
+            CalibrateTelescope_c();
+        }
+        else if (timeToFinishFirstCalibration(time)) {
+            RestartTracking_c();
+        }
+        else if (timeToFlip(time)) {
+            Flip_c();
+        }
+        else if (timeToSecondCalibration(time)) {
+            CalibrateTelescope_c();
+        }
+        else if (timeToFinishSecondCalibration(time)) {
+            RestartTracking_c();
+        }
+        else if (timeToTurnOff(time)) {
+            TurnOff_c();
+        }
+    }
+    else if (timeToConnect(time)) {
+        Connect_c();
+    }
+    else if (inOperatingTime(time)) {
+        Reconnect_c();
+    }
+}
+\end{lstlisting}
+
+\subsection{Versão mais recente}
+
+\href{''https://github.com/3ldr0n/Automatiza-o-7ghz/''}{https://github.com/3ldr0n/Automatiza-o-7ghz/}
+
+\end{document}
