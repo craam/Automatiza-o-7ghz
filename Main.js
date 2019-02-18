@@ -568,13 +568,13 @@ function timeToConnect(time)
 }
 
 /**
- * Verifica se o telescópio está desconectado e se está no horário de funcionamento.
- * Procurar prever um eventual problema de simples desconexão do SkyX.
+ * Verifica se o telescópio está no horário de operação.
+ * Procura prever um eventual problema de simples desconexão do SkyX.
  *
  * @param {object} time - Horário atual.
  * @returns {boolean}
  */
-function connectionProblem(time)
+function inOperatingTime(time)
 {
     return time.hour >= work_time.start_hour &&
                 time.hour < work_time.turn_off_hour;
@@ -610,7 +610,7 @@ while (true)
     else if (timeToConnect(time)) {
         Connect_c();
     }
-    else if (connectionProblem(time)) {
+    else if (inOperatingTime(time)) {
         Reconnect_c();
     }
 }
