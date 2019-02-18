@@ -446,7 +446,7 @@ function CalibrateTelescope_c()
 var work_time = {
     start_hour: 11,
     start_minutes: 00,
-    start_seconds: 00,
+    start_seconds: 30,
     flip_hour: 16,
     flip_minutes: 00,
     turn_off_hour: 20,
