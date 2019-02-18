@@ -551,9 +551,9 @@ function Sky6IsConnected()
 }
 
 /**
- * Estabiliza a conexão com a montagem.
+ * Estabiliza a conexao com a montagem.
  *
- * @returns {boolean} false caso algum erro aconteça.
+ * @returns {boolean} false caso algum erro aconteca.
  */
 function ConnectTelescope()
 {
@@ -570,22 +570,22 @@ function ConnectTelescope()
 /**
  * Liga/Desliga o tracking.
  *
- * @param {number} IOn - O número que desliga ou liga o tracking.
+ * @param {number} IOn - O numero que desliga ou liga o tracking.
  *                              0 - desliga
  *                              1 - liga
  *
- * @param {number} IIgnoreRates - O número que especifica se é para o 
- *                                telescópio usar a taxa de tracking atual.
+ * @param {number} IIgnoreRates - O numero que especifica se e para o 
+ *                                telescopio usar a taxa de tracking atual.
  *                              0 - Ignora os valores de dRaRate e dDecRate
  *                              1 - Usa os valores de dRaRate e dDecRate
  *
- * @param {number} dRaRate - Especifica a ascensão reta a ser usada.
- *                           Só é utilizada se IIgnoreRates for igual à 1.
+ * @param {number} dRaRate - Especifica a ascensao reta a ser usada.
+ *                           So e utilizada se IIgnoreRates for igual a 1.
  *
- * @param {number} dDecRate - Especifica a declinação a ser usada.
- *                           Só é utilizada se IIgnoreRates for igual à 1.
+ * @param {number} dDecRate - Especifica a declinacao a ser usada.
+ *                           So e utilizada se IIgnoreRates for igual a 1.
  *
- * @returns {boolean} false se a montagem não estiver conectada.
+ * @returns {boolean} false se a montagem nao estiver conectada.
  */
 function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 {
@@ -598,11 +598,11 @@ function SetTelescopeTracking(IOn, IIgnoreRates, dRaRate, dDecRate)
 }
 
 /**
- * Faz o slew para um determinado objeto dados sua ascensão reta e declinação.
+ * Faz o slew para um determinado objeto dados sua ascensao reta e declinacao.
  *
- * @param {number} dRa - ascensão reta.
- * @param {number} dDec - declinação.
- * @param {string} targetObject - Objeto em questão.
+ * @param {number} dRa - ascensao reta.
+ * @param {number} dDec - declinacao.
+ * @param {string} targetObject - Objeto em questao.
  *
  * @returns {boolean} true se tudo tiver ocorrido corretamente.
  */
@@ -627,7 +627,7 @@ function SlewTelescopeToRaDec(dRa, dDec, targetObject)
  *
  * @param {number} az - Azimute.
  * @param {number} alt - Altitude.
- * @param {string} targetObject - Objeto em questão.
+ * @param {string} targetObject - Objeto em questao.
  *
  * @returns {boolean} true se tudo tiver ocorrido corretamente.
  */
@@ -648,7 +648,7 @@ function SlewTelescopeToAzAlt(az, alt, targetObject)
 }
 
 /**
- * Leva o telescópio para a posição de parking.
+ * Leva o telescopio para a posicao de parking.
  *
  * @returns {boolean} true se tudo tiver ocorrido corretamente.
  */
@@ -666,12 +666,12 @@ function ParkTelescope()
 }
 
 /**
- * Procura pelo objeto dado e pega a ascensão reta e a declinação dele
+ * Procura pelo objeto dado e pega a ascensao reta e a declinacao dele
  * no momento.
  *
  * @param {string} object - Nome do objeto a ser encontrado.
  *
- * @returns {object} Um objeto com a ascensão reta e a declinação.
+ * @returns {object} Um objeto com a ascensao reta e a declinacao.
  */
 function GetRADec(object)
 {
@@ -715,7 +715,7 @@ function GetAzAlt()
 }
 
 /**
- * Pega a data e o horário do momento que a função é chamada.
+ * Pega a data e o horario do momento que a funcao e chamada.
  *
  * @returns {object} Um objeto com os dados.
  */
@@ -768,9 +768,9 @@ function setFileName()
 }
 
 /**
- * Pega o horário atual do computador formatado.
+ * Pega o horario atual do computador formatado.
  *
- * @returns {string} O horário no formato %H:%M:%S.
+ * @returns {string} O horario no formato %H:%M:%S.
  */
 function getFormattedTime()
 {
@@ -780,12 +780,12 @@ function getFormattedTime()
 }
 
 /**
- * Escreve no log uma mensagem, junto com o horário do momento.
- * Também define o tipo(nível) de mensagem(Info, Warning ou Error).
+ * Escreve no log uma mensagem, junto com o horario do momento.
+ * Tambem define o tipo(nivel) de mensagem(Info, Warning ou Error).
  * Formato da mensagem: [LEVEL - 00:00:00] Text
  *
  * @param {string} text -  A mensagem a ser escrita.
- * @param {string} level - Nível da mensage.
+ * @param {string} level - Nivel da mensage.
  */
 function WriteLog(level, text)
 {
@@ -823,7 +823,7 @@ function WriteLogError(text)
 }
 
 /**
- * Escreve a mensagem de informação no log.
+ * Escreve a mensagem de informacao no log.
  *
  * @param {string} text - A mensagem a ser escrita.
  */
@@ -834,9 +834,9 @@ function WriteLogInfo(text)
 
 /**
  * Escreve no debugger e na janela Run Java Script.
- * Deve ser usado somente quando o log estiver inacessível.
+ * Deve ser usado somente quando o log estiver inacessivel.
  *
- * @param {string} text - O conteúdo a ser escrito.
+ * @param {string} text - O conteudo a ser escrito.
  */
 function PrintAndOut(text)
 {
@@ -848,7 +848,7 @@ function PrintAndOut(text)
 }
 
 /**
- * Conecta o telescópio e cria o arquivo de log do dia.
+ * Conecta o telescopio e cria o arquivo de log do dia.
  */
 function Connect_c()
 {
@@ -867,7 +867,7 @@ function Connect_c()
 }
 
 /**
- * Processo de inicialização.
+ * Processo de inicializacao.
  */
 function Initialize_c()
 {
@@ -908,7 +908,7 @@ function TurnOff_c()
 }
 
 /**
- * Reconecta o telescópio e reinicia o tracking.
+ * Reconecta o telescopio e reinicia o tracking.
  */
 function Reconnect_c()
 {
@@ -933,7 +933,7 @@ function RestartTracking_c()
 }
 
 /**
- * Aponta para o céu baseando-se no azimute.
+ * Aponta para o ceu baseando-se no azimute.
  */
 function CalibrateTelescope_c()
 {
@@ -949,7 +949,7 @@ function CalibrateTelescope_c()
 }
 
 /*
- * Configura os horário para inicializar, fazer o flip e desligar.
+ * Configura os horario para inicializar, fazer o flip e desligar.
  */
 var work_time = {
     start_hour: 11,
@@ -974,9 +974,9 @@ var work_time = {
 };
 
 /**
- * Verifica se é a hora da primeira calibração.
+ * Verifica se e a hora da primeira calibracao.
  *
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @returns {boolean}
  */
 function timeToFirstCalibration(time)
@@ -987,9 +987,9 @@ function timeToFirstCalibration(time)
 }
 
 /**
- * Verifica se é a hora de voltar para o sol.
+ * Verifica se e a hora de voltar para o sol.
  * 
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @return {boolean}
  */
 function timeToFinishFirstCalibration(time)
@@ -1000,9 +1000,9 @@ function timeToFinishFirstCalibration(time)
 }
 
 /**
- * Verifica se é a hora da segunda calibração.
+ * Verifica se e a hora da segunda calibracao.
  *
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @returns {boolean}
  */
 function timeToSecondCalibration(time)
@@ -1013,9 +1013,9 @@ function timeToSecondCalibration(time)
 }
 
 /**
- * Verifica se é a hora de voltar para o sol.
+ * Verifica se e a hora de voltar para o sol.
  * 
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @return {boolean}
  */
 function timeToFinishSecondCalibration(time)
@@ -1026,9 +1026,9 @@ function timeToFinishSecondCalibration(time)
 }
 
 /**
- * Verifica se é a hora de inicializar.
+ * Verifica se e a hora de inicializar.
  *
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @returns {boolean}
  */
 function timeToInitialize(time)
@@ -1039,9 +1039,9 @@ function timeToInitialize(time)
 }
 
 /**
- * Verifica se é a hora do flip.
+ * Verifica se e a hora do flip.
  *
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @returns {boolean}
  */
 function timeToFlip(time)
@@ -1051,10 +1051,10 @@ function timeToFlip(time)
 }
 
 /**
- * Verifica se é(ou já passou) (d)a hora de desligar o tracking e se ele
- * está ocorrendo.
+ * Verifica se e(ou ja passou) (d)a hora de desligar o tracking e se ele
+ * esta ocorrendo.
  *
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @returns {boolean}
  */
 function timeToTurnOff(time)
@@ -1064,9 +1064,9 @@ function timeToTurnOff(time)
 }
 
 /**
- * Verifica se é a hora de iniciar a conexão.
+ * Verifica se e a hora de iniciar a conexao.
  *
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @returns {boolean}
  */
 function timeToConnect(time)
@@ -1076,10 +1076,10 @@ function timeToConnect(time)
 }
 
 /**
- * Verifica se o telescópio está no horário de operação.
- * Procura prever um eventual problema de simples desconexão do SkyX.
+ * Verifica se o telescopio esta no horario de operacao.
+ * Procura prever um eventual problema de simples desconexao do SkyX.
  *
- * @param {object} time - Horário atual.
+ * @param {object} time - Horario atual.
  * @returns {boolean}
  */
 function inOperatingTime(time)
