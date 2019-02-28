@@ -366,8 +366,6 @@ function Initialize_c()
     if (sky6RASCOMTele.IsParked != 0) {
         sky6RASCOMTele.Unpark();
     }
-
-    WriteLogInfo("Iniciou o home (Initialize_c)");
     sky6RASCOMTele.FindHome();
     var props = GetRADec("Sun");
 
