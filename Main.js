@@ -276,7 +276,7 @@ function getFormattedTime()
  * Também define o tipo(nível) de mensagem(Info, Warning ou Error).
  * Formato da mensagem: [LEVEL - 00:00:00] Text
  *
- * @param {string} text -  A mensagem a ser escrita.
+ * @param {string} text - A mensagem a ser escrita.
  * @param {string} level - Nível da mensage.
  */
 function WriteLog(level, text, functionCalling)
@@ -285,7 +285,7 @@ function WriteLog(level, text, functionCalling)
     try {
         TextFile.openForAppend(filename);
         var formattedTime = getFormattedTime();
-        var header = "[" + level + " - " + formattedTime  + "] ";
+        var header = "[" + level + " - " + formattedTime + "] ";
         TextFile.write(header + text + "(" + functionCalling.name + ")\n");
         print(header + text);
         TextFile.close();
@@ -297,7 +297,7 @@ function WriteLog(level, text, functionCalling)
 /**
  * Escreve a mensage de warning no log.
  *
- * @param {string} text -  A mensagem a ser escrita.
+ * @param {string} text - A mensagem a ser escrita.
  */
 function WriteLogWarning(text, functionCalling)
 {
@@ -334,7 +334,7 @@ function PrintAndOut(text)
 {
     var level = "WARNING";
     var formattedTime = getFormattedTime();
-    var header = "[" + level + " - " + formattedTime  + "] ";
+    var header = "[" + level + " - " + formattedTime + "] ";
     print(header + text);
     RunJavaScriptOutput.writeLine(header + text);
 }
@@ -386,7 +386,7 @@ function Flip_c()
     WriteLogInfo("Iniciou o slew", Flip_c);
     SlewTelescopeToRaDec(props.ra, props.dec, "Sun");
 
-    WriteLogInfo("Completou o flip",  Flip_c);
+    WriteLogInfo("Completou o flip", Flip_c);
 }
 
 /**
@@ -510,7 +510,7 @@ function timeToSecondCalibration(time)
 
 /**
  * Verifica se é a hora de voltar para o sol.
- * 
+ *
  * @param {object} time - Horário atual.
  * @return {boolean}
  */
