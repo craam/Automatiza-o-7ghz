@@ -435,9 +435,11 @@ function CalibrateTelescope_c()
 
     var delta = 20;
     var props = GetAzAlt();
-    WriteLogInfo("Azimute atual: " + props.az + " | Altitude atual: " + props.alt);
+    WriteLogInfo("Azimute atual: " + props.az + " | Altitude atual: " + props.alt,
+                CalibrateTelescope_c);
     var newAz = props.az + delta;
-    WriteLogInfo("Azimute futuro: " + newAz + " | Altitude futura: " + props.alt);
+    WriteLogInfo("Azimute futuro: " + newAz + " | Altitude futura: " + props.alt,
+                CalibrateTelescope_c);
 
     SlewTelescopeToAzAlt(newAz, props.alt, "");
 }
