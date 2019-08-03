@@ -104,7 +104,7 @@ function SlewTelescopeToRaDec(dRa, dDec, targetObject)
         WriteLogError("Telescopio nao conectado (SlewTelescopeToRaDec)");
         return false;
     }
-  
+
     try {
         sky6RASCOMTele.SlewToRaDec(dRa, dDec, targetObject);
         return true;
@@ -482,7 +482,7 @@ function timeToFirstCalibration(time)
 
 /**
  * Verifica se é a hora de voltar para o sol.
- * 
+ *
  * @param {object} time - Horário atual.
  * @return {boolean}
  */
@@ -508,7 +508,7 @@ function timeToSecondCalibration(time)
 
 /**
  * Verifica se é a hora de voltar para o sol.
- * 
+ *
  * @param {object} time - Horário atual.
  * @return {boolean}
  */
